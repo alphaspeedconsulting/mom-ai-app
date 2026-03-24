@@ -1,0 +1,34 @@
+---
+description: How to use AI Product Agents as sub-agents via MCP (PRD, Architect, Sales, Quality, UI/UX, Orchestrator). Apply when user asks for PRDs, architecture, pitches, or full product specs.
+alwaysApply: true
+---
+
+# AI Product Agents as Sub-Agents (MCP)
+
+This project exposes **AI Product Agents** via MCP. Use them as **sub-agents** by name so the right MCP tools are called consistently.
+
+## When to Use Which Sub-Agent
+
+| User need | Sub-agent to use | MCP tools invoked |
+|-----------|------------------|-------------------|
+| PRD, requirements, user stories | **Product Agent** | `generate_prd` |
+| Architecture options, build-vs-buy, design review, performance/security/tech debt | **Architecture Agent** | `analyze_architecture`, `review_architecture`, `profile_performance`, `review_code_security`, `refactor_code`, `track_tech_debt`, `audit_dependencies`, `validate_best_practices` |
+| Full product spec (PRD + architecture in one flow) | **Orchestrator Agent** | `generate_prd` then `analyze_architecture` (same `workflow_name`) |
+| Sales pitch, batch pitches, company research | **Sales Agent** | `generate_pitch`, `batch_generate_pitches` |
+| Agent Overlay / .cursorrules compliance | **Quality Agent** | `validate_best_practices` |
+| Frontend, accessibility, UX | **UI/UX Agent** | `analyze_ui_ux` |
+
+## How to Invoke
+
+- **Explicit:** "Use the **Product Agent** to generate a PRD for …" / "Use the **Orchestrator Agent** to produce a full product spec for …"
+- **Implicit:** Treat "generate a PRD", "analyze architecture", "full product spec", "sales pitch for X" as requests to use the corresponding sub-agent and call the MCP tools above.
+
+## Tool Parameters (remember)
+
+- **generate_prd:** `user_input` (required), `workflow_name` (optional, kebab-case), `industry_profile` (optional: roofing, healthcare, saas, generic)
+- **analyze_architecture:** `user_input`, `workflow_name`, `industry_profile`, `codebase_path` (e.g. `"./backend"` for reuse)
+- **Orchestrator:** Use the **same** `workflow_name` for both PRD and architecture so artifacts land in `projects/[workflow-name]/prd.md` and `architecture-analysis.md`
+
+## Setup (for users)
+
+MCP server must be in `~/.cursor/mcp.json` with `ai-product-agents` and `OPENAI_API_KEY`. Sub-agent definitions: `.claude/.cursor/agents/`. Full guide: `docs/using-ai-product-agents-as-subagents.md`.

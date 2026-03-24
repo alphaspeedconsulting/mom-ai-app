@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Welcome to mom.Ai</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Be_Vietnam_Pro:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "surface-container-highest": "#b8eaff",
+              "surface-container-low": "#e5f6ff",
+              "on-primary-fixed": "#034438",
+              "error-dim": "#70030f",
+              "inverse-primary": "#c3fdea",
+              "on-secondary-fixed-variant": "#8a4b11",
+              "primary-fixed": "#afe9d7",
+              "surface-tint": "#32695a",
+              "on-primary-container": "#1f574a",
+              "secondary-container": "#ffdcc4",
+              "secondary": "#8f4f14",
+              "primary-dim": "#245c4f",
+              "on-secondary": "#fff7f4",
+              "secondary-fixed": "#ffdcc4",
+              "surface-bright": "#f3fbff",
+              "outline-variant": "#86b9ce",
+              "background": "#f3fbff",
+              "secondary-dim": "#804307",
+              "inverse-surface": "#001017",
+              "surface": "#f3fbff",
+              "primary-container": "#afe9d7",
+              "surface-container-lowest": "#ffffff",
+              "inverse-on-surface": "#87a1ad",
+              "on-surface-variant": "#316678",
+              "surface-container-high": "#c8eeff",
+              "on-secondary-fixed": "#643200",
+              "on-surface": "#003747",
+              "on-primary": "#e4fff5",
+              "on-tertiary-container": "#4e436c",
+              "tertiary-dim": "#584c76",
+              "error-container": "#f56965",
+              "on-error-container": "#65000b",
+              "secondary-fixed-dim": "#ffcaa4",
+              "on-background": "#003747",
+              "on-tertiary-fixed": "#3b3057",
+              "tertiary-container": "#dccdff",
+              "on-error": "#fff7f6",
+              "surface-dim": "#a7e3fb",
+              "primary": "#32695a",
+              "surface-variant": "#b8eaff",
+              "tertiary": "#655883",
+              "on-primary-fixed-variant": "#2a6153",
+              "tertiary-fixed-dim": "#cebff0",
+              "outline": "#4e8295",
+              "on-tertiary-fixed-variant": "#584c76",
+              "on-secondary-container": "#7e4205",
+              "error": "#ac3434",
+              "tertiary-fixed": "#dccdff",
+              "on-tertiary": "#fdf7ff",
+              "primary-fixed-dim": "#a2dac9",
+              "surface-container": "#d7f2ff"
+            },
+            fontFamily: {
+              "headline": ["Plus Jakarta Sans"],
+              "body": ["Be Vietnam Pro"],
+              "label": ["Be Vietnam Pro"]
+            },
+            borderRadius: {"DEFAULT": "1rem", "lg": "2rem", "xl": "3rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        body { font-family: 'Be Vietnam Pro', sans-serif; }
+        h1, h2, h3 { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-surface min-h-screen flex flex-col">
+<!-- Hero Section with Intentional Asymmetry -->
+<main class="flex-grow flex flex-col pt-12 pb-24 px-6 md:px-24">
+<header class="mb-14 relative">
+<!-- Decorative Element -->
+<div class="absolute -top-10 -left-10 w-40 h-40 bg-tertiary-container/30 rounded-full blur-3xl -z-10"></div>
+<div class="flex items-center gap-3 mb-6">
+<div class="p-3 bg-primary-container rounded-lg">
+<span class="material-symbols-outlined text-primary text-3xl" data-icon="spa">spa</span>
+</div>
+<span class="text-2xl font-extrabold bg-gradient-to-br from-teal-600 to-teal-300 bg-clip-text text-transparent">mom.Ai</span>
+</div>
+<h1 class="text-[3.5rem] leading-[1.1] font-extrabold tracking-tight text-on-surface mb-6 max-w-2xl">
+                Welcome to mom.Ai
+            </h1>
+<p class="text-on-surface-variant text-lg leading-relaxed max-w-xl">
+                Your AI companion for everyday motherhood. Let our agents handle the tasks, so you can enjoy the moments.
+            </p>
+</header>
+<!-- Key Benefit Cards: Bento Style Asymmetric Layout -->
+<section class="grid grid-cols-1 md:grid-cols-12 gap-6 mb-16">
+<!-- Card 1: Large Featured Card -->
+<div class="md:col-span-7 bg-surface-container-lowest p-8 rounded-xl shadow-sm relative overflow-hidden group">
+<div class="relative z-10 flex flex-col h-full justify-between">
+<div>
+<div class="w-12 h-12 bg-primary-container rounded-full flex items-center justify-center mb-6">
+<span class="material-symbols-outlined text-primary" data-icon="assignment_turned_in">assignment_turned_in</span>
+</div>
+<h3 class="text-2xl font-bold mb-3">Delegate Tasks</h3>
+<p class="text-on-surface-variant leading-relaxed">Assign shopping and chores to specialized agents who understand your family's unique needs.</p>
+</div>
+</div>
+<!-- Artistic Layer -->
+<div class="absolute -bottom-10 -right-10 w-48 h-48 bg-primary/5 rounded-full group-hover:scale-110 transition-transform duration-700"></div>
+</div>
+<!-- Card 2: Secondary Height -->
+<div class="md:col-span-5 bg-surface-container-low p-8 rounded-xl flex flex-col justify-center">
+<div class="w-12 h-12 bg-secondary-container rounded-full flex items-center justify-center mb-6">
+<span class="material-symbols-outlined text-secondary" data-icon="calendar_today">calendar_today</span>
+</div>
+<h3 class="text-xl font-bold mb-3">Simplify Scheduling</h3>
+<p class="text-on-surface-variant text-sm leading-relaxed">A calendar that optimizes your family's busy life, syncing sports, school, and social dates effortlessly.</p>
+</div>
+<!-- Card 3: Wide Bottom Card -->
+<div class="md:col-span-12 bg-tertiary-container/20 p-8 rounded-xl flex flex-col md:flex-row items-center gap-8">
+<div class="flex-1">
+<div class="inline-flex px-4 py-2 bg-tertiary-container text-tertiary text-xs font-bold rounded-full mb-4">
+                        MOMENT OF CALM
+                    </div>
+<h3 class="text-2xl font-bold mb-3">Find Your Balance</h3>
+<p class="text-on-surface-variant leading-relaxed max-w-lg">More time for you, less mental load. Our AI learns your preferences to handle the heavy lifting of household management.</p>
+</div>
+<div class="w-full md:w-64 h-40 rounded-lg overflow-hidden shrink-0">
+<img alt="Woman practicing yoga in a sunlit room" class="w-full h-full object-cover" data-alt="a woman practicing peaceful yoga in a minimalist sunlit living room with soft shadows and warm morning light" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCpLmAcPTD8rBewh6OMGiWRjvRE5zwicakFgDPl1NHnAmkv-AXdYu1nHVBlbjE923FGc0VD5E0_FY_Pry_ZIWA0o-5pG2dV--3QsnWbm7m-CwttqjX1IBw51IHqjSF_REbQVZbeu34xjR9hu38dsoFggTfReiQjBr5VeMtrU-Br33RwUY6Kp-BqZHh8p78MGiTZ-az6Gs2aVk4iYp81zc7pAMK_Gg0FPVT3MaOtwhWVxhoXvf2W82Z1s_rny4qmbCJvuPmaxp1qgq4"/>
+</div>
+</div>
+</section>
+<!-- Actions -->
+<footer class="flex flex-col gap-6 items-start mt-auto">
+<button class="px-10 py-5 bg-gradient-to-br from-primary to-primary-container text-on-primary font-bold text-lg rounded-full shadow-lg shadow-primary/10 active:scale-95 transition-all duration-200">
+                Get Started
+            </button>
+<div class="flex items-center gap-2 text-on-surface-variant">
+<span>Already have an account?</span>
+<a class="text-primary font-bold hover:underline decoration-2 underline-offset-4" href="#">Log In</a>
+</div>
+</footer>
+</main>
+<!-- Navigation Shell Suppressed: The Destination Rule -->
+<!-- This is an onboarding screen (Linear/Transactional), thus navigation bars are suppressed to prioritize the focus on the content canvas. -->
+</body></html>

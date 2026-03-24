@@ -1,0 +1,51 @@
+# mom.Ai Development Handover Document
+
+## Project Overview
+**mom.Ai** is a supportive AI-powered assistant app designed for busy moms. The design uses the **'Lullaby & Logic'** Design System, characterized by soft teals, rounded corners (ROUND_FULL), and a clean, card-based layout to reduce mental load.
+
+---
+
+## 1. Design System & Theme
+- **Primary Color:** #5C9EAD (Soft Teal)
+- **Typography:** Plus Jakarta Sans (Headlines), Be Vietnam Pro (Body)
+- **Visual Style:** Glassmorphism, soft shadows, and high-quality iconography.
+- **Components:** Uses standardized TopAppBars and BottomNavBars for consistency.
+
+---
+
+## 2. Screen Map & User Flows
+
+### Core Navigation
+1. **Onboarding ({{DATA:SCREEN:SCREEN_24}}):** First-time user experience.
+2. **Login / Sign Up ({{DATA:SCREEN:SCREEN_14}}):** Secure entry point.
+3. **Home / Marketplace ({{DATA:SCREEN:SCREEN_4}}):** Discovery hub for all AI agents.
+4. **Tasks Dashboard ({{DATA:SCREEN:SCREEN_16}}):** Real-time monitoring of active agent processes.
+5. **Family Calendar ({{DATA:SCREEN:SCREEN_22}}):** Unified schedule with AI optimization.
+
+### Specialized Agent Interfaces
+6. **Agent Chat ({{DATA:SCREEN:SCREEN_19}}):** The primary interaction point (Refined version).
+7. **School Event Hub ({{DATA:SCREEN:SCREEN_10}}):** Scanning portals, permission slips, and extracurriculars.
+8. **Tutor Finder ({{DATA:SCREEN:SCREEN_12}}):** Personalized educational support matching.
+9. **Budget Buddy ({{DATA:SCREEN:SCREEN_8}}):** Household financial health and saving insights.
+10. **Family Health Hub ({{DATA:SCREEN:SCREEN_20}}):** Wellness tracking, appointments, and medical vault.
+
+### Account & Utility
+11. **User Profile ({{DATA:SCREEN:SCREEN_23}}):** Family management and preferences.
+12. **App Settings ({{DATA:SCREEN:SCREEN_25}}):** Permissions, notifications, and privacy.
+13. **Notification Center ({{DATA:SCREEN:SCREEN_6}}):** Centralized alert hub for all agents.
+
+---
+
+## 3. Implementation Notes
+- **Frontend:** Built with HTML5 and Tailwind CSS.
+- **Responsiveness:** All designs are currently optimized for **Mobile**.
+- **Icons:** Uses Material Design Icons.
+- **Backend Recommendation:** Use an API-driven architecture (e.g., Firebase, Supabase) to connect these views to an LLM like Gemini for the "agent" logic.
+
+---
+
+## 4. How to Export
+1. Select a screen on the canvas.
+2. Click the **</> View Code** button in the top toolbar.
+3. Copy and save as individual `.html` files.
+4. Use the **Export to Figma** button for high-fidelity design handovers.

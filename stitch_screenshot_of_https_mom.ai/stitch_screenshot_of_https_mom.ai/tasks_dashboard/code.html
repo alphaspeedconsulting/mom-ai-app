@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>mom.Ai - My Tasks</title>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Be+Vietnam+Pro:wght@300;400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "surface-container-highest": "#b8eaff",
+              "surface-container-low": "#e5f6ff",
+              "on-primary-fixed": "#034438",
+              "error-dim": "#70030f",
+              "inverse-primary": "#c3fdea",
+              "on-secondary-fixed-variant": "#8a4b11",
+              "primary-fixed": "#afe9d7",
+              "surface-tint": "#32695a",
+              "on-primary-container": "#1f574a",
+              "secondary-container": "#ffdcc4",
+              "secondary": "#8f4f14",
+              "primary-dim": "#245c4f",
+              "on-secondary": "#fff7f4",
+              "secondary-fixed": "#ffdcc4",
+              "surface-bright": "#f3fbff",
+              "outline-variant": "#86b9ce",
+              "background": "#f3fbff",
+              "secondary-dim": "#804307",
+              "inverse-surface": "#001017",
+              "surface": "#f3fbff",
+              "primary-container": "#afe9d7",
+              "surface-container-lowest": "#ffffff",
+              "inverse-on-surface": "#87a1ad",
+              "on-surface-variant": "#316678",
+              "surface-container-high": "#c8eeff",
+              "on-secondary-fixed": "#643200",
+              "on-surface": "#003747",
+              "on-primary": "#e4fff5",
+              "on-tertiary-container": "#4e436c",
+              "tertiary-dim": "#584c76",
+              "error-container": "#f56965",
+              "on-error-container": "#65000b",
+              "secondary-fixed-dim": "#ffcaa4",
+              "on-background": "#003747",
+              "on-tertiary-fixed": "#3b3057",
+              "tertiary-container": "#dccdff",
+              "on-error": "#fff7f6",
+              "surface-dim": "#a7e3fb",
+              "primary": "#32695a",
+              "surface-variant": "#b8eaff",
+              "tertiary": "#655883",
+              "on-primary-fixed-variant": "#2a6153",
+              "tertiary-fixed-dim": "#cebff0",
+              "outline": "#4e8295",
+              "on-tertiary-fixed-variant": "#584c76",
+              "on-secondary-container": "#7e4205",
+              "error": "#ac3434",
+              "tertiary-fixed": "#dccdff",
+              "on-tertiary": "#fdf7ff",
+              "primary-fixed-dim": "#a2dac9",
+              "surface-container": "#d7f2ff"
+            },
+            fontFamily: {
+              "headline": ["Plus Jakarta Sans"],
+              "body": ["Be Vietnam Pro"],
+              "label": ["Be Vietnam Pro"]
+            },
+            borderRadius: {"DEFAULT": "1rem", "lg": "2rem", "xl": "3rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            display: inline-block;
+            vertical-align: middle;
+        }
+        body {
+            font-family: 'Be Vietnam Pro', sans-serif;
+            background-color: #f3fbff;
+            color: #003747;
+        }
+        .editorial-shadow {
+            box-shadow: 0 8px 24px rgba(0, 55, 71, 0.06);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background min-h-screen pb-32">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl shadow-sm shadow-teal-900/5 flex justify-between items-center px-6 py-4">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-teal-600 text-2xl" data-icon="spa">spa</span>
+<h1 class="font-['Plus_Jakarta_Sans'] text-lg font-bold tracking-tight text-on-surface">My Tasks</h1>
+</div>
+<button class="text-slate-400 hover:bg-slate-50 transition-colors p-2 rounded-full active:scale-95 duration-200">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+</header>
+<main class="pt-24 px-6 max-w-2xl mx-auto space-y-10">
+<!-- Hero Summary / Asymmetric Welcome -->
+<section class="relative overflow-hidden rounded-xl bg-gradient-to-br from-primary to-primary-container p-8 text-on-primary">
+<div class="relative z-10">
+<p class="font-label text-sm uppercase tracking-widest opacity-80 mb-2">Agent Status Overview</p>
+<h2 class="font-headline text-3xl font-extrabold leading-tight">Your Digital Sanctuary <br/>is in Motion.</h2>
+<div class="mt-6 flex gap-4">
+<div class="bg-white/20 backdrop-blur-md rounded-lg px-4 py-2 border border-white/10">
+<span class="block text-2xl font-bold">2</span>
+<span class="text-xs font-medium opacity-90">Active</span>
+</div>
+<div class="bg-white/20 backdrop-blur-md rounded-lg px-4 py-2 border border-white/10">
+<span class="block text-2xl font-bold">1</span>
+<span class="text-xs font-medium opacity-90">Completed</span>
+</div>
+</div>
+</div>
+<!-- Decorative circle -->
+<div class="absolute -right-12 -top-12 w-48 h-48 bg-white/10 rounded-full blur-3xl"></div>
+</section>
+<!-- Quick Actions Bento Grid -->
+<section class="grid grid-cols-2 gap-4">
+<button class="flex flex-col items-center justify-center gap-3 bg-surface-container-lowest editorial-shadow rounded-lg p-6 hover:bg-surface-container-low transition-colors active:scale-95 duration-200">
+<div class="w-12 h-12 rounded-full bg-secondary-container flex items-center justify-center text-secondary">
+<span class="material-symbols-outlined" data-icon="add_task">add_task</span>
+</div>
+<span class="font-headline font-bold text-sm">New Task</span>
+</button>
+<button class="flex flex-col items-center justify-center gap-3 bg-surface-container-lowest editorial-shadow rounded-lg p-6 hover:bg-surface-container-low transition-colors active:scale-95 duration-200">
+<div class="w-12 h-12 rounded-full bg-tertiary-container flex items-center justify-center text-tertiary">
+<span class="material-symbols-outlined" data-icon="chat_bubble">chat_bubble</span>
+</div>
+<span class="font-headline font-bold text-sm">Ask a Question</span>
+</button>
+</section>
+<!-- Active Tasks Section -->
+<section class="space-y-6">
+<div class="flex items-center justify-between">
+<h3 class="font-headline text-xl font-bold text-on-surface">Active Tasks</h3>
+<span class="text-sm font-medium text-primary bg-primary-container px-3 py-1 rounded-full">Running</span>
+</div>
+<div class="space-y-4">
+<!-- Task Card 1 -->
+<div class="bg-surface-container-lowest rounded-lg p-6 editorial-shadow relative overflow-hidden group">
+<div class="flex items-start justify-between mb-4">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-full bg-surface-container-highest flex items-center justify-center">
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="shopping_basket">shopping_basket</span>
+</div>
+<div>
+<h4 class="font-headline font-bold text-on-surface">Grocery Guru</h4>
+<p class="text-on-surface-variant text-sm mt-1 leading-relaxed">Finalizing shopping list for Whole Foods.</p>
+</div>
+</div>
+<span class="text-primary font-bold text-sm">80%</span>
+</div>
+<div class="w-full bg-surface-container-low h-2 rounded-full overflow-hidden">
+<div class="bg-primary h-full rounded-full transition-all" style="width: 80%;"></div>
+</div>
+</div>
+<!-- Task Card 2 -->
+<div class="bg-surface-container-lowest rounded-lg p-6 editorial-shadow border-l-4 border-secondary/20">
+<div class="flex items-start gap-4">
+<div class="w-10 h-10 rounded-full bg-secondary-container/30 flex items-center justify-center">
+<span class="material-symbols-outlined text-secondary" data-icon="event_note">event_note</span>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-start">
+<h4 class="font-headline font-bold text-on-surface">Calendar Whiz</h4>
+<div class="bg-secondary-container text-on-secondary-container text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-tighter">Pending</div>
+</div>
+<p class="text-on-surface-variant text-sm mt-1 leading-relaxed">Checking for school event conflicts.</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Completed Today Section -->
+<section class="space-y-6">
+<h3 class="font-headline text-xl font-bold text-on-surface">Completed Today</h3>
+<div class="bg-surface-container-low rounded-lg p-6 flex items-center gap-4 opacity-75">
+<div class="w-10 h-10 rounded-full bg-white flex items-center justify-center text-teal-600">
+<span class="material-symbols-outlined" data-icon="check_circle" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
+<div>
+<h4 class="font-headline font-bold text-on-surface">Meal Planner</h4>
+<p class="text-on-surface-variant text-sm mt-0.5">Dinner plan for the week uploaded.</p>
+</div>
+<div class="ml-auto">
+<span class="material-symbols-outlined text-slate-400 text-sm" data-icon="chevron_right">chevron_right</span>
+</div>
+</div>
+</section>
+<!-- Contextual Mom Moment Tip -->
+<section class="bg-tertiary-container/40 p-6 rounded-xl border border-tertiary/10">
+<div class="flex gap-4">
+<span class="material-symbols-outlined text-tertiary" data-icon="lightbulb">lightbulb</span>
+<p class="text-sm font-body text-on-tertiary-container italic leading-relaxed">
+                    "Take a 5-minute breather, Mama. Your agents have the heavy lifting covered for now."
+                </p>
+</div>
+</section>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-6 pt-3 bg-white/90 dark:bg-slate-900/90 backdrop-blur-2xl shadow-[0_-8px_24px_rgba(0,55,71,0.06)] rounded-t-[2.5rem]">
+<!-- Home -->
+<a class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 px-5 py-2 hover:text-teal-500 transition-all active:scale-90 duration-300 ease-out" href="#">
+<span class="material-symbols-outlined" data-icon="home_app_logo">home_app_logo</span>
+<span class="font-['Be_Vietnam_Pro'] text-[11px] font-medium tracking-wide mt-1">Home</span>
+</a>
+<!-- Tasks (Active) -->
+<a class="flex flex-col items-center justify-center bg-teal-50 dark:bg-teal-900/30 text-teal-700 dark:text-teal-200 rounded-full px-5 py-2 active:scale-90 duration-300 ease-out" href="#">
+<span class="material-symbols-outlined" data-icon="assignment_turned_in" style="font-variation-settings: 'FILL' 1;">assignment_turned_in</span>
+<span class="font-['Be_Vietnam_Pro'] text-[11px] font-medium tracking-wide mt-1">Tasks</span>
+</a>
+<!-- Calendar -->
+<a class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 px-5 py-2 hover:text-teal-500 transition-all active:scale-90 duration-300 ease-out" href="#">
+<span class="material-symbols-outlined" data-icon="calendar_today">calendar_today</span>
+<span class="font-['Be_Vietnam_Pro'] text-[11px] font-medium tracking-wide mt-1">Calendar</span>
+</a>
+<!-- Profile -->
+<a class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 px-5 py-2 hover:text-teal-500 transition-all active:scale-90 duration-300 ease-out" href="#">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+<span class="font-['Be_Vietnam_Pro'] text-[11px] font-medium tracking-wide mt-1">Profile</span>
+</a>
+</nav>
+</body></html>

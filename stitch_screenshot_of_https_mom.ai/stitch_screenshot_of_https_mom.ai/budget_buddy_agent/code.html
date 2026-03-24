@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Budget Buddy - Household Health</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Be_Vietnam+Pro:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "primary-container": "#afe9d7",
+              "primary": "#32695a",
+              "secondary": "#8f4f14",
+              "tertiary-container": "#dccdff",
+              "surface-tint": "#32695a",
+              "on-primary-container": "#1f574a",
+              "on-background": "#003747",
+              "inverse-on-surface": "#87a1ad",
+              "surface-container-high": "#c8eeff",
+              "on-primary-fixed-variant": "#2a6153",
+              "secondary-dim": "#804307",
+              "on-error": "#fff7f6",
+              "tertiary-dim": "#584c76",
+              "error-container": "#f56965",
+              "secondary-fixed": "#ffdcc4",
+              "surface-container-lowest": "#ffffff",
+              "surface-container-highest": "#b8eaff",
+              "surface-dim": "#a7e3fb",
+              "tertiary-fixed-dim": "#cebff0",
+              "secondary-fixed-dim": "#ffcaa4",
+              "surface-container": "#d7f2ff",
+              "on-surface": "#003747",
+              "inverse-primary": "#c3fdea",
+              "primary-fixed": "#afe9d7",
+              "error-dim": "#70030f",
+              "on-tertiary-fixed-variant": "#584c76",
+              "primary-fixed-dim": "#a2dac9",
+              "surface": "#f3fbff",
+              "on-error-container": "#65000b",
+              "inverse-surface": "#001017",
+              "outline": "#4e8295",
+              "primary-dim": "#245c4f",
+              "outline-variant": "#86b9ce",
+              "surface-bright": "#f3fbff",
+              "on-secondary-container": "#7e4205",
+              "on-secondary-fixed-variant": "#8a4b11",
+              "on-tertiary": "#fdf7ff",
+              "surface-container-low": "#e5f6ff",
+              "error": "#ac3434",
+              "on-primary": "#e4fff5",
+              "surface-variant": "#b8eaff",
+              "on-tertiary-container": "#4e436c",
+              "on-secondary": "#fff7f4",
+              "on-tertiary-fixed": "#3b3057",
+              "tertiary-fixed": "#dccdff",
+              "on-surface-variant": "#316678",
+              "background": "#f3fbff",
+              "tertiary": "#655883",
+              "secondary-container": "#ffdcc4",
+              "on-secondary-fixed": "#643200",
+              "on-primary-fixed": "#034438"
+            },
+            fontFamily: {
+              "headline": ["Plus Jakarta Sans"],
+              "body": ["Be Vietnam Pro"],
+              "label": ["Be Vietnam Pro"]
+            },
+            borderRadius: {"DEFAULT": "1rem", "lg": "2rem", "xl": "3rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background font-body text-on-surface min-h-screen pb-32">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-slate-50/80 backdrop-blur-xl no-border bg-gradient-to-b from-slate-50 to-transparent shadow-none">
+<div class="flex justify-between items-center w-full px-6 py-4">
+<div class="flex items-center gap-3">
+<button class="scale-95 active:scale-90 transition-transform text-teal-600">
+<span class="material-symbols-outlined" data-icon="menu">menu</span>
+</button>
+<h1 class="font-['Plus_Jakarta_Sans'] font-extrabold text-xl text-teal-700 tracking-tighter">Budget Buddy</h1>
+</div>
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-full overflow-hidden bg-surface-container-high border-2 border-white">
+<img alt="User" data-alt="portrait of a smiling woman with a warm expression in a soft-lit indoor setting with plants in the background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAP9kp1Z81mYqiwpUYlW34ldabd2pSA4PnR8iYIKMnxZLLZOhlgKc40ucgQ88VgT-eoU3INQdMSRkxFAbQksI5Btl8FMFuRtb67QYj3l1tPLat_y5f7Dj2v1TWpxsEN-NYfMgfOBPPWHEUbascOkId7Cxw_633jsiw6HXsIAAlEM5DHDQSPA-NbQ_hyZ1kuzONsffLvUz0laaT75gsWO0WxzJGgLcWKUzXIy0YF2RItVV7xdFjO_IvO-aBfUacFN66Ewbf2t6VPkBs"/>
+</div>
+</div>
+</div>
+</header>
+<main class="pt-24 px-6 max-w-2xl mx-auto space-y-10">
+<!-- Overview Card: Household Health -->
+<section class="relative">
+<div class="bg-gradient-to-br from-primary to-primary-dim rounded-xl p-8 text-on-primary shadow-xl overflow-hidden">
+<div class="relative z-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
+<div>
+<p class="font-label text-sm opacity-90 tracking-widest uppercase mb-1">Household Health</p>
+<h2 class="font-headline text-4xl font-extrabold tracking-tight">Vibrant</h2>
+<div class="mt-6 flex items-baseline gap-2">
+<span class="text-3xl font-bold">$4,852</span>
+<span class="text-sm opacity-80">surplus this month</span>
+</div>
+</div>
+<!-- Mini Trend Chart -->
+<div class="flex items-end gap-1 h-16">
+<div class="w-2 bg-on-primary/20 rounded-t-full h-1/2"></div>
+<div class="w-2 bg-on-primary/40 rounded-t-full h-2/3"></div>
+<div class="w-2 bg-on-primary/60 rounded-t-full h-3/4"></div>
+<div class="w-2 bg-on-primary/40 rounded-t-full h-1/2"></div>
+<div class="w-2 bg-on-primary/80 rounded-t-full h-5/6"></div>
+<div class="w-2 bg-on-primary rounded-t-full h-full"></div>
+</div>
+</div>
+<!-- Abstract Glass Background Shape -->
+<div class="absolute -bottom-10 -right-10 w-48 h-48 bg-primary-container/20 rounded-full blur-3xl"></div>
+</div>
+</section>
+<!-- Quick Action -->
+<div class="flex justify-center -mt-14 relative z-20">
+<button class="flex items-center gap-3 bg-secondary text-on-secondary px-8 py-4 rounded-full shadow-lg hover:opacity-90 transition-all active:scale-95 group">
+<span class="material-symbols-outlined group-hover:rotate-12 transition-transform" data-icon="receipt_long">receipt_long</span>
+<span class="font-headline font-bold">Scan Receipt</span>
+</button>
+</div>
+<!-- AI Savings Wins -->
+<section>
+<div class="flex items-center gap-2 mb-6">
+<span class="material-symbols-outlined text-tertiary" data-icon="auto_awesome">auto_awesome</span>
+<h3 class="font-headline text-xl font-bold tracking-tight">Agent Savings Wins</h3>
+</div>
+<div class="flex overflow-x-auto gap-4 hide-scrollbar -mx-6 px-6">
+<div class="min-w-[280px] bg-tertiary-container p-6 rounded-xl flex flex-col justify-between">
+<div>
+<div class="w-10 h-10 bg-white rounded-full flex items-center justify-center mb-4">
+<span class="material-symbols-outlined text-tertiary" data-icon="energy_savings_leaf">energy_savings_leaf</span>
+</div>
+<p class="font-bold text-on-tertiary-container mb-1">Lower Utility Rate</p>
+<p class="text-sm text-on-tertiary-container/80">I found a cleaner energy provider that saves you $12/mo.</p>
+</div>
+<button class="mt-6 text-sm font-bold text-tertiary underline text-left">Switch Now</button>
+</div>
+<div class="min-w-[280px] bg-surface-container-high p-6 rounded-xl flex flex-col justify-between">
+<div>
+<div class="w-10 h-10 bg-white rounded-full flex items-center justify-center mb-4">
+<span class="material-symbols-outlined text-primary" data-icon="cancel">cancel</span>
+</div>
+<p class="font-bold text-on-surface mb-1">Unused Subscription</p>
+<p class="text-sm text-on-surface-variant">Netflix hasn't been watched in 3 months. Cancel it?</p>
+</div>
+<button class="mt-6 text-sm font-bold text-primary underline text-left">Review Subscriptions</button>
+</div>
+</div>
+</section>
+<!-- Recurring Pulse -->
+<section>
+<div class="flex items-center justify-between mb-6">
+<h3 class="font-headline text-xl font-bold tracking-tight">Recurring Pulse</h3>
+<span class="text-sm font-medium text-outline">Next 7 Days</span>
+</div>
+<div class="space-y-4">
+<!-- Item 1 -->
+<div class="bg-surface-container-low p-5 rounded-lg flex items-center justify-between group hover:bg-surface-container transition-colors">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-full bg-white flex items-center justify-center text-secondary">
+<span class="material-symbols-outlined" data-icon="piano">piano</span>
+</div>
+<div>
+<p class="font-bold text-on-surface">Piano Lessons</p>
+<p class="text-xs text-outline-variant font-medium">Tomorrow • Nov 14</p>
+</div>
+</div>
+<p class="font-headline font-bold text-on-surface">$120.00</p>
+</div>
+<!-- Item 2 -->
+<div class="bg-surface-container-low p-5 rounded-lg flex items-center justify-between group hover:bg-surface-container transition-colors">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-full bg-white flex items-center justify-center text-primary">
+<span class="material-symbols-outlined" data-icon="fitness_center">fitness_center</span>
+</div>
+<div>
+<p class="font-bold text-on-surface">Gym Membership</p>
+<p class="text-xs text-outline-variant font-medium">Nov 16</p>
+</div>
+</div>
+<p class="font-headline font-bold text-on-surface">$45.00</p>
+</div>
+<!-- Item 3 -->
+<div class="bg-surface-container-low p-5 rounded-lg flex items-center justify-between group hover:bg-surface-container transition-colors">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-full bg-white flex items-center justify-center text-tertiary">
+<span class="material-symbols-outlined" data-icon="movie">movie</span>
+</div>
+<div>
+<p class="font-bold text-on-surface">Netflix Premium</p>
+<p class="text-xs text-outline-variant font-medium">Nov 18</p>
+</div>
+</div>
+<p class="font-headline font-bold text-on-surface">$19.99</p>
+</div>
+</div>
+</section>
+<!-- Expense Categories -->
+<section class="pb-8">
+<h3 class="font-headline text-xl font-bold tracking-tight mb-6">Spending Breakout</h3>
+<div class="grid grid-cols-2 gap-4">
+<div class="bg-primary-container/30 p-6 rounded-xl flex flex-col gap-2">
+<span class="material-symbols-outlined text-primary mb-2" data-icon="shopping_basket">shopping_basket</span>
+<p class="text-xs font-bold text-on-primary-container tracking-wide uppercase">Groceries</p>
+<p class="text-xl font-headline font-extrabold text-on-primary-container">$842.20</p>
+<div class="w-full bg-primary/10 h-1.5 rounded-full mt-2">
+<div class="bg-primary h-full rounded-full" style="width: 65%"></div>
+</div>
+</div>
+<div class="bg-secondary-container/30 p-6 rounded-xl flex flex-col gap-2">
+<span class="material-symbols-outlined text-secondary mb-2" data-icon="child_care">child_care</span>
+<p class="text-xs font-bold text-on-secondary-container tracking-wide uppercase">Kids</p>
+<p class="text-xl font-headline font-extrabold text-on-secondary-container">$1,250.00</p>
+<div class="w-full bg-secondary/10 h-1.5 rounded-full mt-2">
+<div class="bg-secondary h-full rounded-full" style="width: 40%"></div>
+</div>
+</div>
+<div class="bg-surface-container-highest p-6 rounded-xl col-span-2 flex items-center justify-between">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 bg-white rounded-full flex items-center justify-center text-on-surface-variant">
+<span class="material-symbols-outlined" data-icon="home">home</span>
+</div>
+<div>
+<p class="text-xs font-bold text-on-surface-variant tracking-wide uppercase">Home &amp; Living</p>
+<p class="text-xl font-headline font-extrabold text-on-surface">$2,100.00</p>
+</div>
+</div>
+<div class="text-right">
+<p class="text-xs text-outline-variant font-medium">Under budget</p>
+<p class="text-primary font-bold">-$120.00</p>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full flex justify-around items-center px-4 pb-8 pt-4 bg-white/70 backdrop-blur-2xl no-border shadow-[0_-10px_40px_rgba(0,0,0,0.04)] z-50 rounded-t-[3rem]">
+<!-- Sanctuary -->
+<a class="flex flex-col items-center justify-center text-slate-400 px-5 py-2 hover:text-teal-600 transition-all duration-300 ease-out group" href="#">
+<span class="material-symbols-outlined group-hover:scale-110 transition-transform" data-icon="spa">spa</span>
+<span class="font-['Be_Vietnam_Pro'] text-[11px] font-medium tracking-wide">Sanctuary</span>
+</a>
+<!-- Tutors -->
+<a class="flex flex-col items-center justify-center text-slate-400 px-5 py-2 hover:text-teal-600 transition-all duration-300 ease-out group" href="#">
+<span class="material-symbols-outlined group-hover:scale-110 transition-transform" data-icon="school">school</span>
+<span class="font-['Be_Vietnam_Pro'] text-[11px] font-medium tracking-wide">Tutors</span>
+</a>
+<!-- Budgets (Active) -->
+<a class="flex flex-col items-center justify-center bg-teal-100/50 text-teal-800 rounded-full px-5 py-2 scale-110 transition-all duration-300 ease-out" href="#">
+<span class="material-symbols-outlined" data-icon="account_balance_wallet" style="font-variation-settings: 'FILL' 1;">account_balance_wallet</span>
+<span class="font-['Be_Vietnam_Pro'] text-[11px] font-medium tracking-wide">Budgets</span>
+</a>
+<!-- Profile -->
+<a class="flex flex-col items-center justify-center text-slate-400 px-5 py-2 hover:text-teal-600 transition-all duration-300 ease-out group" href="#">
+<span class="material-symbols-outlined group-hover:scale-110 transition-transform" data-icon="person">person</span>
+<span class="font-['Be_Vietnam_Pro'] text-[11px] font-medium tracking-wide">Profile</span>
+</a>
+</nav>
+</body></html>

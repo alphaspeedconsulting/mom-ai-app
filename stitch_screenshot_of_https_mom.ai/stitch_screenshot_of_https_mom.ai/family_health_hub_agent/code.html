@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Family Health Hub - AI Agent</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Be+Vietnam+Pro:wght@300;400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "surface-tint": "#32695a",
+              "tertiary-dim": "#584c76",
+              "outline-variant": "#86b9ce",
+              "on-secondary-container": "#7e4205",
+              "secondary": "#8f4f14",
+              "surface-container-low": "#e5f6ff",
+              "on-tertiary": "#fdf7ff",
+              "tertiary-fixed": "#dccdff",
+              "tertiary-fixed-dim": "#cebff0",
+              "tertiary-container": "#dccdff",
+              "surface-bright": "#f3fbff",
+              "on-primary-fixed": "#034438",
+              "on-primary": "#e4fff5",
+              "error": "#ac3434",
+              "secondary-fixed-dim": "#ffcaa4",
+              "primary": "#32695a",
+              "surface-container-highest": "#b8eaff",
+              "surface-container-lowest": "#ffffff",
+              "on-background": "#003747",
+              "on-secondary-fixed-variant": "#8a4b11",
+              "outline": "#4e8295",
+              "on-primary-container": "#1f574a",
+              "primary-dim": "#245c4f",
+              "on-error": "#fff7f6",
+              "inverse-primary": "#c3fdea",
+              "primary-fixed": "#afe9d7",
+              "on-error-container": "#65000b",
+              "error-container": "#f56965",
+              "surface-dim": "#a7e3fb",
+              "on-secondary-fixed": "#643200",
+              "on-secondary": "#fff7f4",
+              "on-surface": "#003747",
+              "primary-container": "#afe9d7",
+              "on-tertiary-fixed": "#3b3057",
+              "error-dim": "#70030f",
+              "secondary-fixed": "#ffdcc4",
+              "surface-variant": "#b8eaff",
+              "on-tertiary-container": "#4e436c",
+              "secondary-dim": "#804307",
+              "inverse-surface": "#001017",
+              "on-primary-fixed-variant": "#2a6153",
+              "tertiary": "#655883",
+              "background": "#f3fbff",
+              "primary-fixed-dim": "#a2dac9",
+              "surface": "#f3fbff",
+              "surface-container": "#d7f2ff",
+              "on-surface-variant": "#316678",
+              "surface-container-high": "#c8eeff",
+              "secondary-container": "#ffdcc4",
+              "inverse-on-surface": "#87a1ad",
+              "on-tertiary-fixed-variant": "#584c76"
+            },
+            fontFamily: {
+              "headline": ["Plus Jakarta Sans"],
+              "body": ["Be Vietnam Pro"],
+              "label": ["Be Vietnam Pro"]
+            },
+            borderRadius: {"DEFAULT": "1rem", "lg": "2rem", "xl": "3rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+      .material-symbols-outlined {
+        font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      }
+      .no-line-rule { border: none !important; }
+      .tonal-shift { background-color: rgba(229, 246, 255, 0.5); }
+      .spring-behavior { transition-timing-function: cubic-bezier(0.34, 1.56, 0.64, 1); }
+      body { font-family: 'Be Vietnam Pro', sans-serif; background-color: #f3fbff; color: #003747; }
+      h1, h2, h3 { font-family: 'Plus Jakarta Sans', sans-serif; }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-surface mb-32">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-slate-50/80 dark:bg-slate-950/80 backdrop-blur-xl flex justify-between items-center px-6 py-4 w-full max-w-none">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full overflow-hidden bg-primary-container">
+<img alt="Mother's profile" class="w-full h-full object-cover" data-alt="Close-up portrait of a kind, smiling mother with soft natural lighting and a warm, supportive expression" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDfnH47WaxDtFWMmqbo431yhTMpSCJLAzvzhuFL1Liyk-Jckl37Mj00lt1WqYmrDSg7-aACFbxUw7GMKsqe4alwGewV-btO36L6WuU_myS8VedF9bwtRsnRqHfpjH_bF6uNT_Y-lRUEdCpc3G4MIfdXPcJ4lulrCKd6dQd-m8m1FcvDYn57oxaTTc0SHtunPQ-waW-vz751kQ6Z955_DVpTj06vKs8zbAgvOBAGuEb0NzeZULp-cAEtoHS7BZWhC81m0xPdBLRKoTY"/>
+</div>
+<span class="text-teal-700 dark:text-teal-300 font-bold text-xl">Family Health Hub</span>
+</div>
+<div class="flex items-center gap-4">
+<button class="text-slate-500 dark:text-slate-400 hover:bg-teal-50/50 dark:hover:bg-teal-900/20 transition-colors p-2 rounded-full">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+</button>
+</div>
+</header>
+<main class="mt-24 px-6 max-w-5xl mx-auto space-y-10">
+<!-- Household Health Status (Hero Asymmetric Layout) -->
+<section class="relative overflow-hidden bg-gradient-to-br from-primary to-primary-container rounded-xl p-8 text-on-primary">
+<div class="relative z-10 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+<div class="max-w-md">
+<span class="inline-block px-3 py-1 bg-on-primary/20 backdrop-blur-md rounded-full text-xs font-semibold mb-4 tracking-wider uppercase">Status: Peaceful</span>
+<h2 class="text-3xl md:text-4xl font-extrabold leading-tight mb-2">All clear! No upcoming vaccinations this week</h2>
+<p class="text-on-primary/80 font-medium">Your household health rhythm is steady. Maya and Leo are both up to date on their wellness checks.</p>
+</div>
+<div class="hidden md:block w-48 h-48 bg-white/10 backdrop-blur-2xl rounded-full relative">
+<div class="absolute inset-0 flex items-center justify-center">
+<span class="material-symbols-outlined text-6xl" style="font-variation-settings: 'FILL' 1;">health_and_safety</span>
+</div>
+</div>
+</div>
+<!-- Decorative circle -->
+<div class="absolute -right-16 -bottom-16 w-64 h-64 bg-primary-dim opacity-20 rounded-full"></div>
+</section>
+<!-- AI Symptom Checker CTA -->
+<section class="bg-tertiary-container rounded-xl p-8 flex flex-col md:flex-row items-center gap-8 shadow-sm">
+<div class="flex-1 space-y-4">
+<h3 class="text-2xl font-bold text-on-tertiary-container">Ask the Health Agent</h3>
+<p class="text-on-tertiary-container/80 text-lg leading-relaxed">Noticed a new cough or feeling uneasy? Our AI Agent is here to listen and provide supportive guidance instantly.</p>
+<button class="bg-primary text-on-primary px-8 py-4 rounded-full font-bold text-lg shadow-lg flex items-center gap-3 transition-transform active:scale-95">
+<span class="material-symbols-outlined" data-icon="psychiatry" style="font-variation-settings: 'FILL' 1;">psychiatry</span>
+                    Start a Health Chat
+                </button>
+</div>
+<div class="w-full md:w-1/3 aspect-video rounded-lg overflow-hidden relative">
+<img alt="Supportive AI interface" class="w-full h-full object-cover" data-alt="Soft focused image of a modern smartphone showing a friendly chat interface with calming teal and lavender colors" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDCU0rHS2akzpL52oRydenGoN3rOodhpxrETc45n277OUizrJPMmqyKRwKC4TYTsjz2V3fKHciwaTkcyV_oCzI83i26mbeLkHLG05Waq7TLgnMOj0gadjdSThpHJXPQWoyQOr7NJjEUKNJTOuKwogYCXQLyIdG3gKtQV0D06UlqhPS9WFqfyDwEwe6tz8wzdwC96gEe3QA3VK7fQSkI_SFR7a0tOG8U0ifnDrWCKj_O_tDjij5ixwStrgwhtq0Z4SBLBlTeQqKEWZc"/>
+<div class="absolute inset-0 bg-gradient-to-t from-tertiary-container/60 to-transparent"></div>
+</div>
+</section>
+<!-- Main Content Bento Grid -->
+<div class="grid grid-cols-1 md:grid-cols-12 gap-8">
+<!-- Upcoming Health Events (Chronological List) -->
+<div class="md:col-span-7 space-y-6">
+<div class="flex justify-between items-center">
+<h3 class="text-xl font-bold">Upcoming Health Events</h3>
+<button class="text-primary font-semibold text-sm hover:underline">View Calendar</button>
+</div>
+<div class="space-y-4">
+<!-- Event 1 -->
+<div class="bg-surface-container-low rounded-lg p-5 flex items-center gap-6">
+<div class="bg-white rounded-xl px-4 py-2 flex flex-col items-center justify-center shadow-sm">
+<span class="text-primary font-bold text-lg">14</span>
+<span class="text-on-surface-variant text-xs font-medium uppercase tracking-tighter">OCT</span>
+</div>
+<div class="flex-1">
+<h4 class="font-bold text-lg">Maya's Eye Exam</h4>
+<p class="text-on-surface-variant text-sm">Bright Sight Optometry • 2:30 PM</p>
+</div>
+<span class="material-symbols-outlined text-outline" data-icon="calendar_month">calendar_month</span>
+</div>
+<!-- Event 2 -->
+<div class="bg-surface-container-low rounded-lg p-5 flex items-center gap-6">
+<div class="bg-white rounded-xl px-4 py-2 flex flex-col items-center justify-center shadow-sm">
+<span class="text-primary font-bold text-lg">22</span>
+<span class="text-on-surface-variant text-xs font-medium uppercase tracking-tighter">OCT</span>
+</div>
+<div class="flex-1">
+<h4 class="font-bold text-lg">Leo's Dental Cleaning</h4>
+<p class="text-on-surface-variant text-sm">Tiny Smiles Pediatric • 9:00 AM</p>
+</div>
+<span class="material-symbols-outlined text-outline" data-icon="calendar_month">calendar_month</span>
+</div>
+<!-- Event 3 -->
+<div class="bg-surface-container-low rounded-lg p-5 flex items-center gap-6 opacity-60">
+<div class="bg-white rounded-xl px-4 py-2 flex flex-col items-center justify-center shadow-sm">
+<span class="text-primary font-bold text-lg">05</span>
+<span class="text-on-surface-variant text-xs font-medium uppercase tracking-tighter">NOV</span>
+</div>
+<div class="flex-1">
+<h4 class="font-bold text-lg">General Wellness - Dad</h4>
+<p class="text-on-surface-variant text-sm">Central Medical Hub • 11:15 AM</p>
+</div>
+<span class="material-symbols-outlined text-outline" data-icon="calendar_month">calendar_month</span>
+</div>
+</div>
+</div>
+<!-- Active Health Trackers (Progress Cards) -->
+<div class="md:col-span-5 space-y-6">
+<h3 class="text-xl font-bold">Health Trackers</h3>
+<div class="space-y-4">
+<!-- Leo's Vaccinations -->
+<div class="bg-white rounded-lg p-6 shadow-sm border border-outline-variant/10">
+<div class="flex justify-between items-start mb-4">
+<div>
+<p class="text-xs font-bold text-primary uppercase tracking-widest mb-1">Leo's Journey</p>
+<h4 class="font-bold text-lg">Vaccination Schedule</h4>
+</div>
+<span class="material-symbols-outlined text-primary-dim" data-icon="vaccines">vaccines</span>
+</div>
+<div class="w-full bg-surface-container-high rounded-full h-2 mb-2">
+<div class="bg-primary h-2 rounded-full w-[85%]"></div>
+</div>
+<p class="text-sm text-on-surface-variant">85% Complete • Next: Polio Booster</p>
+</div>
+<!-- Maya's Vitamins -->
+<div class="bg-white rounded-lg p-6 shadow-sm border border-outline-variant/10">
+<div class="flex justify-between items-start mb-4">
+<div>
+<p class="text-xs font-bold text-secondary uppercase tracking-widest mb-1">Maya's Habit</p>
+<h4 class="font-bold text-lg">Vitamin D Streak</h4>
+</div>
+<span class="material-symbols-outlined text-secondary" data-icon="light_mode" style="font-variation-settings: 'FILL' 1;">light_mode</span>
+</div>
+<div class="flex gap-2">
+<div class="w-8 h-8 rounded-full bg-secondary-fixed flex items-center justify-center text-on-secondary-fixed font-bold text-xs">M</div>
+<div class="w-8 h-8 rounded-full bg-secondary-fixed flex items-center justify-center text-on-secondary-fixed font-bold text-xs">T</div>
+<div class="w-8 h-8 rounded-full bg-secondary-fixed flex items-center justify-center text-on-secondary-fixed font-bold text-xs">W</div>
+<div class="w-8 h-8 rounded-full bg-secondary-container flex items-center justify-center text-on-secondary-container font-bold text-xs">T</div>
+<div class="w-8 h-8 rounded-full bg-surface-container-high flex items-center justify-center text-outline font-bold text-xs">F</div>
+</div>
+<p class="text-sm text-on-surface-variant mt-4">12 day streak! Keep it up, Maya.</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Secure Medical Vault (Horizontal Quick Access) -->
+<section class="space-y-6 pb-12">
+<div class="flex justify-between items-center">
+<h3 class="text-xl font-bold">Secure Medical Vault</h3>
+<span class="flex items-center gap-2 text-xs font-medium text-on-surface-variant">
+<span class="material-symbols-outlined text-sm" data-icon="lock" style="font-variation-settings: 'FILL' 1;">lock</span>
+                    End-to-End Encrypted
+                </span>
+</div>
+<div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+<button class="flex flex-col items-center justify-center p-6 bg-white rounded-xl hover:bg-surface-container-low transition-colors shadow-sm group">
+<div class="w-12 h-12 rounded-full bg-primary-fixed flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-on-primary-fixed" data-icon="badge">badge</span>
+</div>
+<span class="text-sm font-bold">Insurance Cards</span>
+</button>
+<button class="flex flex-col items-center justify-center p-6 bg-white rounded-xl hover:bg-surface-container-low transition-colors shadow-sm group">
+<div class="w-12 h-12 rounded-full bg-tertiary-fixed flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-on-tertiary-fixed" data-icon="history_edu">history_edu</span>
+</div>
+<span class="text-sm font-bold">Immunization</span>
+</button>
+<button class="flex flex-col items-center justify-center p-6 bg-white rounded-xl hover:bg-surface-container-low transition-colors shadow-sm group">
+<div class="w-12 h-12 rounded-full bg-error-container/30 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-error" data-icon="warning">warning</span>
+</div>
+<span class="text-sm font-bold">Allergies</span>
+</button>
+<button class="flex flex-col items-center justify-center p-6 bg-white rounded-xl hover:bg-surface-container-low transition-colors shadow-sm group">
+<div class="w-12 h-12 rounded-full bg-secondary-fixed flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-on-secondary-fixed" data-icon="description">description</span>
+</div>
+<span class="text-sm font-bold">Test Results</span>
+</button>
+</div>
+</section>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full flex justify-around items-center px-4 pb-8 pt-4 bg-white/70 dark:bg-slate-900/70 backdrop-blur-2xl rounded-t-[2.5rem] z-50 shadow-[0_-8px_24px_rgba(0,55,71,0.06)]">
+<a class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 px-5 py-2 hover:text-teal-600 dark:hover:text-teal-400 transition-all scale-90 duration-300 spring-behavior" href="#">
+<span class="material-symbols-outlined" data-icon="medical_services">medical_services</span>
+<span class="font-plus-jakarta text-[11px] font-medium tracking-wide">Health</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 px-5 py-2 hover:text-teal-600 dark:hover:text-teal-400 transition-all scale-90 duration-300 spring-behavior" href="#">
+<span class="material-symbols-outlined" data-icon="event_note">event_note</span>
+<span class="font-plus-jakarta text-[11px] font-medium tracking-wide">Tracker</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-teal-100/50 dark:bg-teal-900/30 text-teal-800 dark:text-teal-100 rounded-full px-5 py-2 transition-all scale-90 duration-300 spring-behavior" href="#">
+<span class="material-symbols-outlined" data-icon="psychiatry" style="font-variation-settings: 'FILL' 1;">psychiatry</span>
+<span class="font-plus-jakarta text-[11px] font-medium tracking-wide">AI Agent</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 px-5 py-2 hover:text-teal-600 dark:hover:text-teal-400 transition-all scale-90 duration-300 spring-behavior" href="#">
+<span class="material-symbols-outlined" data-icon="group">group</span>
+<span class="font-plus-jakarta text-[11px] font-medium tracking-wide">Family</span>
+</a>
+</nav>
+</body></html>
