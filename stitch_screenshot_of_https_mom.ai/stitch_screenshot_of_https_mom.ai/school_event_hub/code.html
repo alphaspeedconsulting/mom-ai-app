@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>School Event Hub</title>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Be+Vietnam+Pro:wght@300;400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "tertiary-fixed-dim": "#cebff0",
+              "surface-container-highest": "#b8eaff",
+              "outline": "#4e8295",
+              "on-primary-container": "#1f574a",
+              "surface-container": "#d7f2ff",
+              "surface-bright": "#f3fbff",
+              "surface-tint": "#32695a",
+              "on-tertiary": "#fdf7ff",
+              "tertiary-fixed": "#dccdff",
+              "primary": "#32695a",
+              "on-error-container": "#65000b",
+              "on-tertiary-fixed-variant": "#584c76",
+              "tertiary-dim": "#584c76",
+              "surface-container-high": "#c8eeff",
+              "on-background": "#003747",
+              "outline-variant": "#86b9ce",
+              "on-error": "#fff7f6",
+              "primary-fixed-dim": "#a2dac9",
+              "on-primary-fixed-variant": "#2a6153",
+              "inverse-surface": "#001017",
+              "surface-dim": "#a7e3fb",
+              "background": "#f3fbff",
+              "primary-container": "#afe9d7",
+              "tertiary": "#655883",
+              "surface-container-lowest": "#ffffff",
+              "surface": "#f3fbff",
+              "surface-container-low": "#e5f6ff",
+              "on-secondary-container": "#7e4205",
+              "secondary": "#8f4f14",
+              "primary-dim": "#245c4f",
+              "on-surface": "#003747",
+              "on-secondary-fixed": "#643200",
+              "inverse-on-surface": "#87a1ad",
+              "secondary-container": "#ffdcc4",
+              "error-dim": "#70030f",
+              "secondary-fixed-dim": "#ffcaa4",
+              "on-primary-fixed": "#034438",
+              "primary-fixed": "#afe9d7",
+              "inverse-primary": "#c3fdea",
+              "secondary-fixed": "#ffdcc4",
+              "on-tertiary-container": "#4e436c",
+              "on-primary": "#e4fff5",
+              "on-tertiary-fixed": "#3b3057",
+              "error-container": "#f56965",
+              "secondary-dim": "#804307",
+              "on-secondary": "#fff7f4",
+              "on-surface-variant": "#316678",
+              "tertiary-container": "#dccdff",
+              "on-secondary-fixed-variant": "#8a4b11",
+              "surface-variant": "#b8eaff",
+              "error": "#ac3434"
+            },
+            fontFamily: {
+              "headline": ["Plus Jakarta Sans"],
+              "body": ["Be Vietnam Pro"],
+              "label": ["Be Vietnam Pro"]
+            },
+            borderRadius: {"DEFAULT": "1rem", "lg": "2rem", "xl": "3rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            font-family: 'Be Vietnam Pro', sans-serif;
+            background-color: #f3fbff;
+            color: #003747;
+        }
+        .hero-gradient {
+            background: linear-gradient(135deg, #32695a 0%, #afe9d7 100%);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background min-h-screen pb-32">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl shadow-sm flex items-center justify-between px-6 h-16">
+<div class="flex items-center gap-4">
+<button class="text-slate-500 hover:bg-slate-50 transition-colors p-2 rounded-full active:scale-95 duration-200">
+<span class="material-symbols-outlined">menu</span>
+</button>
+<h1 class="font-['Plus_Jakarta_Sans'] font-bold text-lg tracking-tight text-[#5C9EAD]">School Event Hub</h1>
+</div>
+<div class="flex items-center gap-3">
+<div class="hidden md:flex gap-6 mr-6">
+<a class="text-[#5C9EAD] font-bold" href="#">Calendar</a>
+<a class="text-slate-500" href="#">Slips</a>
+<a class="text-slate-500" href="#">Activities</a>
+</div>
+<button class="text-[#5C9EAD] font-black italic text-xl tracking-tighter">mom.Ai</button>
+</div>
+</header>
+<main class="pt-24 px-6 max-w-7xl mx-auto space-y-10">
+<!-- Hero & Sync Status -->
+<section class="relative overflow-hidden rounded-xl hero-gradient p-8 text-white shadow-xl">
+<div class="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
+<div class="space-y-2">
+<h2 class="font-headline text-3xl font-extrabold tracking-tight">The Miller Family Hub</h2>
+<p class="font-body opacity-90 max-w-md">Your AI agent is currently active and organizing your school world.</p>
+</div>
+<div class="bg-white/20 backdrop-blur-md rounded-full px-6 py-4 flex items-center gap-4 border border-white/10">
+<div class="relative flex h-3 w-3">
+<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary-container opacity-75"></span>
+<span class="relative inline-flex rounded-full h-3 w-3 bg-primary-container"></span>
+</div>
+<div class="flex flex-col">
+<span class="text-xs font-bold uppercase tracking-widest text-primary-container">Active Sync</span>
+<span class="text-sm font-semibold">Scanning 3 school portals</span>
+</div>
+<span class="material-symbols-outlined text-primary-container" style="font-variation-settings: 'FILL' 1;">sync</span>
+</div>
+</div>
+<div class="absolute -right-20 -bottom-20 opacity-10">
+<span class="material-symbols-outlined text-[15rem]">school</span>
+</div>
+</section>
+<!-- Bento Grid Layout -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+<!-- Left Column: Upcoming Events & Permissions (Col 8) -->
+<div class="lg:col-span-8 space-y-10">
+<!-- Section: Permission Slips & Actions -->
+<section>
+<div class="flex items-center justify-between mb-6">
+<h3 class="font-headline text-xl font-bold">Needs Attention</h3>
+<span class="bg-secondary-container text-on-secondary-container px-4 py-1 rounded-full text-xs font-bold">2 Actions Pending</span>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+<!-- Action Card 1 -->
+<div class="bg-surface-container-highest p-6 rounded-lg group hover:scale-[1.02] transition-transform duration-300">
+<div class="flex justify-between items-start mb-4">
+<div class="bg-white/50 p-2 rounded-xl">
+<span class="material-symbols-outlined text-secondary">assignment</span>
+</div>
+<span class="text-[10px] font-bold text-secondary uppercase tracking-widest">Due in 2 days</span>
+</div>
+<h4 class="font-headline font-bold text-on-surface mb-1">Museum Field Trip</h4>
+<p class="text-sm text-on-surface-variant mb-6 leading-relaxed">Tommy's class is visiting the Science Museum. Digital signature required.</p>
+<button class="w-full bg-secondary text-white py-3 rounded-full font-bold text-sm flex items-center justify-center gap-2 active:scale-95 transition-all">
+<span>Sign Slip</span>
+<span class="material-symbols-outlined text-sm">draw</span>
+</button>
+</div>
+<!-- Action Card 2 -->
+<div class="bg-tertiary-container p-6 rounded-lg group hover:scale-[1.02] transition-transform duration-300">
+<div class="flex justify-between items-start mb-4">
+<div class="bg-white/50 p-2 rounded-xl">
+<span class="material-symbols-outlined text-tertiary">photo_camera</span>
+</div>
+<span class="text-[10px] font-bold text-tertiary uppercase tracking-widest">Payment Needed</span>
+</div>
+<h4 class="font-headline font-bold text-on-surface mb-1">Class Photo Pack</h4>
+<p class="text-sm text-on-surface-variant mb-6 leading-relaxed">Maya's annual school portrait pack. Selection and payment pending.</p>
+<button class="w-full bg-tertiary text-white py-3 rounded-full font-bold text-sm flex items-center justify-center gap-2 active:scale-95 transition-all">
+<span>Pay $24.00</span>
+<span class="material-symbols-outlined text-sm">payments</span>
+</button>
+</div>
+</div>
+</section>
+<!-- Section: Upcoming Events -->
+<section>
+<div class="flex items-center justify-between mb-6">
+<h3 class="font-headline text-xl font-bold">The Event Edit</h3>
+<button class="text-primary font-bold text-sm flex items-center gap-1">
+                            Full Calendar <span class="material-symbols-outlined text-sm">arrow_forward</span>
+</button>
+</div>
+<div class="space-y-4">
+<!-- Event 1 -->
+<div class="bg-surface-container-low p-5 rounded-lg flex items-center gap-6">
+<div class="flex flex-col items-center justify-center bg-white min-w-[64px] h-[64px] rounded-2xl shadow-sm border-b-4 border-primary/20">
+<span class="text-[10px] font-bold text-primary uppercase">Oct</span>
+<span class="text-xl font-black text-on-surface">12</span>
+</div>
+<div class="flex-grow">
+<h5 class="font-bold text-on-surface">PTA Strategy Meeting</h5>
+<p class="text-sm text-on-surface-variant">6:30 PM • School Library</p>
+</div>
+<div class="hidden sm:flex items-center gap-2 px-4 py-2 bg-primary/5 rounded-full">
+<span class="material-symbols-outlined text-primary text-lg" style="font-variation-settings: 'FILL' 1;">notifications</span>
+<span class="text-xs font-bold text-primary">Set</span>
+</div>
+</div>
+<!-- Event 2 -->
+<div class="bg-surface-container-low p-5 rounded-lg flex items-center gap-6">
+<div class="flex flex-col items-center justify-center bg-white min-w-[64px] h-[64px] rounded-2xl shadow-sm border-b-4 border-primary/20">
+<span class="text-[10px] font-bold text-primary uppercase">Oct</span>
+<span class="text-xl font-black text-on-surface">15</span>
+</div>
+<div class="flex-grow">
+<h5 class="font-bold text-on-surface">School Spirit Day</h5>
+<p class="text-sm text-on-surface-variant">All Day • Wear Blue &amp; Gold</p>
+</div>
+<div class="hidden sm:flex -space-x-2">
+<div class="w-8 h-8 rounded-full border-2 border-white bg-slate-200 overflow-hidden">
+<img alt="Family" data-alt="close up of a smiling woman with glasses and brown hair in soft natural light" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDlUCdFB9NSFIAYjmFL-3pY9OQ-UCryqy3AKBmLCJNkICB2haT1wV_rz_TPwQRvnMdpoeevsrGd8N9Wxjjj2zfJsZNgCeLjXSkNXBMuUME18cWVmsFmZVVkwUPI4lShnsXLLVEBB1HLnjXgx6aAjdGQAt0kXXitTzzQ_bPaZicOq_a3gP1Vm3b0FD5IxZwP6ovKVG6j--AAfPs_kqJHK2A357tbAPXcB6U3f3m8kgZAoVrl7KTF6RJ4unGULgtxUehVJ831R51SeYo"/>
+</div>
+<div class="w-8 h-8 rounded-full border-2 border-white bg-slate-300 overflow-hidden">
+<img alt="Family" data-alt="smiling young boy with curly hair looking at camera in sunlit park" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAiJ0ZgPtUOdrAGOwXisiOYvSvLX0BsggYC-DmNrUq5JKMRygJcgNjwhLGFEtzEsoGcGTEY81wAZ2XLTD7bsHCyKu7HV7sd9vs9U-nXOTdQBAsd7AAlAaNsbD4MCxJEgOV66rVFGQOwSJ13EkLXl64b1kQPGmK5Va7DX8TYsbEjuy18n2FfgT-AxE2WJco5aCH894tzIPucB5bSVO0Esa1kCvXBK3osSkvQq-bvXLtjLftDV94-qIY0sz9O6SQ7k0NfdC4Fd-gytcs"/>
+</div>
+</div>
+</div>
+<!-- Event 3 -->
+<div class="bg-surface-container-low p-5 rounded-lg flex items-center gap-6 opacity-80">
+<div class="flex flex-col items-center justify-center bg-white min-w-[64px] h-[64px] rounded-2xl shadow-sm border-b-4 border-primary/20">
+<span class="text-[10px] font-bold text-primary uppercase">Oct</span>
+<span class="text-xl font-black text-on-surface">22</span>
+</div>
+<div class="flex-grow">
+<h5 class="font-bold text-on-surface">Fall Festival Prep</h5>
+<p class="text-sm text-on-surface-variant">4:00 PM • Community Hall</p>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant">chevron_right</span>
+</div>
+</div>
+</section>
+</div>
+<!-- Right Column: Extracurriculars (Col 4) -->
+<aside class="lg:col-span-4 space-y-10">
+<section class="bg-surface-container-high rounded-xl p-8 h-full shadow-sm">
+<h3 class="font-headline text-xl font-bold mb-8">After-School Pulse</h3>
+<div class="space-y-8">
+<!-- Activity 1 -->
+<div class="relative pl-6 border-l-2 border-primary/20">
+<div class="absolute -left-[9px] top-0 w-4 h-4 rounded-full bg-primary border-4 border-surface-container-high"></div>
+<div class="mb-2">
+<span class="text-[10px] font-black uppercase tracking-widest text-primary">Tommy</span>
+<h6 class="font-bold text-lg">Soccer Practice</h6>
+</div>
+<div class="flex items-center gap-3 text-sm text-on-surface-variant mb-4">
+<span class="material-symbols-outlined text-sm">location_on</span>
+<span>East Field • Today, 4:30 PM</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="px-3 py-1 bg-primary/10 text-primary text-[11px] font-bold rounded-full">Carpooled</span>
+<span class="px-3 py-1 bg-white/50 text-on-surface-variant text-[11px] font-medium rounded-full">Snacks Packed</span>
+</div>
+</div>
+<!-- Activity 2 -->
+<div class="relative pl-6 border-l-2 border-primary/20">
+<div class="absolute -left-[9px] top-0 w-4 h-4 rounded-full bg-slate-300 border-4 border-surface-container-high"></div>
+<div class="mb-2">
+<span class="text-[10px] font-black uppercase tracking-widest text-primary">Maya</span>
+<h6 class="font-bold text-lg">Piano Lesson</h6>
+</div>
+<div class="flex items-center gap-3 text-sm text-on-surface-variant mb-4">
+<span class="material-symbols-outlined text-sm">schedule</span>
+<span>Thu, Oct 14 • 3:00 PM</span>
+</div>
+<div class="bg-secondary-container/30 p-4 rounded-lg flex items-center gap-3">
+<span class="material-symbols-outlined text-secondary" style="font-variation-settings: 'FILL' 1;">error</span>
+<p class="text-[11px] font-semibold text-on-secondary-container">Check practice log for Lesson 8</p>
+</div>
+</div>
+<!-- Activity 3 -->
+<div class="relative pl-6 border-l-2 border-primary/20 opacity-60">
+<div class="absolute -left-[9px] top-0 w-4 h-4 rounded-full bg-slate-200 border-4 border-surface-container-high"></div>
+<div class="mb-2">
+<span class="text-[10px] font-black uppercase tracking-widest text-primary">Tommy</span>
+<h6 class="font-bold text-lg">Robotics Club</h6>
+</div>
+<div class="flex items-center gap-3 text-sm text-on-surface-variant">
+<span class="material-symbols-outlined text-sm">event</span>
+<span>Fri, Oct 15 • 3:30 PM</span>
+</div>
+</div>
+</div>
+<!-- Visual Accent Card -->
+<div class="mt-12 rounded-lg overflow-hidden relative aspect-video shadow-inner">
+<img alt="School" class="w-full h-full object-cover" data-alt="blurred bright airy library with rows of books and warm wooden tables in soft sunlight" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDVN7-wiiMo0J-YiT3-CUHu9FRaHWbOVTlCNzTz60KKIIrFL-7ghREHlfQ00bLEyFcynXju8DtnDiJ2Yd_73e9OPdmlTcvQoDrEghs2sacKGLUjDWGgTUEjl4accCz_bmM_xAJekwTIoAlUrzQHq3Pe2T9HYo7_83EXQ-tKcxOZlCUPzLt9zzgRlHhE3sqZBQOD5zLm2RcWOx2aB5hjLJklSK5pEfk_zBFNYBAjU4NbTo0gQ7PHPqKj7StL5fa4mHIG42vPqYnq9BE"/>
+<div class="absolute inset-0 bg-primary/40 flex items-center justify-center">
+<button class="bg-white/90 backdrop-blur-sm text-primary px-6 py-2 rounded-full font-bold shadow-lg active:scale-95 transition-all">View School Hub</button>
+</div>
+</div>
+</section>
+</aside>
+</div>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-8 pt-4 bg-white/90 dark:bg-slate-900/90 backdrop-blur-2xl shadow-[0_-8px_24px_rgba(0,55,71,0.06)] rounded-t-[2.5rem]">
+<button class="flex flex-col items-center justify-center text-slate-400 font-['Plus_Jakarta_Sans'] text-[11px] font-semibold tracking-wide hover:text-[#5C9EAD] transition-all active:scale-90 duration-300 ease-out">
+<span class="material-symbols-outlined mb-1">calendar_today</span>
+<span>Calendar</span>
+</button>
+<button class="flex flex-col items-center justify-center text-slate-400 font-['Plus_Jakarta_Sans'] text-[11px] font-semibold tracking-wide hover:text-[#5C9EAD] transition-all active:scale-90 duration-300 ease-out">
+<span class="material-symbols-outlined mb-1">assignment</span>
+<span>Slips</span>
+</button>
+<button class="flex flex-col items-center justify-center bg-[#5C9EAD]/10 text-[#5C9EAD] rounded-full px-5 py-1.5 font-['Plus_Jakarta_Sans'] text-[11px] font-semibold tracking-wide active:scale-90 duration-300 ease-out">
+<span class="material-symbols-outlined mb-1" style="font-variation-settings: 'FILL' 1;">sports_soccer</span>
+<span>Activities</span>
+</button>
+<button class="flex flex-col items-center justify-center text-slate-400 font-['Plus_Jakarta_Sans'] text-[11px] font-semibold tracking-wide hover:text-[#5C9EAD] transition-all active:scale-90 duration-300 ease-out">
+<span class="material-symbols-outlined mb-1">mail</span>
+<span>Inbox</span>
+</button>
+</nav>
+<!-- FAB (Suppressed based on context of secondary screen, but kept for main action if needed) -->
+<!-- Suppressed on detailed hub view to prioritize clarity -->
+</body></html>

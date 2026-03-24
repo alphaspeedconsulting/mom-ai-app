@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Mom's Sanctuary | mom.Ai</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Be+Vietnam+Pro:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "secondary-fixed": "#ffdcc4",
+                        "tertiary": "#655883",
+                        "secondary-fixed-dim": "#ffcaa4",
+                        "secondary-dim": "#804307",
+                        "surface-container-high": "#c8eeff",
+                        "on-secondary-fixed-variant": "#8a4b11",
+                        "error": "#ac3434",
+                        "on-tertiary-fixed": "#3b3057",
+                        "primary-fixed": "#afe9d7",
+                        "outline": "#4e8295",
+                        "on-tertiary-container": "#4e436c",
+                        "on-background": "#003747",
+                        "secondary": "#8f4f14",
+                        "error-dim": "#70030f",
+                        "primary": "#32695a",
+                        "inverse-surface": "#001017",
+                        "tertiary-dim": "#584c76",
+                        "on-tertiary-fixed-variant": "#584c76",
+                        "on-primary-fixed": "#034438",
+                        "inverse-on-surface": "#87a1ad",
+                        "surface-tint": "#32695a",
+                        "surface-variant": "#b8eaff",
+                        "on-primary-fixed-variant": "#2a6153",
+                        "tertiary-fixed": "#dccdff",
+                        "on-tertiary": "#fdf7ff",
+                        "on-surface-variant": "#316678",
+                        "on-secondary": "#fff7f4",
+                        "on-error": "#fff7f6",
+                        "tertiary-container": "#dccdff",
+                        "on-primary": "#e4fff5",
+                        "on-surface": "#003747",
+                        "error-container": "#f56965",
+                        "tertiary-fixed-dim": "#cebff0",
+                        "secondary-container": "#ffdcc4",
+                        "surface-bright": "#f3fbff",
+                        "surface-container-low": "#e5f6ff",
+                        "on-primary-container": "#1f574a",
+                        "on-error-container": "#65000b",
+                        "on-secondary-container": "#7e4205",
+                        "primary-container": "#afe9d7",
+                        "surface-container": "#d7f2ff",
+                        "surface": "#f3fbff",
+                        "on-secondary-fixed": "#643200",
+                        "outline-variant": "#86b9ce",
+                        "primary-dim": "#245c4f",
+                        "surface-container-lowest": "#ffffff",
+                        "primary-fixed-dim": "#a2dac9",
+                        "background": "#f3fbff",
+                        "inverse-primary": "#c3fdea",
+                        "surface-container-highest": "#b8eaff",
+                        "surface-dim": "#a7e3fb"
+                    },
+                    fontFamily: {
+                        "headline": ["Plus Jakarta Sans"],
+                        "body": ["Be Vietnam Pro"],
+                        "label": ["Be Vietnam Pro"]
+                    },
+                    borderRadius: {"DEFAULT": "1rem", "lg": "2rem", "xl": "3rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body { font-family: 'Be Vietnam Pro', sans-serif; }
+        h1, h2, h3 { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .glass-panel {
+            background: rgba(243, 251, 255, 0.7);
+            backdrop-filter: blur(20px);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface min-h-screen pb-32">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-slate-50/80 backdrop-blur-xl transition-colors">
+<div class="flex items-center justify-between px-6 py-4 w-full max-w-screen-xl mx-auto">
+<div class="flex items-center gap-4">
+<button class="material-symbols-outlined text-teal-700 hover:bg-teal-50/50 p-2 rounded-full transition-colors active:scale-95 duration-200">menu</button>
+<span class="text-2xl font-extrabold text-teal-800 tracking-tighter font-['Plus_Jakarta_Sans']">mom.Ai</span>
+</div>
+<div class="flex items-center gap-3">
+<span class="hidden md:block text-sm font-semibold text-teal-700">Sarah Miller</span>
+<div class="w-10 h-10 rounded-full overflow-hidden ring-2 ring-primary-container">
+<img alt="Sarah's Profile" data-alt="close-up portrait of a smiling woman with warm lighting and a soft blurred background of a home interior" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCIbwHLZkCeAlOAG1HYI_7fqurxm294y6Dx5EnUNiGqY-Qk5-QkG8IesIcerGo3OxTbyjcQwyfuqeMegbaZsrxcrsCLLHWdKAaFW_TYg2sXR9hojqFBXlhDejWXv-vMVygBgqSaQfjC-9rGdjQW4zKSP6vRxNqHAJyZCfTMsfSCx4-fuatDggZzWEJSFG0LhAmzFwKU_EdnMc7kU35_7bXH8Ms5SmIxUvhC1Fjc-xoTlYkTfC1ACd9ojDrT8fN1XWD7s_u_ZGACtDo"/>
+</div>
+</div>
+</div>
+</header>
+<main class="pt-24 px-6 max-w-screen-xl mx-auto">
+<!-- Hero Section: Profile Header -->
+<section class="mt-8 mb-12 flex flex-col md:flex-row items-end gap-8 relative">
+<div class="relative group">
+<div class="w-40 h-40 rounded-xl overflow-hidden shadow-xl ring-4 ring-white">
+<img alt="Sarah Miller" class="w-full h-full object-cover" data-alt="lifestyle portrait of a vibrant mother in a sunlit kitchen, smiling warmly at the camera" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAS7swGpladPq2v2R3uXEt6rgwfDGupca94P5EWjyPlXvzykhvBbAA5JZ9MLwVEUQaiJq3uek_JuDO9l3V53QmvVXrdCqy-tqqJY-ICvalcgW1j8_2S52qvW41a2eE5hkIry_sYkfsiPv-l8W6Fxdzyk0FBsfgnpkbS_YSx1MKVYf7TpIIea2aHVn9zfluyqwZpLrxpRfiAG_bboBvxyu-rXP3JRTMUINbdaPGnvnmwlTa0q8g5WygK9B6ZjjswYxu_h6hhs9eaaEw"/>
+</div>
+<button class="absolute bottom-2 right-2 bg-primary text-on-primary p-3 rounded-full shadow-lg hover:scale-110 transition-transform active:scale-95">
+<span class="material-symbols-outlined text-xl">photo_camera</span>
+</button>
+</div>
+<div class="flex-1 space-y-2 pb-2">
+<div class="flex items-center gap-3">
+<span class="bg-tertiary-container text-tertiary px-4 py-1 rounded-full text-xs font-bold tracking-widest uppercase">Premium Member</span>
+</div>
+<h1 class="text-4xl md:text-5xl font-extrabold tracking-tight text-on-surface">Sarah Miller</h1>
+<p class="text-on-surface-variant flex items-center gap-2 text-lg">
+<span class="material-symbols-outlined text-primary">location_on</span>
+                    Austin, Texas
+                </p>
+</div>
+<div class="flex gap-4">
+<button class="bg-primary text-on-primary px-8 py-4 rounded-xl font-bold text-lg shadow-lg hover:opacity-90 transition-all active:scale-95">Edit Profile</button>
+</div>
+</section>
+<!-- Main Bento Grid -->
+<div class="grid grid-cols-1 md:grid-cols-12 gap-8">
+<!-- Left Column: Personal Info & Preferences -->
+<div class="md:col-span-8 space-y-8">
+<!-- Personal Identity Card -->
+<div class="bg-surface-container-lowest rounded-xl p-8 space-y-8 border-none">
+<h2 class="text-2xl font-bold flex items-center gap-3">
+<span class="material-symbols-outlined text-primary" data-weight="fill" style="font-variation-settings: 'FILL' 1;">person</span>
+                        Personal Identity
+                    </h2>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<div class="space-y-2">
+<label class="text-sm font-medium text-on-surface-variant ml-1">Preferred Name</label>
+<div class="bg-surface-container-highest p-4 rounded-lg text-on-surface font-medium">Sarah</div>
+</div>
+<div class="space-y-2">
+<label class="text-sm font-medium text-on-surface-variant ml-1">Timezone</label>
+<div class="bg-surface-container-highest p-4 rounded-lg text-on-surface font-medium">Central Standard Time (CST)</div>
+</div>
+<div class="md:col-span-2 space-y-2">
+<label class="text-sm font-medium text-on-surface-variant ml-1">Daily Mantra</label>
+<div class="bg-surface-container-highest p-4 rounded-lg text-on-surface italic">"Focus on the breath, find the joy in the chaos."</div>
+</div>
+</div>
+</div>
+<!-- Family Hub Bento -->
+<div class="bg-surface-container-low rounded-xl p-8 space-y-8">
+<div class="flex justify-between items-center">
+<h2 class="text-2xl font-bold flex items-center gap-3">
+<span class="material-symbols-outlined text-secondary" data-weight="fill" style="font-variation-settings: 'FILL' 1;">family_restroom</span>
+                            Family Members
+                        </h2>
+<button class="text-primary font-bold flex items-center gap-2 hover:bg-primary-container/20 px-4 py-2 rounded-full transition-all">
+<span class="material-symbols-outlined">add_circle</span> Add Member
+                        </button>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+<!-- Member Card -->
+<div class="bg-surface-container-lowest p-6 rounded-lg space-y-4 hover:shadow-md transition-all">
+<div class="w-16 h-16 rounded-full overflow-hidden bg-secondary-fixed">
+<img alt="Leo" data-alt="close-up portrait of a toddler boy laughing, bright outdoor natural lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDKqKogi6HYN4oLKN12FElyDGDjp3YlqN5pBJip_-0WjG-NZa41AO6DjzdUoC8kqUYHiBlH6--y0FSd858W5zNNc--WJByKBNR1HWmniuf3fKtH9IJLT1any4mIJ8PDOANhqVBp1RULMTD_0oy7-kty0DGww6R7VxSxUBqpPnm43Kt_zlec1apH4of1F3oPmAHDqd3bpYc8eH1w7vyuFKIeP3zBOjGxSw13_3Nol8k9kPHOS4Aas8aGyb3eS8PurlK4RH459gtJaIY"/>
+</div>
+<div>
+<h3 class="font-bold text-lg">Leo</h3>
+<p class="text-on-surface-variant text-sm">Age 4 • Son</p>
+</div>
+<div class="flex gap-2">
+<span class="bg-secondary-container text-on-secondary-container text-[10px] px-2 py-0.5 rounded-full uppercase font-bold">Pick-up: 3PM</span>
+</div>
+</div>
+<!-- Member Card -->
+<div class="bg-surface-container-lowest p-6 rounded-lg space-y-4 hover:shadow-md transition-all">
+<div class="w-16 h-16 rounded-full overflow-hidden bg-tertiary-fixed">
+<img alt="Maya" data-alt="close-up portrait of a primary school age girl with braided hair, soft natural lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCOoZ3N_CgRxzypt7OBTjIgY69cRvAnFREBygYsTEPctBKV9eaP65mq99EAkYROrjvEJTIbkN8UANi71xG9Ox3Kai046_bQhTzQrmUatDyouklYuLdwdocTa4OeyPvD2n4cPZ7pSTnhuiX21GRJK8wYGzMMM1v12LYnLewwdmgmn1rWDKhlLEksVtHxlMomlxXQcMO7gHLbTVY5S56rmLXMgrOJoRTcVrnLV1O3mYX9RY-BcEvjKo1Ahi3enuDJ2-P-xpZXNHqMVq8"/>
+</div>
+<div>
+<h3 class="font-bold text-lg">Maya</h3>
+<p class="text-on-surface-variant text-sm">Age 7 • Daughter</p>
+</div>
+<div class="flex gap-2">
+<span class="bg-tertiary-container text-on-tertiary-container text-[10px] px-2 py-0.5 rounded-full uppercase font-bold">Piano: Wed</span>
+</div>
+</div>
+<!-- Partner Card -->
+<div class="bg-surface-container-lowest p-6 rounded-lg space-y-4 hover:shadow-md transition-all">
+<div class="w-16 h-16 rounded-full overflow-hidden bg-primary-fixed">
+<img alt="David" data-alt="portrait of a man in his late 30s with a kind smile, clean architectural background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBGE68CUJDLEPCzmwjkKPRMHKqFmHvM02jM3_DfW8WTew1MxsJZAfBS_LmuHSZLIKTeTrDbeWKtD9jfa-6jERx6bwH1VGeqpMnoSfzVnHzycWJzgdgflCrArx2YN6crQfamnbTIRzUncCbD2_3BihHOnujklzbQ1xExRiUw7eSGNK6-mcoCnhF1Ri3nASP-NcJF21Bw-k56iNWm8MjFT6iSI4TdXJOe6NiME9aNlmxQR7kwadXt58X4THkij2Vcqwb2_QwLB-7W2EE"/>
+</div>
+<div>
+<h3 class="font-bold text-lg">David</h3>
+<p class="text-on-surface-variant text-sm">Partner</p>
+</div>
+<div class="flex gap-2">
+<span class="bg-primary-container text-on-primary-container text-[10px] px-2 py-0.5 rounded-full uppercase font-bold">Emergency Contact</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Preferences: Dietary & Communication -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+<div class="bg-surface-container-high rounded-xl p-8 space-y-6">
+<h2 class="text-xl font-bold flex items-center gap-3">
+<span class="material-symbols-outlined text-secondary">restaurant</span>
+                            Dietary Canvas
+                        </h2>
+<div class="flex flex-wrap gap-3">
+<span class="bg-secondary-container text-on-secondary-container px-4 py-2 rounded-full text-sm font-medium">Gluten-Free (Leo)</span>
+<span class="bg-secondary-container text-on-secondary-container px-4 py-2 rounded-full text-sm font-medium">Nut Allergy (Maya)</span>
+<span class="bg-secondary-container text-on-secondary-container px-4 py-2 rounded-full text-sm font-medium">Plant-Based Preferred</span>
+<button class="outline outline-1 outline-secondary-dim/20 text-secondary px-4 py-2 rounded-full text-sm font-bold">+ Add Restriction</button>
+</div>
+</div>
+<div class="bg-tertiary-container/30 rounded-xl p-8 space-y-6">
+<h2 class="text-xl font-bold flex items-center gap-3">
+<span class="material-symbols-outlined text-tertiary">chat_bubble</span>
+                            Communication Style
+                        </h2>
+<div class="space-y-4">
+<div class="flex items-center justify-between p-3 bg-white/40 rounded-lg">
+<span class="text-sm font-medium">Urgent Alerts</span>
+<span class="text-xs font-bold text-tertiary">SMS + Push</span>
+</div>
+<div class="flex items-center justify-between p-3 bg-white/40 rounded-lg">
+<span class="text-sm font-medium">Daily Briefing</span>
+<span class="text-xs font-bold text-tertiary">8:00 AM</span>
+</div>
+<div class="flex items-center justify-between p-3 bg-white/40 rounded-lg">
+<span class="text-sm font-medium">Tone</span>
+<span class="text-xs font-bold text-tertiary">Supportive &amp; Calm</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Right Column: Quick Stats & Security -->
+<aside class="md:col-span-4 space-y-8">
+<!-- Digital Well-being -->
+<div class="bg-surface-container-highest rounded-xl p-8 space-y-6 overflow-hidden relative">
+<div class="relative z-10">
+<h3 class="text-lg font-bold text-on-surface">Sanctuary Health</h3>
+<p class="text-on-surface-variant text-sm mt-1">Your data is secured and synced.</p>
+<div class="mt-8 space-y-6">
+<div class="space-y-2">
+<div class="flex justify-between text-xs font-bold uppercase tracking-wider">
+<span>Profile Completion</span>
+<span>85%</span>
+</div>
+<div class="h-2 bg-white/50 rounded-full overflow-hidden">
+<div class="h-full bg-primary w-[85%] rounded-full"></div>
+</div>
+</div>
+<div class="flex items-center gap-4 p-4 bg-white/60 rounded-lg">
+<span class="material-symbols-outlined text-primary">verified_user</span>
+<div>
+<p class="text-sm font-bold">Verified Account</p>
+<p class="text-xs text-on-surface-variant">Last synced 2m ago</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Decor element -->
+<div class="absolute -right-12 -bottom-12 w-48 h-48 bg-primary/10 rounded-full blur-3xl"></div>
+</div>
+<!-- Account Actions -->
+<div class="space-y-4">
+<button class="w-full flex items-center justify-between p-6 bg-surface-container-lowest hover:bg-surface-container transition-colors rounded-xl font-bold">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-outline">lock</span>
+                            Security &amp; Privacy
+                        </div>
+<span class="material-symbols-outlined">chevron_right</span>
+</button>
+<button class="w-full flex items-center justify-between p-6 bg-surface-container-lowest hover:bg-surface-container transition-colors rounded-xl font-bold">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-outline">notifications</span>
+                            Notification Vault
+                        </div>
+<span class="material-symbols-outlined">chevron_right</span>
+</button>
+<button class="w-full flex items-center justify-between p-6 bg-surface-container-lowest hover:bg-surface-container transition-colors rounded-xl font-bold">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-outline">sync</span>
+                            Connected Devices
+                        </div>
+<span class="material-symbols-outlined">chevron_right</span>
+</button>
+</div>
+<!-- Log out -->
+<button class="w-full p-4 text-error font-bold rounded-xl border border-error/20 hover:bg-error/5 transition-colors flex items-center justify-center gap-2">
+<span class="material-symbols-outlined">logout</span> Sign Out
+                </button>
+</aside>
+</div>
+</main>
+<!-- BottomNavBar (Mobile Only) -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full flex justify-around items-center px-4 pb-6 pt-3 bg-white/70 backdrop-blur-2xl z-50 shadow-[0_-8px_24px_rgba(0,55,71,0.06)] rounded-t-[3rem]">
+<div class="flex flex-col items-center justify-center text-slate-400 px-5 py-2">
+<span class="material-symbols-outlined" data-icon="home_app_logo">home_app_logo</span>
+<span class="font-['Be_Vietnam_Pro'] text-[11px] font-medium tracking-wide uppercase mt-1">Home</span>
+</div>
+<div class="flex flex-col items-center justify-center text-slate-400 px-5 py-2">
+<span class="material-symbols-outlined" data-icon="family_restroom">family_restroom</span>
+<span class="font-['Be_Vietnam_Pro'] text-[11px] font-medium tracking-wide uppercase mt-1">Family</span>
+</div>
+<div class="flex flex-col items-center justify-center text-slate-400 px-5 py-2">
+<span class="material-symbols-outlined" data-icon="auto_awesome">auto_awesome</span>
+<span class="font-['Be_Vietnam_Pro'] text-[11px] font-medium tracking-wide uppercase mt-1">Insights</span>
+</div>
+<div class="flex flex-col items-center justify-center bg-teal-100/50 text-teal-900 rounded-full px-5 py-2 scale-110 transition-transform">
+<span class="material-symbols-outlined" data-icon="settings" data-weight="fill" style="font-variation-settings: 'FILL' 1;">settings</span>
+<span class="font-['Be_Vietnam_Pro'] text-[11px] font-medium tracking-wide uppercase mt-1">Settings</span>
+</div>
+</nav>
+<!-- Floating Action Button (FAB) Suppressed on Profile per Hierarchy Rules -->
+</body></html>

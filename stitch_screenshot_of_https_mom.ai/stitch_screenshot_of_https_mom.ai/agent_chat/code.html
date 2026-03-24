@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Be+Vietnam+Pro:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "surface-container-highest": "#b8eaff",
+              "surface-container-low": "#e5f6ff",
+              "on-primary-fixed": "#034438",
+              "error-dim": "#70030f",
+              "inverse-primary": "#c3fdea",
+              "on-secondary-fixed-variant": "#8a4b11",
+              "primary-fixed": "#afe9d7",
+              "surface-tint": "#32695a",
+              "on-primary-container": "#1f574a",
+              "secondary-container": "#ffdcc4",
+              "secondary": "#8f4f14",
+              "primary-dim": "#245c4f",
+              "on-secondary": "#fff7f4",
+              "secondary-fixed": "#ffdcc4",
+              "surface-bright": "#f3fbff",
+              "outline-variant": "#86b9ce",
+              "background": "#f3fbff",
+              "secondary-dim": "#804307",
+              "inverse-surface": "#001017",
+              "surface": "#f3fbff",
+              "primary-container": "#afe9d7",
+              "surface-container-lowest": "#ffffff",
+              "inverse-on-surface": "#87a1ad",
+              "on-surface-variant": "#316678",
+              "surface-container-high": "#c8eeff",
+              "on-secondary-fixed": "#643200",
+              "on-surface": "#003747",
+              "on-primary": "#e4fff5",
+              "on-tertiary-container": "#4e436c",
+              "tertiary-dim": "#584c76",
+              "error-container": "#f56965",
+              "on-error-container": "#65000b",
+              "secondary-fixed-dim": "#ffcaa4",
+              "on-background": "#003747",
+              "on-tertiary-fixed": "#3b3057",
+              "tertiary-container": "#dccdff",
+              "on-error": "#fff7f6",
+              "surface-dim": "#a7e3fb",
+              "primary": "#32695a",
+              "surface-variant": "#b8eaff",
+              "tertiary": "#655883",
+              "on-primary-fixed-variant": "#2a6153",
+              "tertiary-fixed-dim": "#cebff0",
+              "outline": "#4e8295",
+              "on-tertiary-fixed-variant": "#584c76",
+              "on-secondary-container": "#7e4205",
+              "error": "#ac3434",
+              "tertiary-fixed": "#dccdff",
+              "on-tertiary": "#fdf7ff",
+              "primary-fixed-dim": "#a2dac9",
+              "surface-container": "#d7f2ff"
+            },
+            fontFamily: {
+              "headline": ["Plus Jakarta Sans"],
+              "body": ["Be Vietnam Pro"],
+              "label": ["Be Vietnam Pro"]
+            },
+            borderRadius: {"DEFAULT": "1rem", "lg": "2rem", "xl": "3rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .chat-blur {
+            backdrop-filter: blur(20px);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background font-body text-on-surface min-h-screen flex flex-col">
+<!-- TopAppBar -->
+<nav class="fixed top-0 w-full z-50 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl shadow-sm shadow-teal-900/5 flex justify-between items-center px-6 py-4 w-full">
+<div class="flex items-center gap-3">
+<button class="p-2 -ml-2 rounded-full hover:bg-slate-50 active:scale-95 duration-200 text-teal-600">
+<span class="material-symbols-outlined" data-icon="arrow_back">arrow_back</span>
+</button>
+<div class="flex flex-col">
+<h1 class="font-headline text-lg font-bold tracking-tight text-on-surface">Chatting with Grocery Guru</h1>
+<span class="text-[10px] uppercase tracking-widest text-primary font-bold opacity-70">AI Agent Active</span>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<button class="p-2 rounded-full hover:bg-slate-50 active:scale-95 duration-200 text-slate-400">
+<span class="material-symbols-outlined" data-icon="more_vert">more_vert</span>
+</button>
+</div>
+</nav>
+<!-- Main Content Canvas -->
+<main class="flex-1 mt-20 mb-44 px-6 max-w-2xl mx-auto w-full flex flex-col gap-8">
+<!-- Date Marker -->
+<div class="flex justify-center">
+<span class="px-4 py-1 rounded-full bg-surface-container-low text-on-surface-variant text-xs font-medium">Today</span>
+</div>
+<!-- Chat History -->
+<div class="flex flex-col gap-8">
+<!-- User Message (Mom) -->
+<div class="flex flex-col items-end group">
+<div class="max-w-[85%] bg-primary text-on-primary p-5 rounded-t-xl rounded-bl-xl shadow-sm leading-relaxed">
+<p class="font-body text-[15px]">Can you help me plan dinner for tonight? Something healthy and quick.</p>
+</div>
+<span class="mt-2 text-[10px] text-on-surface-variant font-medium opacity-60">17:02 PM</span>
+</div>
+<!-- Agent Message (Grocery Guru) -->
+<div class="flex gap-4 group">
+<div class="w-10 h-10 rounded-full bg-gradient-to-br from-teal-600 to-teal-300 flex items-center justify-center shrink-0 shadow-md">
+<span class="material-symbols-outlined text-white text-xl" data-icon="spa" style="font-variation-settings: 'FILL' 1;">spa</span>
+</div>
+<div class="flex flex-col items-start max-w-[85%]">
+<div class="bg-surface-container-lowest text-on-surface p-5 rounded-t-xl rounded-br-xl shadow-sm border border-outline-variant/10 leading-relaxed">
+<p class="font-body text-[15px]">Of course! Based on your preferences, I suggest a 20-minute Mediterranean Salmon Salad. Should I add the ingredients to your shopping list?</p>
+</div>
+<!-- Structured Content within Chat -->
+<div class="mt-4 w-full bg-surface-container-low rounded-lg p-4 flex items-center gap-4 border border-teal-100/50">
+<img class="w-16 h-16 rounded-md object-cover" data-alt="Close-up of a vibrant Mediterranean salmon salad with fresh greens, feta cheese, and cherry tomatoes in soft natural light" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCjfI4ydxi-zwycEEAYoSaRCE-YMF23FIrne3CFSCHEriap7iYTaGfLTY-lKV-4e6xyKygOekMWYqUUsTBnAVBnJIUVFA7VQjwhIJNkrnPoZT2kp-UVsRPBYfH4vchiCxHHrvQHEWz3JnpE4suwtbbbAZYNqb_QPDENhKSqGf3uH9_oV0uEyJ4od5IJZxaCZzwA5_a436sks5b0GSNY7QxtBZYnQUGRpLq1fj3lJAiuYUx7C5gTf-YAlbnOzEtxkgRBdLQXUYdfW18"/>
+<div class="flex-1">
+<h4 class="text-sm font-bold text-teal-800">Mediterranean Salmon</h4>
+<p class="text-xs text-on-surface-variant">Prep: 5m • Cook: 15m</p>
+</div>
+<span class="material-symbols-outlined text-teal-600" data-icon="chevron_right">chevron_right</span>
+</div>
+<span class="mt-2 text-[10px] text-on-surface-variant font-medium opacity-60">Grocery Guru • Just now</span>
+</div>
+</div>
+</div>
+</main>
+<!-- Fixed Bottom Controls Cluster -->
+<section class="fixed bottom-0 w-full z-40">
+<!-- Suggested Replies -->
+<div class="px-6 mb-4 flex gap-2 overflow-x-auto no-scrollbar">
+<button class="shrink-0 bg-tertiary-container text-tertiary px-5 py-2.5 rounded-full text-xs font-semibold shadow-sm active:scale-95 duration-200">
+                Yes, add them
+            </button>
+<button class="shrink-0 bg-surface-container-highest text-on-surface-variant px-5 py-2.5 rounded-full text-xs font-semibold shadow-sm active:scale-95 duration-200">
+                What else?
+            </button>
+<button class="shrink-0 bg-surface-container-highest text-on-surface-variant px-5 py-2.5 rounded-full text-xs font-semibold shadow-sm active:scale-95 duration-200">
+                Show me the recipe
+            </button>
+</div>
+<!-- Input Field Section -->
+<div class="px-6 pb-6">
+<div class="bg-white/90 backdrop-blur-2xl rounded-xl p-2 shadow-lg border border-teal-900/5 flex items-center gap-2">
+<button class="p-3 text-slate-400 hover:text-teal-600 transition-colors">
+<span class="material-symbols-outlined" data-icon="add_circle">add_circle</span>
+</button>
+<input class="flex-1 bg-transparent border-none focus:ring-0 text-sm font-body text-on-surface placeholder:text-slate-400" placeholder="Message Grocery Guru..." type="text"/>
+<div class="flex items-center gap-1">
+<button class="p-3 text-slate-400 hover:text-teal-600 transition-colors">
+<span class="material-symbols-outlined" data-icon="mic">mic</span>
+</button>
+<button class="w-10 h-10 bg-primary text-on-primary rounded-lg flex items-center justify-center active:scale-90 duration-300">
+<span class="material-symbols-outlined" data-icon="send" style="font-variation-settings: 'FILL' 1;">send</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Shared BottomNavBar (Suppressed due to task-focus context, but template provided for shell logic if needed) -->
+<!-- Note: Following the "Destination Rule", for this specific chat sub-page, navigation is hidden to focus on the conversation flow. However, if this were a top-level screen, it would appear as below. -->
+<nav class="bg-white/90 backdrop-blur-2xl rounded-t-[2.5rem] shadow-[0_-8px_24px_rgba(0,55,71,0.06)] flex justify-around items-center px-4 pb-6 pt-3 h-20">
+<div class="flex flex-col items-center justify-center text-slate-400 px-5 py-2 hover:text-teal-500 transition-all">
+<span class="material-symbols-outlined mb-1" data-icon="home_app_logo">home_app_logo</span>
+<span class="font-label text-[11px] font-medium tracking-wide">Home</span>
+</div>
+<!-- Active State: Tasks (as it's a grocery/task related AI) -->
+<div class="flex flex-col items-center justify-center bg-teal-50 text-teal-700 rounded-full px-5 py-2 active:scale-90 duration-300 ease-out">
+<span class="material-symbols-outlined mb-1" data-icon="assignment_turned_in" style="font-variation-settings: 'FILL' 1;">assignment_turned_in</span>
+<span class="font-label text-[11px] font-medium tracking-wide">Tasks</span>
+</div>
+<div class="flex flex-col items-center justify-center text-slate-400 px-5 py-2 hover:text-teal-500 transition-all">
+<span class="material-symbols-outlined mb-1" data-icon="calendar_today">calendar_today</span>
+<span class="font-label text-[11px] font-medium tracking-wide">Calendar</span>
+</div>
+<div class="flex flex-col items-center justify-center text-slate-400 px-5 py-2 hover:text-teal-500 transition-all">
+<span class="material-symbols-outlined mb-1" data-icon="person">person</span>
+<span class="font-label text-[11px] font-medium tracking-wide">Profile</span>
+</div>
+</nav>
+</section>
+</body></html>

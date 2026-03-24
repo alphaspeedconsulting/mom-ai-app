@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Family Calendar - mom.Ai</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Be+Vietnam+Pro:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "surface-container-highest": "#b8eaff",
+              "surface-container-low": "#e5f6ff",
+              "on-primary-fixed": "#034438",
+              "error-dim": "#70030f",
+              "inverse-primary": "#c3fdea",
+              "on-secondary-fixed-variant": "#8a4b11",
+              "primary-fixed": "#afe9d7",
+              "surface-tint": "#32695a",
+              "on-primary-container": "#1f574a",
+              "secondary-container": "#ffdcc4",
+              "secondary": "#8f4f14",
+              "primary-dim": "#245c4f",
+              "on-secondary": "#fff7f4",
+              "secondary-fixed": "#ffdcc4",
+              "surface-bright": "#f3fbff",
+              "outline-variant": "#86b9ce",
+              "background": "#f3fbff",
+              "secondary-dim": "#804307",
+              "inverse-surface": "#001017",
+              "surface": "#f3fbff",
+              "primary-container": "#afe9d7",
+              "surface-container-lowest": "#ffffff",
+              "inverse-on-surface": "#87a1ad",
+              "on-surface-variant": "#316678",
+              "surface-container-high": "#c8eeff",
+              "on-secondary-fixed": "#643200",
+              "on-surface": "#003747",
+              "on-primary": "#e4fff5",
+              "on-tertiary-container": "#4e436c",
+              "tertiary-dim": "#584c76",
+              "error-container": "#f56965",
+              "on-error-container": "#65000b",
+              "secondary-fixed-dim": "#ffcaa4",
+              "on-background": "#003747",
+              "on-tertiary-fixed": "#3b3057",
+              "tertiary-container": "#dccdff",
+              "on-error": "#fff7f6",
+              "surface-dim": "#a7e3fb",
+              "primary": "#32695a",
+              "surface-variant": "#b8eaff",
+              "tertiary": "#655883",
+              "on-primary-fixed-variant": "#2a6153",
+              "tertiary-fixed-dim": "#cebff0",
+              "outline": "#4e8295",
+              "on-tertiary-fixed-variant": "#584c76",
+              "on-secondary-container": "#7e4205",
+              "error": "#ac3434",
+              "tertiary-fixed": "#dccdff",
+              "on-tertiary": "#fdf7ff",
+              "primary-fixed-dim": "#a2dac9",
+              "surface-container": "#d7f2ff"
+            },
+            fontFamily: {
+              "headline": ["Plus Jakarta Sans"],
+              "body": ["Be Vietnam Pro"],
+              "label": ["Be Vietnam Pro"]
+            },
+            borderRadius: {"DEFAULT": "1rem", "lg": "2rem", "xl": "3rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+      .material-symbols-outlined {
+        font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      }
+      body {
+        font-family: 'Be Vietnam Pro', sans-serif;
+        -webkit-font-smoothing: antialiased;
+      }
+      h1, h2, h3 {
+        font-family: 'Plus Jakarta Sans', sans-serif;
+      }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-surface min-h-screen pb-32">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl shadow-sm shadow-teal-900/5 flex justify-between items-center px-6 py-4 w-full">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-teal-600 dark:text-teal-400" data-icon="spa">spa</span>
+<h1 class="font-['Plus_Jakarta_Sans'] text-lg font-bold tracking-tight text-on-surface">Family Calendar</h1>
+</div>
+<div class="flex items-center gap-4">
+<button class="p-2 rounded-full hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors active:scale-95 duration-200">
+<span class="material-symbols-outlined text-slate-400 dark:text-slate-500" data-icon="filter_list">filter_list</span>
+</button>
+<button class="p-2 rounded-full hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors active:scale-95 duration-200">
+<span class="material-symbols-outlined text-slate-400 dark:text-slate-500" data-icon="notifications">notifications</span>
+</button>
+</div>
+</header>
+<main class="pt-24 px-6 max-w-2xl mx-auto space-y-8">
+<!-- View Toggle & Date Header -->
+<section class="flex flex-col gap-6">
+<div class="flex items-center justify-between">
+<div>
+<h2 class="text-3xl font-extrabold tracking-tight text-on-surface">September</h2>
+<p class="text-on-surface-variant font-medium">Week 3 • 2024</p>
+</div>
+<div class="bg-surface-container-low p-1.5 rounded-full flex gap-1">
+<button class="px-6 py-2 rounded-full text-sm font-semibold bg-surface-container-lowest text-primary shadow-sm">Monthly</button>
+<button class="px-6 py-2 rounded-full text-sm font-semibold text-on-surface-variant hover:text-primary transition-colors">Weekly</button>
+</div>
+</div>
+<!-- Filter Chips (Moms, Kids, Shared) -->
+<div class="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
+<div class="flex items-center gap-2 bg-primary-container text-on-primary-container px-5 py-2.5 rounded-full text-sm font-semibold whitespace-nowrap shadow-sm">
+<span class="w-2 h-2 rounded-full bg-primary"></span>
+                    Shared View
+                </div>
+<div class="flex items-center gap-2 bg-surface-container-low text-on-surface-variant px-5 py-2.5 rounded-full text-sm font-semibold whitespace-nowrap">
+<span class="w-2 h-2 rounded-full bg-secondary"></span>
+                    Moms
+                </div>
+<div class="flex items-center gap-2 bg-surface-container-low text-on-surface-variant px-5 py-2.5 rounded-full text-sm font-semibold whitespace-nowrap">
+<span class="w-2 h-2 rounded-full bg-tertiary"></span>
+                    Kids
+                </div>
+</div>
+</section>
+<!-- Calendar Grid (Bento Style) -->
+<section class="grid grid-cols-7 gap-3">
+<!-- Day Labels -->
+<div class="text-center text-xs font-bold text-outline uppercase tracking-widest pb-2">Mon</div>
+<div class="text-center text-xs font-bold text-outline uppercase tracking-widest pb-2">Tue</div>
+<div class="text-center text-xs font-bold text-outline uppercase tracking-widest pb-2">Wed</div>
+<div class="text-center text-xs font-bold text-outline uppercase tracking-widest pb-2">Thu</div>
+<div class="text-center text-xs font-bold text-outline uppercase tracking-widest pb-2">Fri</div>
+<div class="text-center text-xs font-bold text-outline uppercase tracking-widest pb-2 text-primary">Sat</div>
+<div class="text-center text-xs font-bold text-outline uppercase tracking-widest pb-2 text-primary">Sun</div>
+<!-- Calendar Cells -->
+<div class="aspect-square bg-surface-container-lowest rounded-2xl flex flex-col items-center justify-center gap-1 shadow-sm border border-transparent hover:border-outline-variant transition-all">
+<span class="text-sm font-semibold">16</span>
+<div class="flex gap-1">
+<div class="w-1.5 h-1.5 rounded-full bg-primary"></div>
+</div>
+</div>
+<div class="aspect-square bg-surface-container-lowest rounded-2xl flex flex-col items-center justify-center gap-1 shadow-sm border border-transparent">
+<span class="text-sm font-semibold text-on-surface">17</span>
+<div class="flex gap-1">
+<div class="w-1.5 h-1.5 rounded-full bg-secondary"></div>
+<div class="w-1.5 h-1.5 rounded-full bg-tertiary"></div>
+</div>
+</div>
+<div class="aspect-square bg-primary/10 rounded-2xl flex flex-col items-center justify-center gap-1 shadow-inner relative ring-2 ring-primary">
+<span class="text-sm font-extrabold text-primary">18</span>
+<div class="flex gap-1">
+<div class="w-1.5 h-1.5 rounded-full bg-primary"></div>
+<div class="w-1.5 h-1.5 rounded-full bg-secondary"></div>
+<div class="w-1.5 h-1.5 rounded-full bg-error"></div>
+</div>
+</div>
+<div class="aspect-square bg-surface-container-lowest rounded-2xl flex flex-col items-center justify-center gap-1 shadow-sm">
+<span class="text-sm font-semibold">19</span>
+</div>
+<div class="aspect-square bg-surface-container-lowest rounded-2xl flex flex-col items-center justify-center gap-1 shadow-sm">
+<span class="text-sm font-semibold">20</span>
+<div class="flex gap-1">
+<div class="w-1.5 h-1.5 rounded-full bg-tertiary"></div>
+</div>
+</div>
+<div class="aspect-square bg-surface-container-lowest rounded-2xl flex flex-col items-center justify-center gap-1 shadow-sm">
+<span class="text-sm font-semibold text-primary">21</span>
+<div class="flex gap-1">
+<div class="w-1.5 h-1.5 rounded-full bg-primary"></div>
+</div>
+</div>
+<div class="aspect-square bg-surface-container-lowest rounded-2xl flex flex-col items-center justify-center gap-1 shadow-sm">
+<span class="text-sm font-semibold text-primary">22</span>
+</div>
+</section>
+<!-- Daily Agenda Section -->
+<section class="space-y-4">
+<h3 class="text-xl font-bold text-on-surface flex items-center gap-2">
+                Today's Schedule
+                <span class="text-sm font-normal text-on-surface-variant bg-surface-container-high px-3 py-1 rounded-full">Sep 18</span>
+</h3>
+<div class="space-y-4">
+<!-- Event Item -->
+<div class="bg-surface-container-lowest p-5 rounded-2xl shadow-sm flex gap-4 items-center">
+<div class="w-1.5 h-12 rounded-full bg-secondary"></div>
+<div class="flex-1">
+<p class="text-xs font-bold text-secondary uppercase tracking-wider">Tommy</p>
+<h4 class="font-bold text-on-surface">Soccer Practice</h4>
+<p class="text-sm text-on-surface-variant">4:00 PM - 5:30 PM • Central Park</p>
+</div>
+<span class="material-symbols-outlined text-outline" data-icon="chevron_right">chevron_right</span>
+</div>
+<!-- Conflict Event Item -->
+<div class="bg-error-container/10 p-5 rounded-2xl border-l-4 border-error shadow-sm flex gap-4 items-center">
+<div class="flex-1">
+<div class="flex items-center gap-2 mb-1">
+<p class="text-xs font-bold text-error uppercase tracking-wider">Sarah</p>
+<span class="bg-error text-white text-[10px] px-2 py-0.5 rounded-full font-bold">CONFLICT</span>
+</div>
+<h4 class="font-bold text-on-surface">Piano Lessons</h4>
+<p class="text-sm text-on-surface-variant">5:15 PM - 6:00 PM • Conservatory</p>
+</div>
+<span class="material-symbols-outlined text-error" data-icon="warning">warning</span>
+</div>
+</div>
+</section>
+<!-- AI Suggestions Box -->
+<section class="bg-gradient-to-br from-tertiary-container to-tertiary-fixed rounded-xl p-6 shadow-sm relative overflow-hidden group">
+<div class="absolute -right-4 -top-4 w-24 h-24 bg-white/10 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-700"></div>
+<div class="relative z-10 flex gap-4">
+<div class="bg-white/90 p-3 rounded-2xl h-fit shadow-sm">
+<span class="material-symbols-outlined text-tertiary" data-icon="auto_awesome" style="font-variation-settings: 'FILL' 1;">auto_awesome</span>
+</div>
+<div class="space-y-3">
+<h4 class="font-bold text-on-tertiary-container text-lg">AI Smart Suggestion</h4>
+<p class="text-on-tertiary-container/90 text-sm leading-relaxed">
+                        I found a 15-minute conflict between Tommy's soccer and Sarah's piano. Should I ask the carpool group for help?
+                    </p>
+<div class="flex gap-2 pt-1">
+<button class="bg-tertiary text-on-tertiary px-5 py-2 rounded-full text-sm font-bold shadow-sm active:scale-95 transition-transform">Yes, ask them</button>
+<button class="bg-white/40 text-on-tertiary-container px-5 py-2 rounded-full text-sm font-bold active:scale-95 transition-transform">Dismiss</button>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Floating Action Button -->
+<button class="fixed bottom-28 right-6 w-16 h-16 rounded-full bg-gradient-to-br from-primary to-primary-dim text-white shadow-[0_8px_24px_rgba(0,55,71,0.2)] flex items-center justify-center active:scale-90 transition-transform z-50">
+<span class="material-symbols-outlined text-3xl" data-icon="add">add</span>
+</button>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-6 pt-3 bg-white/90 dark:bg-slate-900/90 backdrop-blur-2xl rounded-t-[2.5rem] shadow-[0_-8px_24px_rgba(0,55,71,0.06)]">
+<a class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 px-5 py-2 hover:text-teal-500 transition-all active:scale-90 duration-300 ease-out" href="#">
+<span class="material-symbols-outlined" data-icon="home_app_logo">home_app_logo</span>
+<span class="font-['Be_Vietnam_Pro'] text-[11px] font-medium tracking-wide">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 px-5 py-2 hover:text-teal-500 transition-all active:scale-90 duration-300 ease-out" href="#">
+<span class="material-symbols-outlined" data-icon="assignment_turned_in">assignment_turned_in</span>
+<span class="font-['Be_Vietnam_Pro'] text-[11px] font-medium tracking-wide">Tasks</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-teal-50 dark:bg-teal-900/30 text-teal-700 dark:text-teal-200 rounded-full px-5 py-2 active:scale-90 duration-300 ease-out" href="#">
+<span class="material-symbols-outlined" data-icon="calendar_today" style="font-variation-settings: 'FILL' 1;">calendar_today</span>
+<span class="font-['Be_Vietnam_Pro'] text-[11px] font-medium tracking-wide">Calendar</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 px-5 py-2 hover:text-teal-500 transition-all active:scale-90 duration-300 ease-out" href="#">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+<span class="font-['Be_Vietnam_Pro'] text-[11px] font-medium tracking-wide">Profile</span>
+</a>
+</nav>
+</body></html>
