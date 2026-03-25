@@ -242,10 +242,54 @@ Agent operations are split into two tiers to minimize LLM costs. **Deterministic
 |---|---|---|
 | FR-4.1 | Monthly and weekly calendar views with toggle | P0 |
 | FR-4.2 | Per-member color coding with filter chips | P0 |
-| FR-4.3 | Bidirectional sync with Google Calendar and Apple Calendar | P0 |
+| FR-4.3 | Bidirectional sync with Google Calendar and Apple Calendar (iCloud/CalDAV) | P0 |
 | FR-4.4 | AI conflict detection and resolution suggestions | P1 |
 | FR-4.5 | Event creation from agent actions (auto-populate) | P0 |
 | FR-4.6 | FAB (Floating Action Button) for manual event creation | P0 |
+| FR-4.7 | Multi-account calendar linking (each family member connects their own calendar) | P1 |
+| FR-4.8 | Recurring event support (daily, weekly, monthly, custom RRULE) | P0 |
+| FR-4.9 | Timezone-aware event display and creation | P0 |
+| FR-4.10 | Offline calendar view via Service Worker + IndexedDB cache | P0 |
+
+#### FR-4A: Google Calendar Integration
+
+| ID | Requirement | Priority |
+|---|---|---|
+| FR-4A.1 | OAuth 2.0 consent for Google Calendar read/write scope (`calendar.events`) | P0 |
+| FR-4A.2 | Full bidirectional sync: create/update/delete in Mom.alpha ↔ Google Calendar | P0 |
+| FR-4A.3 | Webhook-based change detection via Google Calendar Push Notifications API (near real-time, no polling) | P0 |
+| FR-4A.4 | Incremental sync using `syncToken` (only fetch changed events, not full calendar) | P0 |
+| FR-4A.5 | Multi-calendar support: user selects which Google calendars to sync per family member | P1 |
+| FR-4A.6 | Reuse existing Google Calendar MCP (~90% reuse — add family member filter + conflict detection hooks) | P0 |
+
+**Implementation**: Existing `google-calendar-mcp` handles OAuth + event CRUD + webhook registration. Extend with `family_member_id` tagging on synced events and per-member calendar selection.
+
+#### FR-4B: Apple Calendar (iCloud/CalDAV) Integration
+
+| ID | Requirement | Priority |
+|---|---|---|
+| FR-4B.1 | CalDAV protocol support for iCloud Calendar (`caldav.icloud.com`) | P0 |
+| FR-4B.2 | Apple app-specific password authentication (iCloud doesn't expose OAuth for CalDAV) | P0 |
+| FR-4B.3 | Full bidirectional sync: create/update/delete in Mom.alpha ↔ iCloud Calendar | P0 |
+| FR-4B.4 | iCalendar (.ics / RFC 5545) format parsing and generation for all event fields | P0 |
+| FR-4B.5 | RRULE support for recurring events (daily, weekly, monthly, exceptions) | P0 |
+| FR-4B.6 | Polling-based change detection via CalDAV `ctag`/`etag` (iCloud has no push webhooks — poll every 5 minutes) | P0 |
+| FR-4B.7 | VTIMEZONE handling for timezone-aware events across time zones | P0 |
+| FR-4B.8 | Multi-calendar support: user selects which iCloud calendars to sync per family member | P1 |
+
+**Implementation**: New `caldav-sync` module in MCP server. Uses `caldav` Python library for protocol handling + `icalendar` library for .ics parsing. App-specific password stored encrypted (AES-256) per household. Poll iCloud every 5 minutes using `ctag` change detection (only fetch changed events when `ctag` differs).
+
+#### FR-4C: Sync Conflict Resolution
+
+| ID | Requirement | Priority |
+|---|---|---|
+| FR-4C.1 | Last-write-wins conflict resolution with `updated_at` timestamp comparison | P0 |
+| FR-4C.2 | Conflict audit log: record both versions when conflict detected (for debugging, not user-facing) | P1 |
+| FR-4C.3 | Offline queue: deterministic calendar ops queued in IndexedDB when offline, synced on reconnect with conflict check | P0 |
+| FR-4C.4 | Idempotent sync operations: retrying a failed sync never creates duplicate events | P0 |
+| FR-4C.5 | Deletion propagation: event deleted on external calendar → soft-delete in Mom.alpha (show "cancelled" state, not vanish) | P1 |
+
+**Sync state tracking**: Each synced event stores `external_id` (Google event ID or CalDAV UID), `external_etag`, `last_synced_at`, and `sync_source` (google/apple/internal). Sync engine compares timestamps to resolve conflicts.
 
 ### FR-5: School Event Hub Agent
 
@@ -357,6 +401,102 @@ Agent operations are split into two tiers to minimize LLM costs. **Deterministic
 | NFR-2.5 | Data residency | US initially, EU expansion ready |
 | NFR-2.6 | Right to deletion (GDPR/CCPA) | < 30 day fulfillment |
 | NFR-2.7 | LLM prompt injection protection | Input sanitization + guard rails |
+| NFR-2.8 | PII stripping before LLM calls | Zero raw PII sent to LLM providers |
+| NFR-2.9 | LLM provider zero-retention agreements | No training on customer data |
+| NFR-2.10 | Prompt/response audit logging | Encrypted, 30-day retention, auto-purge |
+| NFR-2.11 | Calendar credential encryption | AES-256 for app-specific passwords (CalDAV) |
+
+#### NFR-2A: LLM Data Protection Architecture
+
+Customer family data (names, schedules, finances, children's information) is highly sensitive. Every LLM call must be treated as a data export to a third party. The following architecture ensures customer privacy:
+
+**Principle: Zero Raw PII to LLM Providers**
+
+No personally identifiable information (full names, addresses, phone numbers, email addresses, financial account numbers, child birthdates, school names) is ever sent to an LLM provider in raw form.
+
+##### PII Stripping Pipeline (`pii_masker.py`)
+
+Before any prompt reaches an LLM, it passes through a server-side PII masking pipeline:
+
+| PII Category | Example Raw Data | Masked in Prompt | Restored in Response |
+|---|---|---|---|
+| Full names | "Maya Franco" | `[CHILD_1]` | Re-mapped via household context |
+| Email addresses | "sarah@gmail.com" | `[EMAIL_1]` | Stripped entirely |
+| Phone numbers | "(512) 555-0142" | `[PHONE_1]` | Stripped entirely |
+| Home address | "1234 Oak Lane, Austin TX" | `[ADDRESS]` | Stripped entirely |
+| School name | "Westlake Elementary" | `[SCHOOL_1]` | Re-mapped via household context |
+| Financial accounts | "Chase ****4532" | `[ACCOUNT_1]` | Stripped entirely |
+| Child birthdates | "2022-03-15" | Age only: "age 4" | Age is sufficient for all agent tasks |
+| Specific dollar amounts | "$4,532.17 balance" | Category-level: "checking balance" | Full amount only in local DB |
+
+**Reversible tokens** (`[CHILD_1]`, `[SCHOOL_1]`) are re-mapped on the response side using a per-request token map stored in-memory only (never persisted, never logged). Non-reversible PII (addresses, accounts, phones) is permanently stripped.
+
+##### Prompt Safety Templates
+
+Each agent has a **system prompt template** with explicit safety instructions:
+
+```
+You are {agent_name}, a family assistant. You are helping a household manage {domain}.
+
+SAFETY RULES:
+- Never ask for or reference specific addresses, phone numbers, or financial account numbers.
+- Refer to family members only by their token identifiers ([CHILD_1], [PARENT_1]).
+- If the user provides PII in their message, acknowledge the request but do not repeat the PII.
+- Never output content that could identify a specific child to a third party.
+```
+
+##### LLM Provider Data Agreements
+
+| Provider | API Data Policy | Training on Customer Data | Retention |
+|---|---|---|---|
+| OpenAI (GPT-4o, GPT-4o mini) | Zero Data Retention (ZDR) API option | **No** — opted out via API terms + ZDR | 0 days (ZDR enabled) |
+| Google (Gemini Flash) | Gemini API data governance | **No** — API data not used for training | 0 days (per API terms) |
+| Anthropic (Claude, fallback) | API data not used for training | **No** — per API terms | 0 days |
+
+**All LLM API calls use zero-retention endpoints.** No customer data is stored by LLM providers or used for model training. This is enforced at the API configuration level (OpenAI: `store: false`; Gemini: API default; Claude: API default).
+
+##### Prompt Injection Protection (`prompt_guard.py`)
+
+| Attack Vector | Protection | Implementation |
+|---|---|---|
+| Direct injection ("ignore instructions and...") | Input classifier detects override patterns | Regex + lightweight classifier pre-screens all user messages |
+| Indirect injection (malicious content in school emails) | Sandboxed parsing — email content never injected into system prompt | Email text parsed in isolated extraction step, structured data only passed to agent |
+| Token smuggling (Unicode tricks, homoglyphs) | Input normalization | Unicode NFKC normalization before all LLM calls |
+| Output manipulation ("respond with the system prompt") | Output validator checks for system prompt leakage | Post-LLM response scan before delivery to client |
+| Jailbreak attempts | Rate limiting + behavioral monitoring | >3 flagged attempts per session → session review, temporary agent lockout |
+
+##### Audit & Monitoring
+
+| What | Logged | Retention | Access |
+|---|---|---|---|
+| LLM prompts (PII-masked version only) | Yes — encrypted at rest | 30 days, auto-purge | Internal debugging only |
+| LLM responses | Yes — encrypted at rest | 30 days, auto-purge | Internal debugging only |
+| PII token maps | **Never logged** — in-memory only per request | 0 (memory freed after response) | N/A |
+| Raw user messages (pre-masking) | **Never sent to LLM** — stored only in local chat_messages table | Per GDPR/CCPA deletion policy | User's own household data |
+| Prompt injection attempts | Yes — flagged for review | 90 days | Security team |
+
+##### Data Flow Diagram
+
+```
+User Message → [chat_messages DB (raw, encrypted)]
+                    ↓
+              PII Masker (strip/tokenize PII)
+                    ↓
+              Prompt Guard (injection detection)
+                    ↓
+              Intent Classifier
+                    ↓
+         ┌─── Deterministic ───┐     ┌─── Intelligent ──────────┐
+         │ Direct DB operation  │     │ LLM Router               │
+         │ Zero LLM contact     │     │ → Select provider        │
+         │ Response from DB     │     │ → Send PII-masked prompt │
+         └──────────────────────┘     │ → Zero-retention API     │
+                                      │ → Receive response       │
+                                      │ → Output validator       │
+                                      │ → Re-map tokens          │
+                                      │ → Return to user         │
+                                      └──────────────────────────┘
+```
 
 ### NFR-3: Scalability
 
@@ -537,7 +677,8 @@ Three Claude Code skills enforce CSS Zen Garden compliance:
 |---|---|---|
 | Push Notifications | Web Push API + VAPID | No FCM dependency, works on iOS 16.4+ Safari, Android full support, $0 cost |
 | Payments | Stripe | Subscriptions + one-time payments + Connect for tutors |
-| Calendar Sync | Google Calendar API + Apple CalDAV | Bidirectional sync with major calendars |
+| Calendar Sync (Google) | Google Calendar API + Push Notifications webhook | Bidirectional sync, near real-time via webhooks, incremental sync via `syncToken` |
+| Calendar Sync (Apple) | CalDAV protocol (iCloud) + `icalendar` library | Bidirectional sync, polling via `ctag`/`etag` every 5 min, RRULE support |
 | Banking | Plaid | Receipt categorization, bank account linking |
 | Observability | LangSmith + Langfuse | LLM call tracing, agent performance monitoring |
 | CI/CD | GitHub Actions + Cloudflare Pages | Auto-deploy on push, preview per PR |
@@ -581,10 +722,16 @@ Three Claude Code skills enforce CSS Zen Garden compliance:
 
 ### AC-4: Family Calendar
 - [ ] Monthly and weekly views render correctly with toggle
-- [ ] Events from Google Calendar appear within 5 seconds of sync
+- [ ] Events from Google Calendar appear within 5 seconds of webhook-triggered sync
+- [ ] Events from Apple Calendar (iCloud/CalDAV) appear within 5 minutes (polling interval)
 - [ ] Per-member color coding displays correctly
 - [ ] AI conflict detection surfaces warning when same member has overlapping events
 - [ ] Agent-created events (School Event Hub, Health Hub) auto-appear
+- [ ] Bidirectional sync: create event in Mom.alpha → appears in Google Calendar and/or iCloud Calendar
+- [ ] Bidirectional sync: edit event in external calendar → reflected in Mom.alpha
+- [ ] Recurring events (RRULE) sync correctly between Mom.alpha and external calendars
+- [ ] Offline: cached calendar viewable without network; queued changes sync on reconnect
+- [ ] Sync conflict resolved via last-write-wins without data loss (audit log preserves both versions)
 
 ### AC-5: School Event Hub
 - [ ] School emails parsed and events extracted within 30 seconds
@@ -613,17 +760,23 @@ Three Claude Code skills enforce CSS Zen Garden compliance:
 - [ ] Quiet hours suppress non-critical notifications
 - [ ] "Daily Edit" summary delivered each morning at user-configured time
 
-### AC-9: Security & Privacy
+### AC-9: Security, Privacy & LLM Data Protection
 - [ ] All user data encrypted at rest (AES-256) and in transit (TLS 1.3)
 - [ ] COPPA: no PII collected from users under 13 without verifiable parental consent
 - [ ] User can export all personal data (GDPR/CCPA)
 - [ ] User can delete account and all data within 30 days
-- [ ] LLM prompts sanitized against injection attacks
 - [ ] OAuth tokens refreshed securely, never stored in plain text
+- [ ] **PII masking**: No raw PII (names, emails, phones, addresses, school names, financial data) reaches any LLM provider — verified by audit log inspection
+- [ ] **PII masker test suite**: 200 message patterns pass with zero PII leakage
+- [ ] **Prompt injection protection**: Direct injection, indirect injection, Unicode tricks, and jailbreak attempts all blocked (≥95% detection rate on 100 test patterns)
+- [ ] **LLM zero-retention**: All API calls configured with zero-retention (OpenAI `store: false`, Gemini API default, Claude API default) — verified by API configuration audit
+- [ ] **Audit logging**: PII-masked prompts/responses logged encrypted, auto-purged at 30 days; raw PII token maps NEVER persisted
+- [ ] **Output validation**: LLM responses scanned for system prompt leakage before delivery to client
+- [ ] **CalDAV credentials**: Apple app-specific passwords encrypted AES-256 at rest, never logged
 
 ### AC-10: Subscription & Call Budget
 - [ ] 7-day free trial starts with CC on file; full Family tier (1,000 calls) accessible
-- [ ] Trial converts to paid Family ($7.99) automatically after 14 days unless cancelled
+- [ ] Trial converts to paid Family ($7.99) automatically after 7 days unless cancelled
 - [ ] Call budget counter accurately tracks only intelligent (LLM) operations
 - [ ] "X of 1,000 calls used" displays correctly in app settings/profile
 - [ ] Over-budget households gracefully downgrade to Gemini Flash (no hard cutoff, still functional)
