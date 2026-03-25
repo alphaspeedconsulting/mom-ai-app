@@ -3,10 +3,42 @@
 import { useState, useEffect } from "react";
 
 const screens = [
-  { name: "Home Dashboard", color: "var(--brand-glow)" },
-  { name: "Agent Chat", color: "var(--secondary-container)" },
-  { name: "Family Calendar", color: "var(--tertiary-container)" },
-  { name: "Budget Tracker", color: "var(--surface-active)" },
+  {
+    name: "Family Calendar",
+    tab: "Cal",
+    cards: [
+      { title: "School Pickup", meta: "Today 3:30 PM", tone: "var(--tertiary-container)" },
+      { title: "Piano Lesson", meta: "Emma at 4:00 PM", tone: "var(--brand-glow)" },
+      { title: "Dentist Reminder", meta: "Tomorrow 9:00 AM", tone: "var(--secondary-container)" },
+    ],
+  },
+  {
+    name: "Agent Chat",
+    tab: "Home",
+    cards: [
+      { title: "Added milk to grocery list", meta: "Done in 50ms", tone: "var(--brand-glow)" },
+      { title: "Planned 5 healthy dinners", meta: "Budget: $120 this week", tone: "var(--secondary-container)" },
+      { title: "Set pickup reminder", meta: "15 min before dismissal", tone: "var(--tertiary-container)" },
+    ],
+  },
+  {
+    name: "Budget Tracker",
+    tab: "Tasks",
+    cards: [
+      { title: "Groceries", meta: "$94 / $120 weekly", tone: "var(--secondary-container)" },
+      { title: "Utilities", meta: "On track this month", tone: "var(--tertiary-container)" },
+      { title: "Potential savings", meta: "$38 from duplicates", tone: "var(--brand-glow)" },
+    ],
+  },
+  {
+    name: "School Hub",
+    tab: "Me",
+    cards: [
+      { title: "Field Trip Form", meta: "Due Friday", tone: "var(--brand-glow)" },
+      { title: "Class Photo Payment", meta: "Reminder set", tone: "var(--secondary-container)" },
+      { title: "Soccer Practice", meta: "Added to family calendar", tone: "var(--tertiary-container)" },
+    ],
+  },
 ];
 
 export function PhoneMockup() {
@@ -31,7 +63,7 @@ export function PhoneMockup() {
 
         {/* Screen */}
         <div className="relative rounded-[2rem] overflow-hidden aspect-[9/19.5]" style={{ background: "hsl(var(--background))" }}>
-          {/* Screen content — animated gradient placeholders */}
+          {/* Screen content */}
           {screens.map((screen, i) => (
             <div
               key={screen.name}
@@ -59,20 +91,23 @@ export function PhoneMockup() {
                 </h3>
               </div>
 
-              {/* Content placeholder cards */}
+              {/* Representative screen cards */}
               <div className="mt-16 w-full space-y-3">
-                {[...Array(3)].map((_, j) => (
+                {screen.cards.map((card, j) => (
                   <div
-                    key={j}
-                    className="rounded-xl p-4 animate-pulse"
+                    key={card.title}
+                    className="rounded-xl p-4 border border-border-subtle"
                     style={{
-                      background: `hsl(${screen.color})`,
-                      opacity: 1 - j * 0.15,
-                      animationDelay: `${j * 200}ms`,
+                      background: `hsl(${card.tone})`,
+                      opacity: 1 - j * 0.08,
                     }}
                   >
-                    <div className="h-2 rounded-full mb-2 w-3/4" style={{ background: "hsl(var(--foreground) / 0.1)" }} />
-                    <div className="h-2 rounded-full w-1/2" style={{ background: "hsl(var(--foreground) / 0.08)" }} />
+                    <p className="text-alphaai-sm font-semibold text-foreground leading-tight">
+                      {card.title}
+                    </p>
+                    <p className="text-alphaai-xs text-muted-foreground mt-1">
+                      {card.meta}
+                    </p>
                   </div>
                 ))}
               </div>
@@ -81,8 +116,26 @@ export function PhoneMockup() {
               <div className="absolute bottom-4 left-4 right-4 flex justify-around py-2 rounded-full" style={{ background: "hsl(var(--surface-elevated))" }}>
                 {["Home", "Tasks", "Cal", "Me"].map((tab) => (
                   <div key={tab} className="flex flex-col items-center gap-0.5">
-                    <div className="w-4 h-4 rounded" style={{ background: "hsl(var(--muted-foreground) / 0.3)" }} />
-                    <span className="text-[8px]" style={{ color: "hsl(var(--muted-foreground))" }}>{tab}</span>
+                    <div
+                      className="w-4 h-4 rounded"
+                      style={{
+                        background:
+                          tab === screen.tab
+                            ? "hsl(var(--brand) / 0.8)"
+                            : "hsl(var(--muted-foreground) / 0.3)",
+                      }}
+                    />
+                    <span
+                      className="text-[8px]"
+                      style={{
+                        color:
+                          tab === screen.tab
+                            ? "hsl(var(--foreground))"
+                            : "hsl(var(--muted-foreground))",
+                      }}
+                    >
+                      {tab}
+                    </span>
                   </div>
                 ))}
               </div>

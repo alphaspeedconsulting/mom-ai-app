@@ -33,16 +33,12 @@ export function HeroSection() {
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
               <a href="#waitlist" className="mom-btn-primary text-alphaai-md py-4 px-8">
-                Start Free Trial
+                Get Early Access
               </a>
               <a href="#agents" className="mom-btn-outline text-alphaai-md py-4 px-8">
                 Meet Your Team
               </a>
             </div>
-
-            <p className="text-alphaai-xs text-muted-foreground mt-4">
-              7-day free trial. No credit card required to explore.
-            </p>
           </div>
 
           {/* Phone mockup */}

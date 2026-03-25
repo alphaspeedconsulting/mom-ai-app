@@ -14,7 +14,7 @@ const plans = [
       "Web Push notifications",
       "7-day free trial",
     ],
-    cta: "Start Free Trial",
+    cta: "Get Early Access",
     popular: false,
   },
   {
@@ -34,7 +34,7 @@ const plans = [
       "Family wellness streaks",
       "7-day free trial",
     ],
-    cta: "Start Free Trial",
+    cta: "Get Early Access",
     popular: true,
   },
 ];

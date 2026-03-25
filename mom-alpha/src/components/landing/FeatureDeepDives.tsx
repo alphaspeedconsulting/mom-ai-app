@@ -11,6 +11,11 @@ const features = [
     ],
     icon: "calendar_month",
     gradient: "from-brand to-brand-glow",
+    previewRows: [
+      { label: "Mom: Dentist 9:00 AM", value: "Synced" },
+      { label: "Leo: Soccer 4:30 PM", value: "No conflicts" },
+      { label: "Family Dinner 6:30 PM", value: "All available" },
+    ],
   },
   {
     title: "AI-Powered Chat",
@@ -24,6 +29,11 @@ const features = [
     ],
     icon: "chat_bubble",
     gradient: "from-secondary to-secondary-container",
+    previewRows: [
+      { label: "\"Add eggs and milk\"", value: "Instant" },
+      { label: "\"Plan dinners this week\"", value: "AI response" },
+      { label: "\"Find tutor for math\"", value: "Best model" },
+    ],
   },
   {
     title: "Receipt Scanner",
@@ -37,6 +47,11 @@ const features = [
     ],
     icon: "photo_camera",
     gradient: "from-tertiary to-tertiary-container",
+    previewRows: [
+      { label: "Whole Foods", value: "$63.40" },
+      { label: "Category: Groceries", value: "Auto-tagged" },
+      { label: "Price anomaly detected", value: "1 item" },
+    ],
   },
   {
     title: "School Event Autopilot",
@@ -50,6 +65,11 @@ const features = [
     ],
     icon: "school",
     gradient: "from-brand-dim to-brand",
+    previewRows: [
+      { label: "Field Trip Form", value: "Due Fri" },
+      { label: "Book Fair Payment", value: "Reminder set" },
+      { label: "Parent-Teacher Meeting", value: "Added to calendar" },
+    ],
   },
 ];
 
@@ -82,12 +102,16 @@ export function FeatureDeepDives() {
                       <span className="material-symbols-outlined text-2xl text-brand">{feature.icon}</span>
                       <span className="font-headline font-bold text-alphaai-md text-foreground">{feature.title}</span>
                     </div>
-                    <div className="space-y-2">
-                      {[...Array(3)].map((_, j) => (
-                        <div key={j} className="h-2.5 rounded-full" style={{
-                          background: "hsl(var(--surface-active))",
-                          width: `${85 - j * 15}%`,
-                        }} />
+                    <div className="space-y-2.5">
+                      {feature.previewRows.map((row) => (
+                        <div
+                          key={row.label}
+                          className="flex items-center justify-between rounded-lg px-3 py-2"
+                          style={{ background: "hsl(var(--surface-active))" }}
+                        >
+                          <span className="text-alphaai-xs text-foreground">{row.label}</span>
+                          <span className="text-alphaai-xs text-brand font-medium">{row.value}</span>
+                        </div>
                       ))}
                     </div>
                   </div>
