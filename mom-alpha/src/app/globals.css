@@ -1,0 +1,102 @@
+@import "tailwindcss";
+
+/* Layer 1: CSS Custom Properties */
+@import "../styles/index.css";
+
+/* Layer 3: Shared Component Classes */
+@import "../styles/mom-alpha.css";
+
+/* ==========================================================================
+   Layer 2: Tailwind Theme — Maps CSS variables to utilities
+   ==========================================================================
+   In Tailwind v4, theme config lives in CSS via @theme.
+   Usage: bg-brand, text-foreground, text-alphaai-sm, font-headline, etc.
+   No hardcoded colors — only CSS variable references.
+   ========================================================================== */
+
+@theme inline {
+  /* Colors */
+  --color-brand: hsl(var(--brand));
+  --color-brand-glow: hsl(var(--brand-glow));
+  --color-brand-dim: hsl(var(--brand-dim));
+
+  --color-secondary: hsl(var(--secondary));
+  --color-secondary-container: hsl(var(--secondary-container));
+
+  --color-tertiary: hsl(var(--tertiary));
+  --color-tertiary-container: hsl(var(--tertiary-container));
+
+  --color-background: hsl(var(--background));
+  --color-surface: hsl(var(--surface));
+  --color-surface-elevated: hsl(var(--surface-elevated));
+  --color-surface-active: hsl(var(--surface-active));
+  --color-surface-input: hsl(var(--surface-input));
+  --color-surface-dim: hsl(var(--surface-dim));
+  --color-surface-container-low: hsl(var(--surface-container-low));
+  --color-surface-container: hsl(var(--surface-container));
+
+  --color-foreground: hsl(var(--foreground));
+  --color-muted-foreground: hsl(var(--muted-foreground));
+  --color-on-primary: hsl(var(--on-primary));
+  --color-on-secondary: hsl(var(--on-secondary));
+  --color-on-tertiary: hsl(var(--on-tertiary));
+
+  --color-border: hsl(var(--border));
+  --color-border-subtle: hsl(var(--border-subtle));
+
+  --color-error: hsl(var(--error));
+  --color-error-container: hsl(var(--error-container));
+
+  --color-inverse-surface: hsl(var(--inverse-surface));
+  --color-inverse-primary: hsl(var(--inverse-primary));
+
+  /* Typography scale (AlphaAI tokens) */
+  --font-size-alphaai-3xs: 0.625rem;   /* 10px */
+  --font-size-alphaai-2xs: 0.6875rem;  /* 11px */
+  --font-size-alphaai-xs: 0.75rem;     /* 12px */
+  --font-size-alphaai-sm: 0.8125rem;   /* 13px */
+  --font-size-alphaai-base: 0.875rem;  /* 14px */
+  --font-size-alphaai-md: 1rem;        /* 16px */
+  --font-size-alphaai-lg: 1.125rem;    /* 18px */
+  --font-size-alphaai-xl: 1.25rem;     /* 20px */
+  --font-size-alphaai-2xl: 1.5rem;     /* 24px */
+  --font-size-alphaai-3xl: 1.75rem;    /* 28px — Headline-MD */
+  --font-size-alphaai-display: 2.25rem; /* 36px */
+  --font-size-alphaai-display-lg: 3.5rem; /* 56px — Display-LG */
+
+  /* Font families */
+  --font-headline: "Plus Jakarta Sans", system-ui, sans-serif;
+  --font-body: "Be Vietnam Pro", system-ui, sans-serif;
+
+  /* Border radius */
+  --radius-sm: 0.5rem;
+  --radius-DEFAULT: 1rem;
+  --radius-lg: 2rem;
+  --radius-xl: 3rem;
+}
+
+/* Base styles */
+body {
+  background: hsl(var(--background));
+  color: hsl(var(--foreground));
+  font-family: var(--font-body);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-headline);
+  line-height: 1.2;
+}
+
+/* Smooth scroll */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Selection color */
+::selection {
+  background: hsl(var(--brand-glow));
+  color: hsl(var(--foreground));
+}

@@ -1,0 +1,99 @@
+/* ==========================================================================
+   Layer 1: CSS Custom Properties — "Lullaby & Logic" Design System
+   ==========================================================================
+   This is the ONLY file with hardcoded color values.
+   To retheme the entire app, change only this file.
+   ========================================================================== */
+
+/* Default theme: Lullaby & Logic (light) */
+:root,
+.lullaby-logic {
+  /* Primary — grounded teal */
+  --brand: 155 37% 30%;           /* #32695a */
+  --brand-glow: 155 53% 81%;      /* #afe9d7 */
+  --brand-dim: 155 42% 25%;       /* #245c4f */
+
+  /* Secondary — warmth-driven amber */
+  --secondary: 27 76% 32%;        /* #8f4f14 */
+  --secondary-container: 25 100% 89%; /* #ffdcc4 */
+
+  /* Tertiary — serene lavender */
+  --tertiary: 264 22% 43%;        /* #655883 */
+  --tertiary-container: 264 100% 90%; /* #dccdff */
+
+  /* Surfaces */
+  --background: 200 100% 97%;     /* #f3fbff */
+  --surface: 200 100% 97%;        /* #f3fbff */
+  --surface-elevated: 200 100% 93%; /* #d7f2ff */
+  --surface-active: 200 100% 89%; /* #c8eeff */
+  --surface-input: 200 100% 87%;  /* #b8eaff */
+  --surface-dim: 197 92% 82%;     /* #a7e3fb */
+  --surface-container-low: 200 100% 95%; /* #e5f6ff */
+  --surface-container: 200 100% 93%;     /* #d7f2ff */
+
+  /* Text */
+  --foreground: 199 100% 14%;     /* #003747 */
+  --muted-foreground: 199 45% 33%; /* #316778 */
+  --on-primary: 155 87% 95%;      /* #e4fff5 */
+  --on-secondary: 20 100% 97%;    /* #fff7f4 */
+  --on-tertiary: 270 100% 99%;    /* #fdf7ff */
+
+  /* Borders & Shadows */
+  --border: 199 35% 45%;          /* #4e8295 */
+  --border-subtle: 199 40% 67%;   /* #86b9ce */
+  --shadow-tint: 199 100% 14% / 0.06; /* on-surface at 6% */
+
+  /* Error */
+  --error: 0 54% 44%;             /* #ac3434 */
+  --error-container: 1 88% 67%;   /* #f56965 */
+
+  /* Misc */
+  --inverse-surface: 200 100% 5%; /* #001017 */
+  --inverse-primary: 155 97% 87%; /* #c3fdea */
+
+  /* Spacing base (0.35rem) */
+  --space-base: 0.35rem;
+
+  /* Border radius */
+  --radius-default: 1rem;
+  --radius-lg: 2rem;
+  --radius-xl: 3rem;
+}
+
+/* Dark theme: Midnight Mom */
+.midnight-mom {
+  --brand: 155 37% 45%;
+  --brand-glow: 155 35% 25%;
+  --brand-dim: 155 37% 55%;
+
+  --secondary: 27 60% 50%;
+  --secondary-container: 27 40% 20%;
+
+  --tertiary: 264 22% 55%;
+  --tertiary-container: 264 30% 25%;
+
+  --background: 200 30% 8%;
+  --surface: 200 25% 10%;
+  --surface-elevated: 200 20% 14%;
+  --surface-active: 200 20% 18%;
+  --surface-input: 200 15% 20%;
+  --surface-dim: 200 15% 6%;
+  --surface-container-low: 200 20% 12%;
+  --surface-container: 200 20% 14%;
+
+  --foreground: 200 40% 90%;
+  --muted-foreground: 200 20% 65%;
+  --on-primary: 155 20% 10%;
+  --on-secondary: 27 20% 10%;
+  --on-tertiary: 264 20% 10%;
+
+  --border: 200 15% 30%;
+  --border-subtle: 200 10% 25%;
+  --shadow-tint: 0 0% 0% / 0.3;
+
+  --error: 0 60% 55%;
+  --error-container: 0 40% 25%;
+
+  --inverse-surface: 200 10% 90%;
+  --inverse-primary: 155 40% 25%;
+}

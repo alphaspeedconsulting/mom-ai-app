@@ -1,0 +1,136 @@
+/* ==========================================================================
+   Layer 3: Shared Component Classes — "Lullaby & Logic"
+   ==========================================================================
+   All classes reference CSS variables only — zero hardcoded values.
+   ========================================================================== */
+
+/* Glass panel — glassmorphism for floating elements */
+.mom-glass-panel {
+  background: hsl(var(--background) / 0.6);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-radius: var(--radius-default);
+}
+
+/* Card — surface card with ambient shadow */
+.mom-card {
+  background: hsl(var(--surface));
+  border-radius: var(--radius-default);
+  box-shadow: 0 8px 24px hsl(var(--shadow-tint));
+}
+
+/* Elevated card */
+.mom-card-elevated {
+  background: hsl(var(--surface-elevated));
+  border-radius: var(--radius-default);
+  box-shadow: 0 12px 32px hsl(var(--shadow-tint));
+}
+
+/* Chip — pebble-shaped "Mom-Moment" chip */
+.mom-chip {
+  background: hsl(var(--tertiary-container));
+  color: hsl(var(--tertiary));
+  border-radius: 9999px;
+  padding: 0.35rem 0.875rem;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+/* Gradient hero — signature brand gradient */
+.mom-gradient-hero {
+  background: linear-gradient(
+    135deg,
+    hsl(var(--brand)),
+    hsl(var(--brand-glow))
+  );
+}
+
+/* Primary button */
+.mom-btn-primary {
+  background: linear-gradient(
+    135deg,
+    hsl(var(--brand)),
+    hsl(var(--brand-glow))
+  );
+  color: hsl(var(--on-primary));
+  border: none;
+  border-radius: 9999px;
+  padding: 0.875rem 2rem;
+  font-family: var(--font-headline);
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: opacity 0.2s ease, transform 0.15s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.mom-btn-primary:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+.mom-btn-primary:active {
+  transform: translateY(0);
+}
+
+/* Outline button */
+.mom-btn-outline {
+  background: transparent;
+  color: hsl(var(--brand));
+  border: 1.5px solid hsl(var(--brand));
+  border-radius: 9999px;
+  padding: 0.875rem 2rem;
+  font-family: var(--font-headline);
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.mom-btn-outline:hover {
+  background: hsl(var(--brand));
+  color: hsl(var(--on-primary));
+}
+
+/* Editorial shadow — ambient glow */
+.mom-editorial-shadow {
+  box-shadow: 0 8px 24px hsl(var(--shadow-tint));
+}
+
+/* Section spacing */
+.mom-section {
+  padding: 5rem 1.5rem;
+}
+
+@media (min-width: 768px) {
+  .mom-section {
+    padding: 7rem 2rem;
+  }
+}
+
+/* Container */
+.mom-container {
+  max-width: 72rem;
+  margin: 0 auto;
+  width: 100%;
+}
+
+/* No-scrollbar utility (design system: no visible scrollbars) */
+.mom-no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.mom-no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
