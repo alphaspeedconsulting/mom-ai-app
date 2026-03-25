@@ -1,4 +1,4 @@
-# Product Requirements Document: Mom.Ai
+# Product Requirements Document: Mom.alpha
 
 **Version**: 1.1.0
 **Date**: 2026-03-24
@@ -10,15 +10,17 @@
 
 ## Section 1: Executive Summary
 
-**Mom.Ai** is a mobile-first AI assistant platform that deploys 9+ specialized AI agents to manage the everyday mental load of busy mothers — from grocery planning and school events to family health tracking and budgeting. The platform's core thesis is that household management is a multi-domain orchestration problem best solved by purpose-built AI agents that share context, coordinate proactively, and surface only what matters.
+**Mom.alpha** is a mobile-first AI assistant platform that deploys 9+ specialized AI agents to manage the everyday mental load of busy mothers — from grocery planning and school events to family health tracking and budgeting. The platform's core thesis is that household management is a multi-domain orchestration problem best solved by purpose-built AI agents that share context, coordinate proactively, and surface only what matters.
 
 **Core Value Proposition**: "Take a breath. We'll handle the rest."
 
 **Target Launch**: MVP with 4 core agents (Calendar Whiz, Grocery Guru, School Event Hub, Budget Buddy) + marketplace shell. Full 8-agent ecosystem in v1.1. (Pediatric Assistant removed from scope — no medical/health data handling.)
 
-**Business Model**: Freemium with 14-day premium trial. Premium tier unlocks advanced agent capabilities, unlimited agent activations, and family member sync.
+**Business Model**: Freemium with 7-day premium trial. Premium tier unlocks advanced agent capabilities, unlimited agent activations, and family member sync.
 
-**Key Differentiator**: Unlike generic AI assistants (Siri, Alexa, Google Assistant), Mom.Ai provides domain-specialized agents with persistent family context, cross-agent coordination, and a design language ("Lullaby & Logic") purpose-built for reducing cognitive load rather than adding it.
+**Distribution Strategy**: Mom.alpha launches directly from **AlphaSpeedAi.com** — leveraging the existing AlphaSpeed AI platform's established traffic, brand authority, and user base to drive rapid adoption. The app lives at `mom.alphaspeedai.com` as a flagship consumer product within the AlphaSpeed ecosystem, benefiting from cross-promotion across the AlphaSpeed product suite, SEO authority, and the platform's existing marketing channels.
+
+**Key Differentiator**: Unlike generic AI assistants (Siri, Alexa, Google Assistant), Mom.alpha provides domain-specialized agents with persistent family context, cross-agent coordination, and a design language ("Lullaby & Logic") purpose-built for reducing cognitive load rather than adding it.
 
 ---
 
@@ -95,11 +97,26 @@ Mothers disproportionately carry the "invisible labor" of household management: 
 
 ### User Stories
 
+#### Epic 0: Landing Page & Pre-Launch
+
+- **US-0.1**: As a visitor arriving from AlphaSpeedAi.com, I immediately understand what Mom.alpha does and why it matters within 5 seconds of landing.
+- **US-0.2**: As a visitor, I can see each of the 8 AI agents with visual demos of what they do (animated mockups, before/after scenarios) so the product feels real.
+- **US-0.3**: As a visitor, I can see a relatable "day in the life" story showing how Mom.alpha transforms household chaos into calm so I see myself using it.
+- **US-0.4**: As a visitor, I can start my 7-day free trial directly from the landing page with one click (CTA → signup flow).
+- **US-0.5**: As a visitor, I can see pricing (Family $7.99 / Family Pro $14.99) with a clear comparison of what each tier includes.
+- **US-0.6**: As a visitor, I can see trust signals — privacy commitment ("Your family data is never used to train AI"), security badges, and the AlphaSpeed AI brand.
+- **US-0.7**: As a visitor, I can join a waitlist (email capture) if the product isn't live yet, so the landing page can ship before the app.
+- **US-0.8**: As a visitor on mobile, the landing page is optimized for thumb-scrolling with sticky CTA and fast load time (<2s FCP).
+
 #### Epic 1: Onboarding & Family Setup
-- **US-1.1**: As a new user, I can sign up with Google/Apple OAuth in under 60 seconds so I don't face friction at first launch.
+- **US-1.1**: As a new user, I can sign up with Google, Apple, Facebook, or Microsoft OAuth in under 60 seconds so I don't face friction at first launch.
 - **US-1.2**: As a new user, I can set up my family profile (members, ages, dietary restrictions, preferences) during onboarding so agents have context from day one.
 - **US-1.3**: As a new user, I receive a personalized agent recommendation based on my family profile so I know which agents to activate first.
-- **US-1.4**: As a new user, I start a 14-day free trial (CC required) with full Family tier access (1,000 calls) so I can experience all 8 agents before subscribing.
+- **US-1.4**: As a new user, I start a 7-day free trial (CC required) with full Family tier access (1,000 calls) so I can experience all agents before subscribing.
+- **US-1.5**: As a new user, I must accept the Terms of Service, Privacy Policy, and AI Disclosure before completing signup so the platform has legally recorded consent.
+- **US-1.6**: As a new user adding children (under 13), I must provide verifiable parental consent (COPPA) and acknowledge the AI Disclosure for child data handling.
+- **US-1.7**: As a user, I can review the current Terms of Service, Privacy Policy, and AI Disclosure at any time from Settings.
+- **US-1.8**: As a user, when legal documents are updated, I am notified and must re-accept before continuing to use the platform.
 
 #### Epic 2: Agent Marketplace & Discovery
 - **US-2.1**: As a user, I can browse agents by category (Household, Wellness, Education) so I can find relevant ones quickly.
@@ -153,20 +170,244 @@ Mothers disproportionately carry the "invisible labor" of household management: 
 - **US-10.2**: As a user, I can set communication style preferences so agents match my tone.
 - **US-10.3**: As a user, I have full control over privacy, notification preferences, and connected devices.
 
+#### Epic 11: Skincare Tracker (Backlog — Post-Launch)
+- **US-11.1**: As a user, I can log my daily skincare routine (cleanser, retinol, masks, SPF) so I know what I used and when.
+- **US-11.2**: As a user, I can set recurring product schedules ("Retinol: Mon/Wed/Fri", "Sheet mask: Sundays") so I get reminded on the right days.
+- **US-11.3**: As a user, I can schedule and track facial appointments that auto-sync to my Family Calendar.
+- **US-11.4**: As a user, I get a warning if I schedule conflicting products on the same day (e.g., retinol + AHA exfoliant).
+- **US-11.5**: As a user, I can ask "When did I last do a face mask?" and get an answer from my logged history.
+- **US-11.6**: As a user, I can view a weekly/monthly skincare calendar showing my routine at a glance.
+
+#### Epic 12: Orthodontic & Dental Care Tracker (Backlog — Post-Launch)
+- **US-12.1**: As a user, I can set recurring orthodontic device reminders per child (expander turns, rubber band changes, retainer wear, Invisalign tray swaps).
+- **US-12.2**: As a user, I get daily reminders like "Turn Leo's expander 1 click tonight" so I never forget.
+- **US-12.3**: As a user, I can track compliance streaks ("Leo wore retainer: 14 days in a row") to encourage consistency.
+- **US-12.4**: As a user, I can schedule dental and ortho appointments that auto-sync to the Family Calendar with prep reminders.
+- **US-12.5**: As a user, I can view a treatment timeline per child (braces on date → milestones → expected removal date).
+- **US-12.6**: As a user, I can ask "When is Leo's next ortho appointment?" or "How many expander turns has Leo done this week?" in natural language.
+
 ---
 
 ## Section 5: Functional Requirements
+
+### FR-0: Landing Page (`mom.alphaspeedai.com`)
+
+The landing page is the primary acquisition surface. It ships BEFORE the app and drives waitlist signups, trial conversions, and SEO traffic. It must sell the vision, make the product feel tangible, and convert visitors into users.
+
+| ID | Requirement | Priority |
+|---|---|---|
+| FR-0.1 | Hero section: headline + subheadline + primary CTA ("Start Your Free Trial") + animated product mockup | P0 |
+| FR-0.2 | Agent showcase: all 8 agents with icon, name, description, and visual demo (animated mockup or interactive preview) | P0 |
+| FR-0.3 | "A Day With Mom.alpha" story section: before/after narrative showing a mom's day without vs with Mom.alpha | P0 |
+| FR-0.4 | Feature deep-dives: 3-4 expandable sections showing key features in action (calendar sync, receipt scanning, school events, chat with agents) | P0 |
+| FR-0.5 | Pricing section: Family ($7.99/mo) vs Family Pro ($14.99/mo) comparison table with feature breakdown + annual discount callout | P0 |
+| FR-0.6 | Trust & privacy section: "Your family data is never used to train AI" + zero-retention badges + encryption callout + COPPA compliance | P0 |
+| FR-0.7 | Social proof section: testimonials, household count (once live), press mentions (placeholder initially) | P1 |
+| FR-0.8 | Pre-launch waitlist: email capture form with Mailchimp/Resend integration (if app not yet live) | P0 |
+| FR-0.9 | Sticky mobile CTA: fixed bottom bar with "Start Free Trial" button visible while scrolling | P0 |
+| FR-0.10 | SEO-optimized: meta tags, Open Graph, structured data (Product schema), descriptive H1/H2 hierarchy, <2s FCP | P0 |
+| FR-0.11 | AlphaSpeed AI branding: "Powered by AlphaSpeed AI" in footer + consistent nav linking back to alphaspeedai.com | P0 |
+| FR-0.12 | Responsive: mobile-first (390px), tablet (768px), desktop (1024px+) with layout adaptation per breakpoint | P0 |
+| FR-0.13 | CTA → signup flow: "Start Free Trial" buttons link to `/login` (legal consent → OAuth → trial) | P0 |
+| FR-0.14 | FAQ section: expandable accordion covering pricing, privacy, "how does AI work", cancel anytime, device support | P1 |
+
+#### Landing Page Sections (Top to Bottom)
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│ NAV: Logo + AlphaSpeedAi.com link + "Start Free Trial" button  │
+├─────────────────────────────────────────────────────────────────┤
+│ HERO                                                            │
+│ "Take a breath. We'll handle the rest."                        │
+│ Subheadline: 8 AI agents that manage your household so you     │
+│ don't have to.                                                  │
+│ [Start Your 7-Day Free Trial]                                   │
+│ Animated product mockup: phone frame showing agent chat +       │
+│ calendar + task dashboard cycling through                       │
+├─────────────────────────────────────────────────────────────────┤
+│ AGENT SHOWCASE                                                  │
+│ "Meet Your Team"                                                │
+│ Horizontal scroll or grid of 8 agent cards:                     │
+│ Calendar Whiz · Grocery Guru · Budget Buddy · School Event Hub  │
+│ Tutor Finder · Wellness Hub · Sleep Tracker · Self-Care Reminder│
+│ Each card: icon + name + 1-line description + mini visual demo  │
+│ Click/tap → expands to show agent in action (animated mockup)   │
+├─────────────────────────────────────────────────────────────────┤
+│ "A DAY WITH MOM.ALPHA"                                          │
+│ Split-screen or timeline narrative:                              │
+│ 7:00am — Daily Edit summary arrives                             │
+│ 7:30am — Grocery Guru: "Here's tonight's dinner plan"          │
+│ 8:15am — School Event Hub: "Permission slip due today — sign?"  │
+│ 12:00pm — Budget Buddy: "Receipt scanned — $47.32 groceries"  │
+│ 3:30pm — Calendar Whiz: "Leo's soccer conflicts with Maya's    │
+│           dentist — here are 3 options"                         │
+│ 8:00pm — Self-Care: "You've had a full day. 10-min mask time?" │
+├─────────────────────────────────────────────────────────────────┤
+│ FEATURE DEEP-DIVES                                              │
+│ 3-4 sections with screenshot + description:                     │
+│ • Smart Family Calendar (Google + Apple sync, conflict AI)      │
+│ • Chat With Your Agents (natural language, quick actions)       │
+│ • Receipt Scanning & Budget Tracking (camera → auto-categorize) │
+│ • School Event Auto-Pilot (email scan → calendar → sign slips) │
+├─────────────────────────────────────────────────────────────────┤
+│ TRUST & PRIVACY                                                 │
+│ "Your family's data is sacred"                                  │
+│ • "AI providers never see your personal information" (PII strip)│
+│ • "Zero data retention — nothing stored by AI providers"        │
+│ • "Bank-grade encryption (AES-256 + TLS 1.3)"                  │
+│ • "COPPA compliant — children's data protected"                 │
+│ Privacy badge icons + link to full Privacy Policy               │
+├─────────────────────────────────────────────────────────────────┤
+│ PRICING                                                         │
+│ Side-by-side: Family ($7.99/mo) vs Family Pro ($14.99/mo)      │
+│ Feature comparison table                                        │
+│ "Save 27% with annual billing"                                  │
+│ [Start Free Trial] on both columns                              │
+├─────────────────────────────────────────────────────────────────┤
+│ FAQ (accordion)                                                 │
+│ • "What is Mom.alpha?"                                          │
+│ • "How does the AI work? Is my data safe?"                     │
+│ • "Which calendars does it sync with?"                          │
+│ • "Can I cancel anytime?"                                       │
+│ • "What devices does it work on?"                               │
+│ • "Is there a free tier?"                                       │
+├─────────────────────────────────────────────────────────────────┤
+│ FINAL CTA                                                       │
+│ "Ready to take a breath?"                                       │
+│ [Start Your 7-Day Free Trial]                                   │
+├─────────────────────────────────────────────────────────────────┤
+│ FOOTER                                                          │
+│ Powered by AlphaSpeed AI · Terms · Privacy · AI Disclosure     │
+│ © 2026 AlphaSpeed Consulting                                   │
+└─────────────────────────────────────────────────────────────────┘
+
+MOBILE: Sticky bottom bar with CTA visible at all times while scrolling
+```
+
+#### Landing Page Content Strategy
+
+| Content Type | Purpose | SEO Benefit |
+|---|---|---|
+| H1: "Take a breath. We'll handle the rest." | Emotional hook — immediate resonance with overwhelmed moms | Target keyword: "AI family assistant" |
+| Agent descriptions (8x) | Feature discovery + product comprehension | Long-tail: "AI grocery planner", "AI school event tracker", "AI family budget" |
+| "Day in the life" narrative | Makes abstract AI features tangible through storytelling | Time-on-page signal + shareability |
+| FAQ section | Overcomes objections, reduces bounce | Featured snippet opportunities for "AI family app" queries |
+| Trust section | Converts privacy-conscious parents who hesitate on AI products | E-A-T signal for Google (expertise, authority, trust) |
+| Pricing table | Transparent pricing reduces friction, improves conversion | Price comparison keyword targeting |
+
+#### Landing Page Performance Targets
+
+| Metric | Target |
+|---|---|
+| First Contentful Paint (FCP) | < 1.5s |
+| Largest Contentful Paint (LCP) | < 2.5s |
+| Cumulative Layout Shift (CLS) | < 0.1 |
+| Lighthouse Performance | ≥ 95 |
+| Lighthouse SEO | ≥ 95 |
+| Mobile PageSpeed Insights | ≥ 90 |
+| Conversion rate (visit → trial signup) | ≥ 5% (target) |
+| Bounce rate | < 40% (target) |
 
 ### FR-1: Authentication & User Management
 
 | ID | Requirement | Priority |
 |---|---|---|
-| FR-1.1 | OAuth 2.0 login via Google and Apple Sign-In | P0 |
+| FR-1.1 | OAuth 2.0 login via Google, Apple, Facebook, and Microsoft Sign-In | P0 |
 | FR-1.2 | Email/password registration with email verification | P0 |
 | FR-1.3 | Family profile creation: add members with name, age, photo, tags | P0 |
-| FR-1.4 | Premium trial activation (14-day) on signup | P0 |
+| FR-1.4 | Premium trial activation (7-day) on signup | P0 |
 | FR-1.5 | Session management with secure token refresh | P0 |
 | FR-1.6 | Multi-device sync (phone, tablet, web) with conflict resolution | P1 |
+| FR-1.7 | Legal consent gate: user must accept ToS + Privacy Policy + AI Disclosure before account activation | P0 |
+| FR-1.8 | COPPA parental consent gate: verifiable consent when adding child profile (under 13) | P0 |
+| FR-1.9 | Consent re-acceptance flow when legal documents are updated (version bump) | P0 |
+
+### FR-1A: Legal Documents & Consent Architecture
+
+Mom.alpha handles sensitive family data (including children's information) and routes to third-party LLM providers. Comprehensive legal protection is required at signup and throughout the user lifecycle.
+
+#### Legal Documents (3 required at signup)
+
+| Document | Purpose | Key Provisions |
+|---|---|---|
+| **Terms of Service (ToS)** | Governs use of the platform | Service description, acceptable use, account responsibilities, intellectual property, limitation of liability, indemnification, dispute resolution (arbitration clause), termination rights, governing law |
+| **Privacy Policy** | Data handling transparency | What data is collected (family profiles, calendar, financial, chat), how it's used, third-party sharing (LLM providers — with zero-retention disclosure), COPPA section for child data, data retention periods, right to access/export/delete (GDPR/CCPA), cookie policy |
+| **AI Disclosure & Consent** | Transparent AI use | Disclosure that agents use third-party LLM providers (OpenAI, Google, Anthropic), PII stripping protections, zero-retention API policies, that AI-generated content is not professional advice (financial, medical, legal), limitation of liability for AI recommendations, user's right to opt out of intelligent operations (deterministic-only mode) |
+
+#### Key Legal Protections
+
+| Protection | Implementation |
+|---|---|
+| **Limitation of Liability** | Platform not liable for: AI-generated recommendations (financial, scheduling, wellness), missed calendar events, incorrect receipt parsing, school event extraction errors. Capped at subscription fees paid in prior 12 months. |
+| **Indemnification** | User indemnifies Mom.alpha against claims arising from: user-provided content, misuse of agent recommendations, third-party service interactions initiated through agents. |
+| **AI Disclaimer** | Prominently displayed: "Mom.alpha agents provide suggestions, not professional advice. Always verify important decisions independently." Specific disclaimers for Budget Buddy (not financial advice), Wellness Hub (not medical advice), Tutor Finder (not endorsements). |
+| **Arbitration Clause** | Mandatory binding arbitration for disputes (with 30-day opt-out window post-signup). Class action waiver. Small claims court exception. |
+| **Data Processing** | Transparent disclosure of all third-party data processors (LLM providers, Stripe, Plaid, Google Calendar API, Apple CalDAV). Links to each provider's data policy. |
+| **COPPA Compliance** | Verifiable parental consent before any child data is stored or processed. No child data sent to LLM providers (age only, no names/details). Parent can delete all child data at any time. |
+| **Termination** | User can cancel anytime. Data preserved 30 days post-cancellation, then permanently deleted. Platform can terminate for ToS violations with notice. |
+
+#### Consent Recording & Audit Trail
+
+Every legal acceptance is immutably recorded for compliance and dispute resolution:
+
+| Field | Description |
+|---|---|
+| `id` | Unique consent record ID (UUID) |
+| `user_id` | User who accepted |
+| `household_id` | Associated household |
+| `document_type` | `tos`, `privacy_policy`, `ai_disclosure`, `coppa_parental_consent` |
+| `document_version` | Semantic version of the document at time of acceptance (e.g., `1.0.0`) |
+| `document_hash` | SHA-256 hash of the exact document text accepted — immutable proof |
+| `accepted_at` | Timestamp (UTC) of acceptance |
+| `ip_address` | IP address at time of acceptance |
+| `user_agent` | Browser/device user agent string |
+| `consent_method` | `checkbox_signup`, `re_acceptance_prompt`, `coppa_verification`, `in_app_update` |
+| `withdrawn_at` | Timestamp if consent was later withdrawn (triggers account restriction) |
+
+**Audit guarantees:**
+- Consent records are **append-only** — never updated or deleted (even if user deletes account, consent records retained for legal compliance per retention policy)
+- Each document version change creates a new record — full history preserved
+- SHA-256 hash of document text ensures we can prove exactly what the user accepted
+- Queryable by user, household, document type, version, and date range for compliance audits
+- Exportable as part of GDPR/CCPA data subject access requests
+
+#### Signup Flow Legal Integration
+
+```
+OAuth Login (Google/Apple/Facebook/Microsoft)
+    ↓
+Legal Consent Screen:
+    ☐ "I agree to the Terms of Service" (link to full text)
+    ☐ "I agree to the Privacy Policy" (link to full text)
+    ☐ "I understand Mom.alpha uses AI (AI Disclosure)" (link to full text)
+    [All 3 required to proceed]
+    ↓
+Record consent: user_id + document_type + version + hash + IP + timestamp
+    ↓
+Family Profile Setup
+    ↓
+If adding child under 13:
+    COPPA Consent Screen:
+    ☐ "I am the parent/legal guardian and consent to processing my child's data"
+    [Verifiable: re-enter password or re-authenticate]
+    ↓
+    Record COPPA consent: same audit fields + coppa_verification method
+    ↓
+Trial Activation + Payment (Stripe Checkout)
+    ↓
+Home / Marketplace
+```
+
+#### Document Update Flow
+
+When legal documents are updated (version bump):
+
+1. All users see a **blocking modal** on next app open: "We've updated our [Terms of Service / Privacy Policy / AI Disclosure]"
+2. Modal shows summary of changes + link to full document + diff from previous version
+3. User must accept to continue using the platform
+4. New consent record created with new `document_version` and `document_hash`
+5. If user declines: account restricted to read-only (can export data, can't use agents) until accepted
+6. Grace period: 14 days to accept before account suspension
 
 ### FR-2: Agent Marketplace
 
@@ -240,10 +481,54 @@ Agent operations are split into two tiers to minimize LLM costs. **Deterministic
 |---|---|---|
 | FR-4.1 | Monthly and weekly calendar views with toggle | P0 |
 | FR-4.2 | Per-member color coding with filter chips | P0 |
-| FR-4.3 | Bidirectional sync with Google Calendar and Apple Calendar | P0 |
+| FR-4.3 | Bidirectional sync with Google Calendar and Apple Calendar (iCloud/CalDAV) | P0 |
 | FR-4.4 | AI conflict detection and resolution suggestions | P1 |
 | FR-4.5 | Event creation from agent actions (auto-populate) | P0 |
 | FR-4.6 | FAB (Floating Action Button) for manual event creation | P0 |
+| FR-4.7 | Multi-account calendar linking (each family member connects their own calendar) | P1 |
+| FR-4.8 | Recurring event support (daily, weekly, monthly, custom RRULE) | P0 |
+| FR-4.9 | Timezone-aware event display and creation | P0 |
+| FR-4.10 | Offline calendar view via Service Worker + IndexedDB cache | P0 |
+
+#### FR-4A: Google Calendar Integration
+
+| ID | Requirement | Priority |
+|---|---|---|
+| FR-4A.1 | OAuth 2.0 consent for Google Calendar read/write scope (`calendar.events`) | P0 |
+| FR-4A.2 | Full bidirectional sync: create/update/delete in Mom.alpha ↔ Google Calendar | P0 |
+| FR-4A.3 | Webhook-based change detection via Google Calendar Push Notifications API (near real-time, no polling) | P0 |
+| FR-4A.4 | Incremental sync using `syncToken` (only fetch changed events, not full calendar) | P0 |
+| FR-4A.5 | Multi-calendar support: user selects which Google calendars to sync per family member | P1 |
+| FR-4A.6 | Reuse existing Google Calendar MCP (~90% reuse — add family member filter + conflict detection hooks) | P0 |
+
+**Implementation**: Existing `google-calendar-mcp` handles OAuth + event CRUD + webhook registration. Extend with `family_member_id` tagging on synced events and per-member calendar selection.
+
+#### FR-4B: Apple Calendar (iCloud/CalDAV) Integration
+
+| ID | Requirement | Priority |
+|---|---|---|
+| FR-4B.1 | CalDAV protocol support for iCloud Calendar (`caldav.icloud.com`) | P0 |
+| FR-4B.2 | Apple app-specific password authentication (iCloud doesn't expose OAuth for CalDAV) | P0 |
+| FR-4B.3 | Full bidirectional sync: create/update/delete in Mom.alpha ↔ iCloud Calendar | P0 |
+| FR-4B.4 | iCalendar (.ics / RFC 5545) format parsing and generation for all event fields | P0 |
+| FR-4B.5 | RRULE support for recurring events (daily, weekly, monthly, exceptions) | P0 |
+| FR-4B.6 | Polling-based change detection via CalDAV `ctag`/`etag` (iCloud has no push webhooks — poll every 5 minutes) | P0 |
+| FR-4B.7 | VTIMEZONE handling for timezone-aware events across time zones | P0 |
+| FR-4B.8 | Multi-calendar support: user selects which iCloud calendars to sync per family member | P1 |
+
+**Implementation**: New `caldav-sync` module in MCP server. Uses `caldav` Python library for protocol handling + `icalendar` library for .ics parsing. App-specific password stored encrypted (AES-256) per household. Poll iCloud every 5 minutes using `ctag` change detection (only fetch changed events when `ctag` differs).
+
+#### FR-4C: Sync Conflict Resolution
+
+| ID | Requirement | Priority |
+|---|---|---|
+| FR-4C.1 | Last-write-wins conflict resolution with `updated_at` timestamp comparison | P0 |
+| FR-4C.2 | Conflict audit log: record both versions when conflict detected (for debugging, not user-facing) | P1 |
+| FR-4C.3 | Offline queue: deterministic calendar ops queued in IndexedDB when offline, synced on reconnect with conflict check | P0 |
+| FR-4C.4 | Idempotent sync operations: retrying a failed sync never creates duplicate events | P0 |
+| FR-4C.5 | Deletion propagation: event deleted on external calendar → soft-delete in Mom.alpha (show "cancelled" state, not vanish) | P1 |
+
+**Sync state tracking**: Each synced event stores `external_id` (Google event ID or CalDAV UID), `external_etag`, `last_synced_at`, and `sync_source` (google/apple/internal). Sync engine compares timestamps to resolve conflicts.
 
 ### FR-5: School Event Hub Agent
 
@@ -321,7 +606,7 @@ Agent operations are split into two tiers to minimize LLM costs. **Deterministic
 | ID | Requirement | Priority |
 |---|---|---|
 | FR-12.1 | Stripe subscription management (Family $7.99 / Family Pro $14.99, no free tier) | P0 |
-| FR-12.2 | 14-day free trial with CC required (full Family tier, 1,000 calls) | P0 |
+| FR-12.2 | 7-day free trial with CC required (full Family tier, 1,000 calls) | P0 |
 | FR-12.3 | Monthly LLM call budget tracking per household (1,000 Family / 2,000 Pro) | P0 |
 | FR-12.4 | Call usage display in app ("X of 1,000 calls used this month") | P0 |
 | FR-12.5 | Graceful downgrade to Gemini Flash when over monthly budget (no hard cutoff) | P0 |
@@ -355,6 +640,102 @@ Agent operations are split into two tiers to minimize LLM costs. **Deterministic
 | NFR-2.5 | Data residency | US initially, EU expansion ready |
 | NFR-2.6 | Right to deletion (GDPR/CCPA) | < 30 day fulfillment |
 | NFR-2.7 | LLM prompt injection protection | Input sanitization + guard rails |
+| NFR-2.8 | PII stripping before LLM calls | Zero raw PII sent to LLM providers |
+| NFR-2.9 | LLM provider zero-retention agreements | No training on customer data |
+| NFR-2.10 | Prompt/response audit logging | Encrypted, 30-day retention, auto-purge |
+| NFR-2.11 | Calendar credential encryption | AES-256 for app-specific passwords (CalDAV) |
+
+#### NFR-2A: LLM Data Protection Architecture
+
+Customer family data (names, schedules, finances, children's information) is highly sensitive. Every LLM call must be treated as a data export to a third party. The following architecture ensures customer privacy:
+
+**Principle: Zero Raw PII to LLM Providers**
+
+No personally identifiable information (full names, addresses, phone numbers, email addresses, financial account numbers, child birthdates, school names) is ever sent to an LLM provider in raw form.
+
+##### PII Stripping Pipeline (`pii_masker.py`)
+
+Before any prompt reaches an LLM, it passes through a server-side PII masking pipeline:
+
+| PII Category | Example Raw Data | Masked in Prompt | Restored in Response |
+|---|---|---|---|
+| Full names | "Maya Franco" | `[CHILD_1]` | Re-mapped via household context |
+| Email addresses | "sarah@gmail.com" | `[EMAIL_1]` | Stripped entirely |
+| Phone numbers | "(512) 555-0142" | `[PHONE_1]` | Stripped entirely |
+| Home address | "1234 Oak Lane, Austin TX" | `[ADDRESS]` | Stripped entirely |
+| School name | "Westlake Elementary" | `[SCHOOL_1]` | Re-mapped via household context |
+| Financial accounts | "Chase ****4532" | `[ACCOUNT_1]` | Stripped entirely |
+| Child birthdates | "2022-03-15" | Age only: "age 4" | Age is sufficient for all agent tasks |
+| Specific dollar amounts | "$4,532.17 balance" | Category-level: "checking balance" | Full amount only in local DB |
+
+**Reversible tokens** (`[CHILD_1]`, `[SCHOOL_1]`) are re-mapped on the response side using a per-request token map stored in-memory only (never persisted, never logged). Non-reversible PII (addresses, accounts, phones) is permanently stripped.
+
+##### Prompt Safety Templates
+
+Each agent has a **system prompt template** with explicit safety instructions:
+
+```
+You are {agent_name}, a family assistant. You are helping a household manage {domain}.
+
+SAFETY RULES:
+- Never ask for or reference specific addresses, phone numbers, or financial account numbers.
+- Refer to family members only by their token identifiers ([CHILD_1], [PARENT_1]).
+- If the user provides PII in their message, acknowledge the request but do not repeat the PII.
+- Never output content that could identify a specific child to a third party.
+```
+
+##### LLM Provider Data Agreements
+
+| Provider | API Data Policy | Training on Customer Data | Retention |
+|---|---|---|---|
+| OpenAI (GPT-4o, GPT-4o mini) | Zero Data Retention (ZDR) API option | **No** — opted out via API terms + ZDR | 0 days (ZDR enabled) |
+| Google (Gemini Flash) | Gemini API data governance | **No** — API data not used for training | 0 days (per API terms) |
+| Anthropic (Claude, fallback) | API data not used for training | **No** — per API terms | 0 days |
+
+**All LLM API calls use zero-retention endpoints.** No customer data is stored by LLM providers or used for model training. This is enforced at the API configuration level (OpenAI: `store: false`; Gemini: API default; Claude: API default).
+
+##### Prompt Injection Protection (`prompt_guard.py`)
+
+| Attack Vector | Protection | Implementation |
+|---|---|---|
+| Direct injection ("ignore instructions and...") | Input classifier detects override patterns | Regex + lightweight classifier pre-screens all user messages |
+| Indirect injection (malicious content in school emails) | Sandboxed parsing — email content never injected into system prompt | Email text parsed in isolated extraction step, structured data only passed to agent |
+| Token smuggling (Unicode tricks, homoglyphs) | Input normalization | Unicode NFKC normalization before all LLM calls |
+| Output manipulation ("respond with the system prompt") | Output validator checks for system prompt leakage | Post-LLM response scan before delivery to client |
+| Jailbreak attempts | Rate limiting + behavioral monitoring | >3 flagged attempts per session → session review, temporary agent lockout |
+
+##### Audit & Monitoring
+
+| What | Logged | Retention | Access |
+|---|---|---|---|
+| LLM prompts (PII-masked version only) | Yes — encrypted at rest | 30 days, auto-purge | Internal debugging only |
+| LLM responses | Yes — encrypted at rest | 30 days, auto-purge | Internal debugging only |
+| PII token maps | **Never logged** — in-memory only per request | 0 (memory freed after response) | N/A |
+| Raw user messages (pre-masking) | **Never sent to LLM** — stored only in local chat_messages table | Per GDPR/CCPA deletion policy | User's own household data |
+| Prompt injection attempts | Yes — flagged for review | 90 days | Security team |
+
+##### Data Flow Diagram
+
+```
+User Message → [chat_messages DB (raw, encrypted)]
+                    ↓
+              PII Masker (strip/tokenize PII)
+                    ↓
+              Prompt Guard (injection detection)
+                    ↓
+              Intent Classifier
+                    ↓
+         ┌─── Deterministic ───┐     ┌─── Intelligent ──────────┐
+         │ Direct DB operation  │     │ LLM Router               │
+         │ Zero LLM contact     │     │ → Select provider        │
+         │ Response from DB     │     │ → Send PII-masked prompt │
+         └──────────────────────┘     │ → Zero-retention API     │
+                                      │ → Receive response       │
+                                      │ → Output validator       │
+                                      │ → Re-map tokens          │
+                                      │ → Return to user         │
+                                      └──────────────────────────┘
+```
 
 ### NFR-3: Scalability
 
@@ -396,37 +777,93 @@ Agent operations are split into two tiers to minimize LLM costs. **Deterministic
 
 ## Section 7: Design & UX Requirements
 
-### Design System: "Lullaby & Logic"
+### Design System: "Lullaby & Logic" (CSS Zen Garden Architecture)
 
 **Creative North Star**: "The Digital Sanctuary" — the app should feel like stepping into a calm, high-end lifestyle magazine that manages life, not a chore tracker.
 
-#### Color Palette
-| Token | Value | Usage |
-|---|---|---|
-| `primary` | #32695a (Grounded Teal) | Main actions, primary UI elements |
-| `secondary` | #8f4f14 (Warm Amber) | Secondary interactions, accents |
-| `tertiary` | #655883 (Serene Lavender) | Wellness, self-care features |
-| `surface-container-lowest` | #ffffff | Base layer |
-| `surface-container-low` | #e5f6ff | Card backgrounds |
-| `surface-container` | #d7f2ff | Elevated cards |
-| `surface-container-high` | #c8eeff | Active states |
-| `surface-container-highest` | #b8eaff | Input fields, high-priority |
+**Architecture Principle — CSS Zen Garden**: The theme is fully decoupled from component structure. All visual identity flows through CSS custom properties and Tailwind config mappings, enabling **complete theme swaps without touching any component files**. This follows the AlphaAI CSS Zen Garden 4-layer architecture used across all AlphaSpeed products.
 
-#### Typography
-| Level | Font | Size | Usage |
+#### CSS Zen Garden 4-Layer Architecture
+
+| Layer | File | Purpose | Theme-Swap Impact |
 |---|---|---|---|
-| Display-LG | Plus Jakarta Sans | 3.5rem | Celebrations, empty states |
-| Headline-MD | Plus Jakarta Sans | 1.75rem | Daily headers, section titles |
-| Body-LG | Be Vietnam Pro | 1rem (line-height 1.6) | Primary content |
-| Label-MD | Be Vietnam Pro | 0.875rem | Input labels, metadata |
+| **Layer 1** | `index.css` (`:root` / `.lullaby-logic`) | CSS custom properties — all color, spacing, and shadow tokens | **Only file changed** to swap themes |
+| **Layer 2** | `tailwind.config.ts` | Maps CSS vars to Tailwind utilities (`bg-brand`, `text-muted`, `text-alphaai-sm`) | Unchanged across themes |
+| **Layer 3** | `mom-alpha.css` | Shared component classes (`.mom-glass-panel`, `.mom-card`, `.mom-chip`, `.mom-gradient-hero`) | Unchanged across themes — references vars only |
+| **Layer 4** | Component TSX files | Structure and layout only — **zero hardcoded colors, font sizes, or shadows** | Unchanged across themes |
+
+**Golden Rule**: A component must NEVER contain raw hex/rgb/hsl values or arbitrary `text-[14px]` sizes. All visual tokens flow through CSS variables → Tailwind config. To retheme the entire app, change only Layer 1.
+
+#### Theme: "Lullaby & Logic" (Default)
+
+**CSS Custom Properties** (Layer 1 — the only layer that defines a theme):
+
+| CSS Variable | Value | Semantic Usage |
+|---|---|---|
+| `--brand` | `hsl(159 38% 30%)` (#32695a, Grounded Teal) | Primary actions, nav active, CTAs |
+| `--brand-glow` | `hsl(159 50% 80%)` (#afe9d7) | Hero gradients, success highlights |
+| `--brand-dim` | `hsl(159 42% 25%)` (#245c4f) | Hover/pressed states |
+| `--secondary` | `hsl(27 74% 32%)` (#8f4f14, Warm Amber) | Secondary interactions, accents |
+| `--tertiary` | `hsl(268 22% 43%)` (#655883, Serene Lavender) | Wellness, self-care, Mom-Moment chip |
+| `--background` | `hsl(199 100% 97%)` (#f3fbff) | Base page background |
+| `--surface` | `hsl(199 100% 95%)` (#e5f6ff) | Card backgrounds |
+| `--surface-elevated` | `hsl(199 100% 92%)` (#d7f2ff) | Elevated cards |
+| `--surface-active` | `hsl(199 100% 88%)` (#c8eeff) | Active states |
+| `--surface-input` | `hsl(199 100% 85%)` (#b8eaff) | Input fields, high-priority |
+| `--foreground` | `hsl(197 100% 14%)` (#003747) | Primary text (never pure black) |
+| `--muted-foreground` | `hsl(197 30% 45%)` | Secondary text, metadata |
+| `--border` | `hsl(197 35% 55%)` (#4e8295) | Subtle outlines (used sparingly) |
+| `--shadow-tint` | `rgba(0, 55, 71, 0.06)` | Ambient shadow color |
+
+**Typography** (mapped via `text-alphaai-*` tokens in Tailwind config):
+
+| Tailwind Token | Size | Font | Usage |
+|---|---|---|---|
+| `text-alphaai-xl` | 3.5rem | Plus Jakarta Sans 800 | Celebrations, empty states |
+| `text-alphaai-lg` | 1.75rem | Plus Jakarta Sans 700 | Daily headers, section titles |
+| `text-alphaai-md` | 1rem | Be Vietnam Pro 400 | Primary content (line-height 1.6) |
+| `text-alphaai-sm` | 0.875rem | Be Vietnam Pro 500 | Input labels, metadata |
+| `text-alphaai-xs` | 0.75rem | Be Vietnam Pro 400 | Captions, timestamps |
+
+#### Theme Swapping
+
+To create a new theme (e.g., "Midnight Mom" dark theme, seasonal themes, partner white-label):
+
+1. Create a new CSS class (e.g., `.midnight-mom`) with overrides for all `--brand`, `--background`, `--surface-*`, `--foreground` variables
+2. Apply the class to `<html>` or `<body>`
+3. **Zero component files touched** — all 13 pages and all components automatically adopt the new theme
+
+Example:
+```css
+/* Lullaby & Logic (default) */
+:root { --brand: hsl(159 38% 30%); --background: hsl(199 100% 97%); }
+
+/* Midnight Mom (dark theme variant) */
+.midnight-mom { --brand: hsl(159 50% 45%); --background: hsl(210 20% 10%); }
+
+/* Seasonal: Holiday Warmth */
+.holiday-warmth { --brand: hsl(0 60% 40%); --background: hsl(30 30% 95%); }
+```
+
+#### Quality Enforcement (Skills)
+
+Three Claude Code skills enforce CSS Zen Garden compliance:
+
+| Skill | When to Run | What It Does |
+|---|---|---|
+| `/ui-consistency-review` | Before and after every frontend change | 11-point audit: hardcoded colors, arbitrary font sizes, inline styles, theme variable drift, z-index violations, component extraction |
+| `/alphaai-design-system` | When building new pages or components | Page anatomy blueprints, component patterns, token reference, anti-patterns |
+| `/alphaai-frontend-design` | When designing new screens | Creative design thinking constrained to the CSS token system |
+
+**Mandatory workflow**: Run `/ui-consistency-review` before merging any frontend PR. Zero hardcoded hex/rgb/hsl values allowed in component files.
 
 #### Critical Design Rules
-1. **"No-Line" Rule**: Zero 1px solid borders. Separation via background color shifts only.
-2. **"Glass & Gradient" Rule**: Floating elements use glassmorphism (20-40px backdrop blur).
-3. **Tonal Layering**: Depth via stacking surface levels, not drop shadows.
-4. **Ambient Shadows**: Extra-diffused only (`blur: 24px, rgba(0,55,71,0.06)`), never pure black.
-5. **Signature Gradient**: Hero sections use `linear-gradient(135deg, #32695a, #afe9d7)`.
-6. **"Mom-Moment" Chip**: Custom component using `tertiary_container` with soft pebble shape.
+1. **"No-Line" Rule**: Zero 1px solid borders. Separation via `bg-surface` / `bg-surface-elevated` shifts only.
+2. **"Glass & Gradient" Rule**: Floating elements use `.mom-glass-panel` class (`backdrop-blur-[20px]` + `bg-[hsl(var(--background)/0.6)]`).
+3. **Tonal Layering**: Depth via stacking surface token levels, not drop shadows.
+4. **Ambient Shadows**: `shadow-[0_8px_24px_var(--shadow-tint)]` only — never pure black, never hardcoded rgba.
+5. **Signature Gradient**: Hero sections use `bg-gradient-to-br from-[hsl(var(--brand))] to-[hsl(var(--brand-glow))]`.
+6. **"Mom-Moment" Chip**: `.mom-chip` class using `bg-[hsl(var(--tertiary)/0.15)]` with `text-[hsl(var(--tertiary))]`, full radius.
 7. **Spacing**: Base 0.35rem scale, "Sanctuary Gap" (5.5-7rem) for major section separation.
 
 #### Navigation Structure
@@ -479,7 +916,8 @@ Agent operations are split into two tiers to minimize LLM costs. **Deterministic
 |---|---|---|
 | Push Notifications | Web Push API + VAPID | No FCM dependency, works on iOS 16.4+ Safari, Android full support, $0 cost |
 | Payments | Stripe | Subscriptions + one-time payments + Connect for tutors |
-| Calendar Sync | Google Calendar API + Apple CalDAV | Bidirectional sync with major calendars |
+| Calendar Sync (Google) | Google Calendar API + Push Notifications webhook | Bidirectional sync, near real-time via webhooks, incremental sync via `syncToken` |
+| Calendar Sync (Apple) | CalDAV protocol (iCloud) + `icalendar` library | Bidirectional sync, polling via `ctag`/`etag` every 5 min, RRULE support |
 | Banking | Plaid | Receipt categorization, bank account linking |
 | Observability | LangSmith + Langfuse | LLM call tracing, agent performance monitoring |
 | CI/CD | GitHub Actions + Cloudflare Pages | Auto-deploy on push, preview per PR |
@@ -499,11 +937,28 @@ Agent operations are split into two tiers to minimize LLM costs. **Deterministic
 ## Section 9: Acceptance Criteria & Test Plan
 
 ### AC-1: Onboarding Flow
-- [ ] User completes Google OAuth signup in < 60 seconds
+- [ ] User completes Google/Apple/Facebook/Microsoft OAuth signup in < 60 seconds
+- [ ] **Legal consent screen** appears after OAuth, before account activation — ToS + Privacy Policy + AI Disclosure checkboxes all required
+- [ ] "Continue" button disabled until all 3 legal documents accepted
+- [ ] Each acceptance creates a `consent_records` entry with: user_id, document_type, document_version, SHA-256 hash, IP, user_agent, timestamp
 - [ ] Family profile with 2+ members created during onboarding
+- [ ] When child under 13 added: COPPA consent screen appears, requires re-authentication + parental consent checkbox, recorded in `consent_records`
 - [ ] At least 1 agent recommended and activated by end of onboarding
-- [ ] Premium trial automatically starts (14-day countdown visible)
+- [ ] Premium trial automatically starts (7-day countdown visible)
 - [ ] User lands on Home/Marketplace after onboarding
+
+### AC-1A: Legal Document Management
+- [ ] Terms of Service, Privacy Policy, and AI Disclosure render correctly from versioned content at `/legal/terms`, `/legal/privacy`, `/legal/ai-disclosure`
+- [ ] Each document has a version number and SHA-256 content hash stored in `legal_documents` table
+- [ ] When a document version is bumped: all users see blocking re-acceptance modal on next login
+- [ ] Re-acceptance creates new `consent_records` entry with updated version and hash
+- [ ] Users who decline re-acceptance are restricted to read-only mode (can export data, cannot use agents)
+- [ ] 14-day grace period before account suspension for users who haven't re-accepted
+- [ ] `consent_records` table is append-only — no UPDATE or DELETE operations permitted
+- [ ] Consent history viewable in Settings (`/settings/legal`) showing all accepted documents with version and date
+- [ ] Admin audit API returns full consent history for any user (for compliance/legal requests)
+- [ ] Consent records are included in GDPR/CCPA data export requests
+- [ ] Consent records are NOT deleted when user deletes account (retained per legal retention policy)
 
 ### AC-2: Agent Marketplace
 - [ ] All 8 agents displayed with cards showing name, description, category
@@ -523,10 +978,16 @@ Agent operations are split into two tiers to minimize LLM costs. **Deterministic
 
 ### AC-4: Family Calendar
 - [ ] Monthly and weekly views render correctly with toggle
-- [ ] Events from Google Calendar appear within 5 seconds of sync
+- [ ] Events from Google Calendar appear within 5 seconds of webhook-triggered sync
+- [ ] Events from Apple Calendar (iCloud/CalDAV) appear within 5 minutes (polling interval)
 - [ ] Per-member color coding displays correctly
 - [ ] AI conflict detection surfaces warning when same member has overlapping events
 - [ ] Agent-created events (School Event Hub, Health Hub) auto-appear
+- [ ] Bidirectional sync: create event in Mom.alpha → appears in Google Calendar and/or iCloud Calendar
+- [ ] Bidirectional sync: edit event in external calendar → reflected in Mom.alpha
+- [ ] Recurring events (RRULE) sync correctly between Mom.alpha and external calendars
+- [ ] Offline: cached calendar viewable without network; queued changes sync on reconnect
+- [ ] Sync conflict resolved via last-write-wins without data loss (audit log preserves both versions)
 
 ### AC-5: School Event Hub
 - [ ] School emails parsed and events extracted within 30 seconds
@@ -555,17 +1016,23 @@ Agent operations are split into two tiers to minimize LLM costs. **Deterministic
 - [ ] Quiet hours suppress non-critical notifications
 - [ ] "Daily Edit" summary delivered each morning at user-configured time
 
-### AC-9: Security & Privacy
+### AC-9: Security, Privacy & LLM Data Protection
 - [ ] All user data encrypted at rest (AES-256) and in transit (TLS 1.3)
 - [ ] COPPA: no PII collected from users under 13 without verifiable parental consent
 - [ ] User can export all personal data (GDPR/CCPA)
 - [ ] User can delete account and all data within 30 days
-- [ ] LLM prompts sanitized against injection attacks
 - [ ] OAuth tokens refreshed securely, never stored in plain text
+- [ ] **PII masking**: No raw PII (names, emails, phones, addresses, school names, financial data) reaches any LLM provider — verified by audit log inspection
+- [ ] **PII masker test suite**: 200 message patterns pass with zero PII leakage
+- [ ] **Prompt injection protection**: Direct injection, indirect injection, Unicode tricks, and jailbreak attempts all blocked (≥95% detection rate on 100 test patterns)
+- [ ] **LLM zero-retention**: All API calls configured with zero-retention (OpenAI `store: false`, Gemini API default, Claude API default) — verified by API configuration audit
+- [ ] **Audit logging**: PII-masked prompts/responses logged encrypted, auto-purged at 30 days; raw PII token maps NEVER persisted
+- [ ] **Output validation**: LLM responses scanned for system prompt leakage before delivery to client
+- [ ] **CalDAV credentials**: Apple app-specific passwords encrypted AES-256 at rest, never logged
 
 ### AC-10: Subscription & Call Budget
-- [ ] 14-day free trial starts with CC on file; full Family tier (1,000 calls) accessible
-- [ ] Trial converts to paid Family ($7.99) automatically after 14 days unless cancelled
+- [ ] 7-day free trial starts with CC on file; full Family tier (1,000 calls) accessible
+- [ ] Trial converts to paid Family ($7.99) automatically after 7 days unless cancelled
 - [ ] Call budget counter accurately tracks only intelligent (LLM) operations
 - [ ] "X of 1,000 calls used" displays correctly in app settings/profile
 - [ ] Over-budget households gracefully downgrade to Gemini Flash (no hard cutoff, still functional)
@@ -604,7 +1071,7 @@ Agent operations are split into two tiers to minimize LLM costs. **Deterministic
 
 ## Appendix B: Competitive Landscape
 
-| Competitor | Category | Mom.Ai Differentiator |
+| Competitor | Category | Mom.alpha Differentiator |
 |---|---|---|
 | Cozi | Family organizer | No AI, no proactive management, no agent ecosystem |
 | FamilyWall | Family calendar/lists | Limited to calendar + lists, no intelligence |

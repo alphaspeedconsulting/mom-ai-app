@@ -4,14 +4,14 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-**Mom.Ai** is a mobile-first AI assistant platform that deploys 8 specialized AI agents to manage household tasks for busy mothers. The product is in **pre-development/planning phase** — no application code exists yet. The repo contains planning documents and design assets.
+**Mom.alpha** is a mobile-first AI assistant platform that deploys 8 specialized AI agents to manage household tasks for busy mothers. The product is in **pre-development/planning phase** — no application code exists yet. The repo contains planning documents and design assets.
 
 ## Project Status
 
 - **Phase**: Pre-development (planning & design complete, implementation not started)
 - **Architecture decision**: Option 3 — Cowork Plugin + Render-Only MCP Backend + PWA (Next.js)
 - **Target stack**: Next.js PWA (TypeScript, Tailwind CSS, Zustand, SWR/React Query, next-pwa), FastAPI backend (existing license server + MCP server on Render), Render Postgres
-- **Design system**: "Lullaby & Logic" — existing HTML+Tailwind exports in `stitch_screenshot_of_https_mom.ai/`
+- **Design system**: "Lullaby & Logic" — existing HTML+Tailwind exports in `stitch_screenshot_of_https_mom.alphaspeedai.com/`
 
 ## Key Planning Documents
 
@@ -31,7 +31,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - **~60% backend reuse** from existing Cowork MCP infrastructure (AgentVault license server, MCP HTTP/SSE transport, Google Calendar MCP, Gmail Connector)
 - **Multi-tenant isolation**: All data isolated by `household_id` (app-level RLS)
 
-## Design Assets — `stitch_screenshot_of_https_mom.ai/`
+## Design Assets — `stitch_screenshot_of_https_mom.alphaspeedai.com/`
 
 Pre-built UI designs with **ready-to-use HTML+Tailwind code** and reference screenshots. Each screen has a `code.html` (extractable Tailwind components) and `screen.png` (visual reference).
 
@@ -53,7 +53,7 @@ Pre-built UI designs with **ready-to-use HTML+Tailwind code** and reference scre
 | `lullaby_logic/` | Design system spec (`DESIGN.md`) |
 
 Also includes:
-- `mom.ai_design_plan.html` — Full design plan document
+- `mom.alphaspeedai.com_design_plan.html` — Full design plan document
 - `development_handover_document.html` — Development handover reference
 
 When building components, **extract directly from the `code.html` files** — they contain production-ready Tailwind markup matching the "Lullaby & Logic" design system.
@@ -66,13 +66,26 @@ npx create-next-app@latest mom-ai --typescript --tailwind --app
 ```
 With: Zustand (state), SWR or React Query (data fetching), next-pwa (Service Worker)
 
-### Design System Tokens
-- Primary color: `#32695a`
-- Fonts: Plus Jakarta Sans (headlines), Be Vietnam Pro (body)
-- No borders — separation via background color shifts
-- Glass effects: `backdrop-blur-[20px]` + `bg-*/60` on floating elements
-- Ambient shadows: `shadow-[0_8px_24px_rgba(0,55,71,0.06)]`
-- Spacing base: 0.35rem
+### Design System: CSS Zen Garden Architecture (Theme-Swappable)
+
+The "Lullaby & Logic" theme uses the AlphaAI CSS Zen Garden 4-layer architecture:
+
+| Layer | File | Purpose |
+|---|---|---|
+| Layer 1 | `src/styles/index.css` | CSS custom properties (`:root` vars) — **only file with hardcoded colors** |
+| Layer 2 | `tailwind.config.ts` | Maps CSS vars to utilities (`bg-brand`, `text-alphaai-sm`) |
+| Layer 3 | `src/styles/mom-alpha.css` | Shared component classes (`.mom-glass-panel`, `.mom-card`, `.mom-chip`) |
+| Layer 4 | Component TSX files | Structure only — **zero hardcoded colors or font sizes** |
+
+**Key tokens**: `--brand` (teal #32695a), `--background`, `--surface`, `--foreground`, `--shadow-tint`
+**Fonts**: Plus Jakarta Sans (headlines), Be Vietnam Pro (body)
+**Typography**: Use `text-alphaai-*` tokens only (3xs through xl)
+**To retheme**: Change only Layer 1 CSS variables — zero component files touched
+
+**Quality gates** (run before every frontend PR):
+- `/ui-consistency-review` — 11-point CSS Zen Garden compliance audit
+- `/alphaai-design-system` — Page blueprints and component patterns
+- `/alphaai-frontend-design` — Creative design within token constraints
 
 ### Backend Services (on Render)
 - `agentvault-license-server` — FastAPI: OAuth, JWT, family API routes, call budget tracking
