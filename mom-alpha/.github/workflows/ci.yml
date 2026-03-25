@@ -1,0 +1,55 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  frontend:
+    name: Frontend (lint, typecheck, build)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: mom-alpha/package-lock.json
+
+      - name: Install dependencies
+        working-directory: mom-alpha
+        run: npm ci
+
+      - name: Lint
+        working-directory: mom-alpha
+        run: npm run lint
+
+      - name: Type check
+        working-directory: mom-alpha
+        run: npx tsc --noEmit
+
+      - name: Build
+        working-directory: mom-alpha
+        run: npm run build
+
+  backend:
+    name: Backend (pytest)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: mom-alpha/backend
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install -e ".[test]" 2>/dev/null || pip install -e . && pip install pytest pytest-asyncio httpx
+
+      - name: Run tests
+        run: python -m pytest tests/ -v --tb=short

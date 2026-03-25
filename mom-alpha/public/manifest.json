@@ -1,0 +1,25 @@
+{
+  "name": "Mom.alpha — AI Family Assistant",
+  "short_name": "Mom.alpha",
+  "description": "8 AI agents that manage your household",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f3fbff",
+  "theme_color": "#32695a",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["lifestyle", "productivity"]
+}
