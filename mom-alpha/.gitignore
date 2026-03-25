@@ -39,3 +39,8 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Proprietary backend — lives in private repos (AgentVault / Cowork)
+# See development-plan.md "Repository boundary" section
+/backend/
+/database/

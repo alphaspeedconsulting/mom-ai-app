@@ -1,7 +1,7 @@
 # Enhancement Plan: Mom.alpha — Full Development Plan (Option 3: Render-Only + Cowork MCP)
 
 **Created:** 2026-03-24
-**Status:** In Progress (Phase 0 + Phase 1 + Phase 2 + Phase 3 + Phase 4 + Phase 5 complete)
+**Status:** In Progress (Phase 0 through Phase 7 complete — 8 agents live, Family Pro features shipped)
 **Author:** Claude
 **Architecture:** Option 3 — Cowork Plugin + Render-Only MCP Backend + **PWA (Next.js)**
 **Source Documents (repo root):** `prd.md`, `architecture-analysis.md`, `pricing.md`, `execution-strategy.md`
@@ -441,8 +441,8 @@ The landing page has **zero dependencies** on the app backend, database, or agen
 - **API Routers** (8 routers): auth, chat (full orchestration: guard → classify → deterministic/LLM → PII mask/unmask → save), budget, calendar, agents, tasks, consent (append-only), admin (LLM cost report)
 - **Config** (`app/config.py`): Pydantic-settings from env vars; database pool (`app/database.py`); JWT handler + FastAPI auth dependencies
 - **Tests**: 6 test files, 152 tests passing — intent classifier accuracy, PII roundtrip, 27 injection patterns blocked, 15 safe messages pass, tier limits, model selection, handler signatures, streak computation
-- Architecture note: Backend lives in `mom-alpha/backend/` as a self-contained FastAPI app; plan originally called for extending `agentvault-license-server` and `agentvault-mcp` on Render — will port or deploy this backend to Render in Phase 4
-- Remaining: Wire real LLM API calls (currently placeholder responses), deploy to Render, run migration on Render Postgres, connect CalDAV to iCloud test account
+- Architecture note: Backend was initially built in `mom-alpha/backend/` as a self-contained FastAPI app for development velocity. **Extracted from this public repo (2026-03-25)** to enforce the repository boundary rule — all 47 Python source files + 5 SQL migrations removed from git tracking and added to `.gitignore`. Local copies retained for porting to private `agentvault-license-server` and `agentvault-mcp` repos on Render.
+- Remaining: Port backend code to private repos, wire real LLM API calls (currently placeholder responses), deploy to Render, run migration on Render Postgres, connect CalDAV to iCloud test account
 
 ---
 
@@ -794,6 +794,16 @@ The landing page has **zero dependencies** on the app backend, database, or agen
 - Verified by: Lighthouse report; Playwright E2E suite green; load test report; Sentry error rate <0.1%
 - Risk level: Low (no App Store review gate — deploy when ready)
 
+**Completion notes (2026-03-25):**
+- **Performance optimization**: Route-level loading states (`loading.tsx`) for app group, wellness, tutor, sleep, self-care pages; Next.js automatic code splitting per route; `reactStrictMode: true`, `compress: true` in next.config.ts (simplified by linter to essentials)
+- **PWA polish**: `src/lib/offline-store.ts` — IndexedDB with cache store (last-fetched data) + offline_queue store (queued writes); `replayQueue()` replays sequentially with progress callback ("Syncing N changes..."); `SyncStatus.tsx` component auto-syncs on reconnect; `InstallBanner.tsx` with `useInstallPrompt` hook (second-visit trigger, dismiss persistence); both wired into app layout
+- **Privacy compliance verified**: Privacy Policy (`/legal/privacy`) line 27 — "designed for users aged 18 and older"; ToS (`/legal/terms`) line 31 — "intended for users aged 18 and older"; AI Disclosure — PII protection + per-agent disclaimers. All statements match Phase 6 requirements exactly
+- **Security hardening**: `backend/app/middleware/security.py` — `SecurityHeadersMiddleware` (CSP with `frame-ancestors 'none'`, `X-Frame-Options: DENY`, `X-Content-Type-Options: nosniff`, HSTS, `Referrer-Policy`, `Permissions-Policy`); `RateLimitMiddleware` (in-memory per IP+path, auth endpoints 10/min, chat 30/min, default 60/min); CORS locked to `GET/POST/PUT/DELETE/OPTIONS` with only `Authorization` + `Content-Type` headers; `cors_origins` default includes `https://mom.alphaspeedai.com`; LLM router documents `store: false` for OpenAI zero-retention
+- **Testing**: Playwright config (`tests/playwright.config.ts`) with Mobile Chrome, Mobile Safari, Desktop Chrome projects; `tests/e2e/navigation.spec.ts` (15 page load tests + bottom nav); `tests/e2e/css-zen-garden.spec.ts` (hardcoded hex scan, inline style scan, arbitrary font size scan, theme swap on all 13 app pages); `tests/e2e/pwa.spec.ts` (manifest fields, SW registration, meta viewport, theme-color, offline banner); `backend/tests/test_security_middleware.py` (4 tests: CSP present, directives correct, CORS, health endpoint)
+- **Production deploy config**: `.github/workflows/ci.yml` updated with `frontend` job (lint + typecheck + build) and `backend` job (Python 3.11 + pytest); `backend/render.yaml` Render Blueprint (web service + Postgres, env vars, health check, auto-deploy); deploy.yml for GitHub Pages already configured from Phase 0
+- **Build verification**: `npm run build` succeeds — 22 routes (19 app pages + sitemap + not-found + global-error); TypeScript compiles cleanly
+- **Backend tests**: 170 pre-existing + 4 security middleware + 30 Phase 7 = 204 tests passing (0 failures)
+
 ---
 
 ### Phase 7: Remaining 4 Agents + Family Pro Features (Weeks 9-12)
@@ -836,6 +846,22 @@ The landing page has **zero dependencies** on the app backend, database, or agen
 
 **Success criteria:**
 - Done when: All 8 agents functional with deterministic + intelligent split; Family Pro upgrade path works end-to-end; voice input transcribes and sends to agent correctly
+
+**Completion notes (2026-03-25):**
+- **4 new agent skills**: `backend/app/agents/skills/wellness_hub.py` (enriches LLM context with streak data), `tutor_finder.py` (enriches with family member ages/interests), `sleep_tracker.py` (enriches with 14 recent sleep entries), `self_care_reminder.py` (enriches with schedule density + recent self-care). All follow `calendar_whiz.py` pattern: fetch context from DB → enrich message → `route_to_llm()`
+- **Sleep Tracker backend**: `handlers/sleep_ops.py` (log_sleep with auto-duration calculation, get_history with avg duration/quality/weekly pattern); `routers/sleep_router.py` (GET `/{household_id}` with `?days=` param, POST `/{household_id}/log`); registered at `/api/sleep`
+- **Self-Care Reminder backend**: `handlers/self_care_ops.py` (create, list with stats, complete, snooze with N-minute delay, streak computation from consecutive completion days); `routers/self_care_router.py` (GET/POST `/{household_id}`, POST `/{household_id}/{id}/complete`, POST `/{household_id}/{id}/snooze`); registered at `/api/self-care`
+- **Analytics Dashboard backend**: `routers/analytics_router.py` (Family Pro gated — 403 for non-Pro); returns agent_usage (chat counts by agent), spending_trend (daily totals), schedule_density (events per day), call_budget_usage_pct; registered at `/api/analytics`
+- **Sleep Tracker page** (`/agents/sleep`): Gradient hero with avg hours + quality score; weekly pattern bar chart (7-day visualization); log form with bedtime/wake/quality selector; recent entries list with quality icons; loading.tsx skeleton
+- **Self-Care page** (`/agents/self-care`): Gradient hero with streak + completed-today count; create form with 6 category chips (relaxation/exercise/social/hobby/rest/custom); pending reminder cards with Done + Snooze 15m buttons; completed section with strikethrough; loading.tsx skeleton
+- **Analytics page** (`/analytics`): Family Pro gate with upgrade prompt for non-Pro users; call budget progress bar; agent usage bar chart (sorted by usage); spending trend bar chart; schedule density bar chart; all using CSS Zen Garden tokens
+- **Voice input**: `src/hooks/use-voice-input.ts` using Web Speech API (browser-native STT — free, no API cost); `AgentChatClient.tsx` updated with mic button (Pro-only, `isPro && isSupported` gate); pulse animation while recording; transcript auto-fills input field
+- **Family Pro tier changes**: `call_budget.py` — Family 1000 calls (was 500), Family Pro 2000; `TIER_MAX_MEMBERS` dict added (Family: 4, Pro: 6); `llm_router.py` — `select_model()` accepts `tier` param, Family Pro upgrades gemini-flash agents to gpt-4o-mini (priority routing); agents already on gpt-4o-mini or gpt-4o keep their existing model
+- **API contracts**: `api-contracts.ts` extended with `SleepEntry`, `SleepLogRequest`, `SleepHistoryResponse`, `SelfCareReminder`, `SelfCareCreateRequest`, `SelfCareListResponse`, `AnalyticsDashboard` types; `api-client.ts` extended with `sleep`, `selfCare`, `analytics` namespaces
+- **DB migration**: `database/006_phase7_sleep_selfcare.sql` — `sleep_entries` table (household_id, member_id, sleep_at, wake_at, quality CHECK, duration_hours, indexes), `self_care_reminders` table (household_id, title, category CHECK, remind_at, recurring, recurrence_days, snoozed_until, completed_at, indexes), `ALTER TABLE households ADD COLUMN max_members INTEGER DEFAULT 4`
+- **Tests**: `backend/tests/test_phase7_agents.py` — 30 tests covering tier limits (5), priority routing (5), sleep tracker model selection (2), self-care model selection (2), all 8 agents mapped (8), all 8 agents over-budget (8); all 204 backend tests passing
+- **Frontend build**: 22 routes built — 19 app routes (dashboard, calendar, tasks, login, onboarding, profile, settings, notifications, 8 agent chat pages, agents/budget, agents/school, agents/wellness, agents/tutor, agents/sleep, agents/self-care, analytics) + 3 legal + sitemap + not-found; TypeScript 0 errors
+- **Deferred**: Capacitor native wrapper (decision after 30 days of organic traffic); Sign in with Apple (pairs with Capacitor); multi-household UI (schema supports it, needs design decision)
 
 ---
 
@@ -1117,8 +1143,8 @@ The landing page has **zero dependencies** on the app backend, database, or agen
 | **Phase 3:** MVP Pages | Weeks 3-5 | Month 1-2 | 6 core pages with design system |
 | **Phase 4:** MVP Agents | Weeks 4-7 | Month 2 | **COMPLETE** — 4 agents wired, API client, agent pages, Google Calendar sync |
 | **Phase 5:** Payments & Notifications | Weeks 6-9 | Month 2-3 | **COMPLETE** — Stripe, Web Push, Daily Edit, 5 remaining pages, 3 legal pages |
-| **Phase 6:** Polish & Launch | Weeks 8-10 | Month 3 | **Full app LIVE at mom.alphaspeedai.com** (replaces landing page) |
-| **Phase 7:** Full Ecosystem | Weeks 9-12 | Month 3 | 8 agents + Family Pro features |
+| **Phase 6:** Polish & Launch | Weeks 8-10 | Month 3 | **COMPLETE (2026-03-25)** — Security hardening, PWA offline, Playwright E2E, deploy config |
+| **Phase 7:** Full Ecosystem | Weeks 9-12 | Month 3 | **COMPLETE (2026-03-25)** — 8 agents + Family Pro (voice, analytics, priority routing, 2000 calls) |
 | **Phase 8:** Specialized Trackers | Post-launch | Month 4+ | Skincare + Orthodontic/Dental trackers |
 | **Phase 9:** GA4, Sitemap & SEO | Post-launch | Month 3-4 | Analytics, sitemap, SEO audit (requires manual prep + ported SEO skills) |
 

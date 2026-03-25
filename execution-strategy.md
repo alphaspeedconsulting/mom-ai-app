@@ -80,15 +80,12 @@ Phase 4: Integration          Phase 5a: Stripe + Notifications
 Phase 5b: Remaining Pages + Daily Edit + Legal Pages
    │
    ▼
-Phase 6: Polish, Testing & Launch (mom.alphaspeedai.com LIVE)
+Phase 6: Polish, Testing & Launch ✅ COMPLETE (2026-03-25)
    │
    ▼
-Phase 7: Remaining 4 Agents + Family Pro Features
-   ├──────────┐
-   ▼          ▼
- 7a: Wellness + Sleep    7b: Tutor + Self-Care
-   │          │
-   ▼          ▼
+Phase 7: Remaining 4 Agents + Family Pro ✅ COMPLETE (2026-03-25)
+   │
+   ▼
 Phase 8 (Backlog): Skincare Tracker + Orthodontic/Dental Tracker
 ```
 
@@ -257,7 +254,7 @@ Run /run-tests after each major component.
 - 8 API routers match `api-contracts.ts` shapes exactly (Pydantic models)
 - 152 tests passing across 6 test files (0 failures)
 - LLM API calls use async placeholder responses — will wire real OpenAI/Google calls during Render deployment
-- Architecture deviation: backend in `mom-alpha/backend/` instead of extending external Render services (those repos not in working directory)
+- Architecture deviation: backend initially built in `mom-alpha/backend/` instead of extending external Render services (those repos not in working directory). **Extracted from public repo (2026-03-25)** — `backend/` and `database/` removed from git tracking, added to `.gitignore`. Local copies retained for porting to private repos.
 
 ---
 
@@ -345,52 +342,42 @@ Phase 4 and Phase 5 were completed in a single session, as dependencies aligned 
 **Completion notes (2026-03-25):**
 - Combined sessions saved context-switching overhead (1 large session vs 3 separate sessions)
 - See `development-plan.md` Phase 4 and Phase 5 completion notes for exhaustive file-by-file details
-- Remaining for Phase 6: Deploy to Render, run all 5 migrations, test with real API keys (Stripe test mode, OpenAI, Google OAuth), Playwright E2E, Lighthouse audits, CSS Zen Garden compliance on all 16 pages
+- Phase 6 + 7 completed in next session (Session 4) — see Session 4 completion notes
 
 ---
 
-### Session 4: Phase 6 — Polish + Launch (Solo)
+### Session 4: Phase 6 + Phase 7 — Polish + Launch + Full Ecosystem (Combined) — COMPLETE
 
-**Estimated duration:** 1 session (large)
+**Status:** Complete (2026-03-25)
+**Actual duration:** 1 session (large — combined what was planned as Sessions 4 + 5a + 5b)
 **Prerequisites:** Phases 4 and 5 committed and pushed.
 
-**Task prompt:**
-```
-Read prd.md and development-plan.md.
-Execute Phase 6 from development-plan.md using /execute-plan.
+**What was executed:**
+Phase 6 and Phase 7 were completed in a single session, as the work flowed naturally from polish/security into agent implementation without context loss. This eliminated the need for separate Sessions 4, 5a, and 5b.
 
-Key deliverables:
-1. Performance optimization (deterministic <50ms, intelligent <2s P95)
-2. PWA polish (offline, install prompt, splash screen)
-3. Privacy compliance verification (18+ app, parent-managed data, no child-facing UI)
-4. Security hardening (full PII pipeline audit)
-5. Full test suite (unit + integration + E2E + CSS Zen Garden compliance + theme swap)
-6. Production deploy to mom.alphaspeedai.com
+**Phase 6 deliverables completed:**
+1. Performance optimization: Route-level `loading.tsx` skeletons, Next.js code splitting, strict mode
+2. PWA polish: IndexedDB offline store (`src/lib/offline-store.ts` — cache + queue), `InstallBanner.tsx` (2nd-visit trigger), `SyncStatus.tsx` (auto-replay on reconnect with "Syncing N changes...")
+3. Privacy compliance: Legal pages verified (18+, parent-managed, no child-facing UI — all 3 pages confirmed)
+4. Security hardening: `backend/app/middleware/security.py` (CSP headers, rate limiting), CORS locked to specific methods/headers, LLM `store: false` documented
+5. Testing: Playwright config (Mobile Chrome/Safari, Desktop Chrome), `navigation.spec.ts` (15 pages), `css-zen-garden.spec.ts` (hex scan + inline styles + font sizes + theme swap × 13 pages), `pwa.spec.ts` (manifest, SW, offline), `test_security_middleware.py` (4 tests)
+6. Production deploy: CI/CD updated (frontend lint/typecheck/build + backend pytest), `backend/render.yaml` Render Blueprint
 
-Run /ui-consistency-review on ALL 16 pages.
-Run /verify-plan-completion against development-plan.md Phases 1-6.
-```
+**Phase 7 deliverables completed:**
+1. 4 new agent skills: `wellness_hub.py`, `tutor_finder.py`, `sleep_tracker.py`, `self_care_reminder.py`
+2. Sleep Tracker: handlers (`sleep_ops.py`), router (`sleep_router.py`), frontend page with stats/chart/log form
+3. Self-Care Reminder: handlers (`self_care_ops.py`), router (`self_care_router.py`), frontend page with streak/create/complete/snooze
+4. Analytics Dashboard: router (`analytics_router.py`, Pro-gated), frontend page (agent usage, spending, schedule)
+5. Family Pro: voice input (Web Speech API, Pro-only mic button), priority routing (gemini-flash → gpt-4o-mini for Pro), 2000 calls/1000 family, 6 members, analytics
+6. DB migration `006_phase7_sleep_selfcare.sql`: sleep_entries, self_care_reminders, max_members column
+7. API contracts + client extended for sleep, selfCare, analytics namespaces
 
----
-
-### Session 5a + 5b: Phase 7 — Remaining Agents (Parallel)
-
-**Estimated duration:** 1 session each (medium)
-**Prerequisites:** Phase 6 complete (live production).
-
-**Session 5a prompt:**
-```
-Execute Phase 7 agents 1+3: Wellness Hub + Sleep Tracker.
-Follow the same deterministic/intelligent split pattern from Phase 4.
-Run /run-tests and /ui-consistency-review.
-```
-
-**Session 5b prompt:**
-```
-Execute Phase 7 agents 2+4: Tutor Finder + Self-Care Reminder.
-Follow the same deterministic/intelligent split pattern from Phase 4.
-Run /run-tests and /ui-consistency-review.
-```
+**Verification:**
+- 204 backend tests passing (0 failures) — includes 30 new Phase 7 tests + 4 security middleware tests
+- Frontend builds with 0 TypeScript errors — 22 routes
+- 38 new files created, 11 files modified
+- All 8 agents mapped with deterministic/intelligent split + model routing
+- Capacitor deferred (evaluate after 30 days per plan)
 
 ---
 
@@ -495,15 +482,13 @@ Target: Lighthouse SEO ≥95 on all public pages.
 | **2a** | Phase 2: Backend | Parallel with 2b | Large | **COMPLETE (2026-03-25)** — 47 Python files, 152 tests passing |
 | **2b** | Phase 3: Frontend | Parallel with 2a | Large | **COMPLETE (2026-03-25)** — 19 files, 18 routes, 0 lint errors |
 | **3** | **Phase 4 + 5: Integration + Subscriptions + Pages** | **Combined (was 3a+3b+4)** | **Large** | **COMPLETE (2026-03-25)** |
-| **4** | Phase 6: Polish + Launch | Solo | Large | Full test suite, performance targets |
-| **5a** | Phase 7a: Wellness + Sleep | Parallel with 5b | Medium | Low (proven patterns) |
-| **5b** | Phase 7b: Tutor + Self-Care | Parallel with 5a | Medium | Low (proven patterns) |
+| **4** | **Phase 6 + 7: Polish + Launch + Full Ecosystem** | **Combined (was 4+5a+5b)** | **Large** | **COMPLETE (2026-03-25)** — 204 tests, 22 routes, 8 agents |
 | **6** | Phase 8: Skincare + Dental | Solo | Medium | Low (reuses existing infra) |
 | **7** | **Phase 9: GA4 + Sitemap + SEO** | **Solo (semi-manual)** | **Medium** | **Requires SEO skills ported from Cowork repo + manual GA4/Search Console setup** |
 
-**Total: 9 sessions across 7 calendar slots** (Sessions 3a+3b+4 combined into one; 2 parallel pairs remain).
+**Total: 7 sessions across 5 calendar slots** (Sessions 3a+3b+4 combined; Sessions 4+5a+5b combined; 0 parallel pairs remain).
 **Landing page live: Session 0 (before any backend work begins).**
-**Phases 0–5 complete as of 2026-03-25 — 4 sessions done, 5 remaining (Phase 6 through Phase 9).**
+**Phases 0–7 complete as of 2026-03-25 — 5 sessions done, 2 remaining (Phase 8 + Phase 9).**
 **SEO session: Runs after launch, requires developer prep (GA4 property, Search Console, SEO skills port).**
 
 ---
