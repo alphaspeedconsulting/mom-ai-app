@@ -398,37 +398,93 @@ Agent operations are split into two tiers to minimize LLM costs. **Deterministic
 
 ## Section 7: Design & UX Requirements
 
-### Design System: "Lullaby & Logic"
+### Design System: "Lullaby & Logic" (CSS Zen Garden Architecture)
 
 **Creative North Star**: "The Digital Sanctuary" — the app should feel like stepping into a calm, high-end lifestyle magazine that manages life, not a chore tracker.
 
-#### Color Palette
-| Token | Value | Usage |
-|---|---|---|
-| `primary` | #32695a (Grounded Teal) | Main actions, primary UI elements |
-| `secondary` | #8f4f14 (Warm Amber) | Secondary interactions, accents |
-| `tertiary` | #655883 (Serene Lavender) | Wellness, self-care features |
-| `surface-container-lowest` | #ffffff | Base layer |
-| `surface-container-low` | #e5f6ff | Card backgrounds |
-| `surface-container` | #d7f2ff | Elevated cards |
-| `surface-container-high` | #c8eeff | Active states |
-| `surface-container-highest` | #b8eaff | Input fields, high-priority |
+**Architecture Principle — CSS Zen Garden**: The theme is fully decoupled from component structure. All visual identity flows through CSS custom properties and Tailwind config mappings, enabling **complete theme swaps without touching any component files**. This follows the AlphaAI CSS Zen Garden 4-layer architecture used across all AlphaSpeed products.
 
-#### Typography
-| Level | Font | Size | Usage |
+#### CSS Zen Garden 4-Layer Architecture
+
+| Layer | File | Purpose | Theme-Swap Impact |
 |---|---|---|---|
-| Display-LG | Plus Jakarta Sans | 3.5rem | Celebrations, empty states |
-| Headline-MD | Plus Jakarta Sans | 1.75rem | Daily headers, section titles |
-| Body-LG | Be Vietnam Pro | 1rem (line-height 1.6) | Primary content |
-| Label-MD | Be Vietnam Pro | 0.875rem | Input labels, metadata |
+| **Layer 1** | `index.css` (`:root` / `.lullaby-logic`) | CSS custom properties — all color, spacing, and shadow tokens | **Only file changed** to swap themes |
+| **Layer 2** | `tailwind.config.ts` | Maps CSS vars to Tailwind utilities (`bg-brand`, `text-muted`, `text-alphaai-sm`) | Unchanged across themes |
+| **Layer 3** | `mom-alpha.css` | Shared component classes (`.mom-glass-panel`, `.mom-card`, `.mom-chip`, `.mom-gradient-hero`) | Unchanged across themes — references vars only |
+| **Layer 4** | Component TSX files | Structure and layout only — **zero hardcoded colors, font sizes, or shadows** | Unchanged across themes |
+
+**Golden Rule**: A component must NEVER contain raw hex/rgb/hsl values or arbitrary `text-[14px]` sizes. All visual tokens flow through CSS variables → Tailwind config. To retheme the entire app, change only Layer 1.
+
+#### Theme: "Lullaby & Logic" (Default)
+
+**CSS Custom Properties** (Layer 1 — the only layer that defines a theme):
+
+| CSS Variable | Value | Semantic Usage |
+|---|---|---|
+| `--brand` | `hsl(159 38% 30%)` (#32695a, Grounded Teal) | Primary actions, nav active, CTAs |
+| `--brand-glow` | `hsl(159 50% 80%)` (#afe9d7) | Hero gradients, success highlights |
+| `--brand-dim` | `hsl(159 42% 25%)` (#245c4f) | Hover/pressed states |
+| `--secondary` | `hsl(27 74% 32%)` (#8f4f14, Warm Amber) | Secondary interactions, accents |
+| `--tertiary` | `hsl(268 22% 43%)` (#655883, Serene Lavender) | Wellness, self-care, Mom-Moment chip |
+| `--background` | `hsl(199 100% 97%)` (#f3fbff) | Base page background |
+| `--surface` | `hsl(199 100% 95%)` (#e5f6ff) | Card backgrounds |
+| `--surface-elevated` | `hsl(199 100% 92%)` (#d7f2ff) | Elevated cards |
+| `--surface-active` | `hsl(199 100% 88%)` (#c8eeff) | Active states |
+| `--surface-input` | `hsl(199 100% 85%)` (#b8eaff) | Input fields, high-priority |
+| `--foreground` | `hsl(197 100% 14%)` (#003747) | Primary text (never pure black) |
+| `--muted-foreground` | `hsl(197 30% 45%)` | Secondary text, metadata |
+| `--border` | `hsl(197 35% 55%)` (#4e8295) | Subtle outlines (used sparingly) |
+| `--shadow-tint` | `rgba(0, 55, 71, 0.06)` | Ambient shadow color |
+
+**Typography** (mapped via `text-alphaai-*` tokens in Tailwind config):
+
+| Tailwind Token | Size | Font | Usage |
+|---|---|---|---|
+| `text-alphaai-xl` | 3.5rem | Plus Jakarta Sans 800 | Celebrations, empty states |
+| `text-alphaai-lg` | 1.75rem | Plus Jakarta Sans 700 | Daily headers, section titles |
+| `text-alphaai-md` | 1rem | Be Vietnam Pro 400 | Primary content (line-height 1.6) |
+| `text-alphaai-sm` | 0.875rem | Be Vietnam Pro 500 | Input labels, metadata |
+| `text-alphaai-xs` | 0.75rem | Be Vietnam Pro 400 | Captions, timestamps |
+
+#### Theme Swapping
+
+To create a new theme (e.g., "Midnight Mom" dark theme, seasonal themes, partner white-label):
+
+1. Create a new CSS class (e.g., `.midnight-mom`) with overrides for all `--brand`, `--background`, `--surface-*`, `--foreground` variables
+2. Apply the class to `<html>` or `<body>`
+3. **Zero component files touched** — all 13 pages and all components automatically adopt the new theme
+
+Example:
+```css
+/* Lullaby & Logic (default) */
+:root { --brand: hsl(159 38% 30%); --background: hsl(199 100% 97%); }
+
+/* Midnight Mom (dark theme variant) */
+.midnight-mom { --brand: hsl(159 50% 45%); --background: hsl(210 20% 10%); }
+
+/* Seasonal: Holiday Warmth */
+.holiday-warmth { --brand: hsl(0 60% 40%); --background: hsl(30 30% 95%); }
+```
+
+#### Quality Enforcement (Skills)
+
+Three Claude Code skills enforce CSS Zen Garden compliance:
+
+| Skill | When to Run | What It Does |
+|---|---|---|
+| `/ui-consistency-review` | Before and after every frontend change | 11-point audit: hardcoded colors, arbitrary font sizes, inline styles, theme variable drift, z-index violations, component extraction |
+| `/alphaai-design-system` | When building new pages or components | Page anatomy blueprints, component patterns, token reference, anti-patterns |
+| `/alphaai-frontend-design` | When designing new screens | Creative design thinking constrained to the CSS token system |
+
+**Mandatory workflow**: Run `/ui-consistency-review` before merging any frontend PR. Zero hardcoded hex/rgb/hsl values allowed in component files.
 
 #### Critical Design Rules
-1. **"No-Line" Rule**: Zero 1px solid borders. Separation via background color shifts only.
-2. **"Glass & Gradient" Rule**: Floating elements use glassmorphism (20-40px backdrop blur).
-3. **Tonal Layering**: Depth via stacking surface levels, not drop shadows.
-4. **Ambient Shadows**: Extra-diffused only (`blur: 24px, rgba(0,55,71,0.06)`), never pure black.
-5. **Signature Gradient**: Hero sections use `linear-gradient(135deg, #32695a, #afe9d7)`.
-6. **"Mom-Moment" Chip**: Custom component using `tertiary_container` with soft pebble shape.
+1. **"No-Line" Rule**: Zero 1px solid borders. Separation via `bg-surface` / `bg-surface-elevated` shifts only.
+2. **"Glass & Gradient" Rule**: Floating elements use `.mom-glass-panel` class (`backdrop-blur-[20px]` + `bg-[hsl(var(--background)/0.6)]`).
+3. **Tonal Layering**: Depth via stacking surface token levels, not drop shadows.
+4. **Ambient Shadows**: `shadow-[0_8px_24px_var(--shadow-tint)]` only — never pure black, never hardcoded rgba.
+5. **Signature Gradient**: Hero sections use `bg-gradient-to-br from-[hsl(var(--brand))] to-[hsl(var(--brand-glow))]`.
+6. **"Mom-Moment" Chip**: `.mom-chip` class using `bg-[hsl(var(--tertiary)/0.15)]` with `text-[hsl(var(--tertiary))]`, full radius.
 7. **Spacing**: Base 0.35rem scale, "Sanctuary Gap" (5.5-7rem) for major section separation.
 
 #### Navigation Structure
