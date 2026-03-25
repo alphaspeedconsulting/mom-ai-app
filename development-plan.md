@@ -1,11 +1,12 @@
-# Enhancement Plan: Mom.Ai — Full Development Plan (Option 3: Render-Only + Cowork MCP)
+# Enhancement Plan: Mom.alpha — Full Development Plan (Option 3: Render-Only + Cowork MCP)
 
 **Created:** 2026-03-24
 **Status:** Draft
 **Author:** Claude
 **Architecture:** Option 3 — Cowork Plugin + Render-Only MCP Backend + **PWA (Next.js)**
 **Source Documents:** `projects/mom-ai/prd.md` (v1.1), `projects/mom-ai/architecture-analysis.md` (v1.2), `projects/mom-ai/pricing.md`
-**Infrastructure:** Render Postgres ($19/mo) + FastAPI License Server ($7/mo) + MCP HTTP Server ($7/mo) + Cloudflare R2 (free) + Render Static Site or Cloudflare Pages ($0)
+**Infrastructure:** Render Postgres ($19/mo) + FastAPI License Server ($7/mo) + MCP HTTP Server ($7/mo) + Cloudflare R2 (free) + Cloudflare Pages ($0) — deployed at `mom.alphaspeedai.com`
+**Distribution:** Launched directly from **AlphaSpeedAi.com** to leverage existing platform traffic and brand authority
 
 ---
 
@@ -21,7 +22,7 @@
 | **Camera (receipt OCR)** | Web Camera API — sufficient for photos | Native Camera — slightly better |
 | **Push notifications** | Web Push API (iOS 16.4+, Android full) | FCM — universal |
 | **Offline** | Service Workers + IndexedDB | SQLite + background sync |
-| **App Store discovery** | None — social/SEO acquisition | App Store search |
+| **App Store discovery** | AlphaSpeedAi.com traffic + SEO + cross-promotion | App Store search |
 | **Build cost** | ~$98K | ~$124K |
 | **Ongoing cost** | $0 hosting (Cloudflare Pages) + $0 platform fees | $1,300/yr (Apple + Google + Expo EAS) |
 
@@ -45,7 +46,7 @@ A mobile-first **Progressive Web App** with 8 specialized AI agents, determinist
 | Service | Action | Details |
 |---|---|---|
 | `agentvault-license-server` (Render) | **Extend** | Add OAuth, WebSocket, family API routes, call budget tracking |
-| `agentvault-mcp` (Render) | **Extend** | Add Mom.Ai agent skills, intent classifier, LLM router |
+| `agentvault-mcp` (Render) | **Extend** | Add Mom.alpha agent skills, intent classifier, LLM router |
 | `agentvault-db` (Render Postgres) | **Extend** | Add family schema tables |
 | **Next.js PWA** | **New** | 13 pages, "Lullaby & Logic" design system, Tailwind CSS, Service Worker |
 | Cloudflare R2 | **New** | File storage for receipts, user uploads |
@@ -65,7 +66,7 @@ A mobile-first **Progressive Web App** with 8 specialized AI agents, determinist
 | Component | Source | Reuse Confidence |
 |---|---|---|
 | Google Calendar MCP (sync layer) | Cowork Plugin Kit | 90% — direct reuse, add family member filter |
-| AgentVault License System (Stripe + JWT) | Cowork Plugin Kit | 95% — add Mom.Ai tier definitions |
+| AgentVault License System (Stripe + JWT) | Cowork Plugin Kit | 95% — add Mom.alpha tier definitions |
 | Render Postgres + render.yaml | Cowork Plugin Kit | 90% — add migration for family tables |
 | LangSmith + Langfuse observability | AI Product Agents | 100% — already configured |
 | Dashboard Bridge pattern (HTTP/SSE) | Cowork Plugin Kit | 80% — PWA uses same HTTP/SSE transport |
@@ -75,7 +76,7 @@ A mobile-first **Progressive Web App** with 8 specialized AI agents, determinist
 | Component | What Changes | Effort |
 |---|---|---|
 | License Server (FastAPI) | Add Google/Apple OAuth routes, WebSocket layer, family CRUD endpoints, call budget counter | ~5 days |
-| MCP Server | Add 8 Mom.Ai agent skill definitions, intent classifier, LLM router | ~8 days |
+| MCP Server | Add 8 Mom.alpha agent skill definitions, intent classifier, LLM router | ~8 days |
 | Family Optimizer MCP | Add conflict detection UI hooks, multi-child scheduling | ~3 days |
 | Gmail Connector MCP | Add school-specific email parsing rules (events, slips, fees) | ~3 days |
 | Governance Layer | Add permission slip signing gate, school fee payment gate | ~2 days |
@@ -93,7 +94,7 @@ A mobile-first **Progressive Web App** with 8 specialized AI agents, determinist
 | Receipt OCR pipeline | GPT-4o vision via Web Camera API | ~3 days |
 | Cloudflare R2 integration | S3-compatible file storage for receipts/uploads | ~1 day |
 
-**PWA advantage: Design exports from Mom.Ai App are already HTML + Tailwind CSS.** Instead of converting to NativeWind (React Native), we use them almost directly. This saves ~15 days compared to native.
+**PWA advantage: Design exports from Mom.alpha App are already HTML + Tailwind CSS.** Instead of converting to NativeWind (React Native), we use them almost directly. This saves ~15 days compared to native.
 
 ---
 
@@ -113,7 +114,7 @@ A mobile-first **Progressive Web App** with 8 specialized AI agents, determinist
 
 | New State | Trigger | Side Effect |
 |---|---|---|
-| `trial_active` → `trial_expired` | 14-day timer | App locks agent features, data preserved 30 days |
+| `trial_active` → `trial_expired` | 7-day timer | App locks agent features, data preserved 30 days |
 | `over_budget` | LLM call count ≥ tier limit | Router switches to Gemini Flash only |
 | `budget_reset` | Billing cycle date | Counter resets to 0 |
 | `deterministic_intent` | Intent classifier match | Bypass LLM entirely, direct DB operation |
@@ -153,7 +154,7 @@ A mobile-first **Progressive Web App** with 8 specialized AI agents, determinist
      - Glass & Gradient Rule: `backdrop-blur-[20px]` + `bg-*/60` on floating elements
      - Ambient shadows: `shadow-[0_8px_24px_rgba(0,55,71,0.06)]`
    - Spacing scale (base 0.35rem), border-radius tokens
-   - **Accelerator**: Existing HTML exports from `/Users/miguelfranco/Mom.Ai App` are already Tailwind — extract components directly
+   - **Accelerator**: Existing HTML exports from `/Users/miguelfranco/Mom.alpha App` are already Tailwind — extract components directly
 
 3. **Database schema migration**
    - Add tables to existing `agentvault-db` Render Postgres:
@@ -172,10 +173,11 @@ A mobile-first **Progressive Web App** with 8 specialized AI agents, determinist
    - Row-level isolation via `household_id` on all queries (app-level enforcement)
 
 4. **Auth extension on license server**
-   - Add `/auth/google` and `/auth/apple` OAuth routes to existing FastAPI
+   - Add OAuth routes to existing FastAPI: `/auth/google`, `/auth/apple`, `/auth/facebook`, `/auth/microsoft`
+   - Support all major consumer OAuth providers (Google, Apple, Facebook, Microsoft) + email/password fallback
    - Map OAuth user → household → JWT with `household_id` + `tier` claims
    - Reuse existing JWT issuance/validation from `jwt_handler.py`
-   - CORS configuration: allow `mom.ai` origin on license server
+   - CORS configuration: allow `mom.alphaspeedai.com` origin on license server
 
 5. **CI/CD pipeline**
    - GitHub Actions: lint (ESLint + Prettier) → type check → test → deploy
@@ -186,7 +188,7 @@ A mobile-first **Progressive Web App** with 8 specialized AI agents, determinist
 
 **Success criteria:**
 - Done when: `next dev` renders home page skeleton with design system tokens; PWA installable from Chrome; OAuth login returns JWT; all 12 tables created in Render Postgres
-- Verified by: Lighthouse PWA audit passes (installable, service worker registered); `curl /auth/google` returns redirect URL; `psql` shows all tables
+- Verified by: Lighthouse PWA audit passes (installable, service worker registered); `curl /auth/google` and `/auth/apple` return redirect URLs; `psql` shows all tables
 - Risk level: Low
 
 ---
@@ -258,9 +260,9 @@ A mobile-first **Progressive Web App** with 8 specialized AI agents, determinist
    - **Accelerator**: Convert existing `onboarding/code.html` export to Next.js component
 
 2. **Login/Signup page** (`/login`)
-   - Google OAuth + Apple Sign-In buttons (connect to Phase 1 auth)
+   - Google, Apple, Facebook, and Microsoft OAuth buttons + email/password (connect to Phase 1 auth)
    - "Take a breath. We'll handle the rest." tagline
-   - 14-day trial activation on first login (CC collection via Stripe Checkout)
+   - 7-day trial activation on first login (CC collection via Stripe Checkout)
    - Stripe Checkout: `POST /api/checkout/trial` → redirect to Stripe hosted page → webhook creates household
    - **No Apple 30% cut** — Stripe processes payment directly at 2.9%
    - **Accelerator**: Convert existing `login_sign_up/code.html` export
@@ -357,11 +359,11 @@ A mobile-first **Progressive Web App** with 8 specialized AI agents, determinist
 
 1. **Stripe subscription system**
    - Products: Family ($7.99/mo, $69.99/yr), Family Pro ($14.99/mo, $129.99/yr)
-   - 14-day trial: Stripe Checkout with `trial_period_days: 14` + `payment_method_collection: always`
+   - 7-day trial: Stripe Checkout with `trial_period_days: 7` + `payment_method_collection: always`
    - Webhook handlers: `customer.subscription.created`, `.updated`, `.deleted`, `invoice.payment_failed`
    - Map Stripe subscription → household tier → call budget limit
    - Trial expiry: lock agent features, preserve data 30 days, show upgrade prompt
-   - Extend existing `stripe_client.py` with Mom.Ai products
+   - Extend existing `stripe_client.py` with Mom.alpha products
    - **No platform tax** — Stripe charges 2.9% + $0.30 directly (vs 30% Apple cut)
 
 2. **Web Push notifications**
@@ -419,7 +421,7 @@ A mobile-first **Progressive Web App** with 8 specialized AI agents, determinist
    - Service Worker: cache static assets, offline calendar + grocery lists (IndexedDB)
    - Queue deterministic operations when offline, sync on reconnect
    - "Add to Home Screen" prompt on second visit
-   - Splash screen with Mom.Ai logo + primary gradient
+   - Splash screen with Mom.alpha logo + primary gradient
    - `manifest.json` verified: correct icons, theme color, display: standalone
 
 3. **COPPA compliance**
@@ -443,17 +445,23 @@ A mobile-first **Progressive Web App** with 8 specialized AI agents, determinist
    - Performance: Lighthouse performance score ≥90; load test at 1,000 concurrent households
    - PWA: Lighthouse PWA audit passes all checks (installable, offline, push)
 
-6. **Production deploy**
-   - Deploy to production URL (e.g., `app.mom.ai`)
+6. **Production deploy — launch from AlphaSpeedAi.com**
+   - Deploy as a section of the AlphaSpeed AI platform at `mom.alphaspeedai.com`
    - Cloudflare Pages (frontend) + Render (backend) — both auto-deploy on push
-   - DNS configuration + TLS certificate
+   - DNS configuration + TLS certificate (shared with AlphaSpeedAi.com domain)
    - Monitoring: Sentry for frontend errors, existing LangSmith for backend
    - **No App Store submission needed** — live the moment it deploys
+   - **Traffic acquisition via AlphaSpeedAi.com**:
+     - Hero banner / featured product placement on AlphaSpeedAi.com homepage
+     - Cross-promotion from other AlphaSpeed AI products and email lists
+     - SEO benefit from AlphaSpeedAi.com domain authority
+     - Shared navigation: users discover Mom.alpha while browsing AlphaSpeed AI offerings
+     - Social proof: "Powered by AlphaSpeed AI" trust signal
 
 **Dependencies:** Phase 5 (all pages and features complete).
 
 **Success criteria:**
-- Done when: `app.mom.ai` is live; all E2E tests pass; Lighthouse scores: Performance ≥90, Accessibility ≥90, PWA ≥90; P95 latency <2s for intelligent operations
+- Done when: `mom.alphaspeedai.com` is live; all E2E tests pass; Lighthouse scores: Performance ≥90, Accessibility ≥90, PWA ≥90; P95 latency <2s for intelligent operations
 - Verified by: Lighthouse report; Playwright E2E suite green; load test report; Sentry error rate <0.1%
 - Risk level: Low (no App Store review gate — deploy when ready)
 
@@ -513,7 +521,7 @@ A mobile-first **Progressive Web App** with 8 specialized AI agents, determinist
 | LLM Router | 30 tests (model selection per agent × complexity level × budget state) | 100% branch coverage |
 | Call Budget Tracker | 20 tests (increment, check, reset, over-budget, tier change) | 100% |
 | Deterministic Handlers | 60 tests (CRUD for all 6 entity types × happy path + edge cases) | ≥90% |
-| Auth (OAuth + JWT) | 15 tests (Google, Apple, email, token refresh, expired token) | 100% |
+| Auth (OAuth + JWT) | 25 tests (Google, Apple, Facebook, Microsoft, email, token refresh, expired token) | 100% |
 | Stripe Webhooks | 12 tests (create, renew, cancel, fail, upgrade, downgrade, trial expire) | 100% |
 
 ### Integration Tests
@@ -534,7 +542,7 @@ A mobile-first **Progressive Web App** with 8 specialized AI agents, determinist
 
 | Journey | Steps |
 |---|---|
-| New User | Visit app.mom.ai → Signup (Google) → Family profile → Trial starts → Activate 2 agents → Chat with agent → View calendar → 14 days → Trial expires → Subscribe $7.99 → Agents resume |
+| New User | Visit mom.alphaspeedai.com → Signup (Google/Apple/Facebook/Microsoft) → Family profile → Trial starts → Activate 2 agents → Chat with agent → View calendar → 7 days → Trial expires → Subscribe $7.99 → Agents resume |
 | Daily Use | Open app → Check Daily Edit → Chat with Grocery Guru ("what's for dinner?") → View calendar → Scan receipt → Check budget usage → Set reminder |
 | Over-budget | Use 1,000 calls → See banner → Agent still responds (Gemini Flash) → Upgrade to Pro → Budget resets to 2,000 |
 | PWA Install | Visit on mobile Chrome → "Add to Home Screen" prompt → Install → Open from home screen → Full standalone experience |
@@ -602,7 +610,7 @@ A mobile-first **Progressive Web App** with 8 specialized AI agents, determinist
 | **Phase 3:** MVP Pages | Weeks 3-5 | Month 1-2 | 6 core pages with design system |
 | **Phase 4:** MVP Agents | Weeks 4-7 | Month 2 | 4 agents fully functional |
 | **Phase 5:** Payments & Notifications | Weeks 6-9 | Month 2-3 | Stripe, Web Push, Daily Edit, remaining pages |
-| **Phase 6:** Polish & Launch | Weeks 8-10 | Month 3 | **app.mom.ai is LIVE** |
+| **Phase 6:** Polish & Launch | Weeks 8-10 | Month 3 | **mom.alphaspeedai.com is LIVE** |
 | **Phase 7:** Full Ecosystem | Weeks 9-12 | Month 3 | 8 agents + Family Pro features |
 
 **Total: ~12 weeks (3 months) to full 8-agent launch**

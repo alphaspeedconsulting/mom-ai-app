@@ -1,4 +1,4 @@
-# Pricing Recommendation — Mom.Ai
+# Pricing Recommendation — Mom.alpha
 
 **Complexity Score:** 24/30
 **Recommended Model:** Hybrid — Consumer SaaS (subscription tiers) + Build engagement (Option 3 Render-only)
@@ -95,12 +95,12 @@ Because ~60% of the backend already exists, the build effort is significantly re
 
 ### Pricing Model: Paid-Only with LLM Router (No Free Tier)
 
-Mom.Ai sits at the intersection of "family organizer" ($5-10/mo) and "AI-powered assistant" ($10-20/mo). No free tier — every user pays from Day 1. This eliminates the free-user LLM cost burden and ensures every household is margin-positive.
+Mom.alpha sits at the intersection of "family organizer" ($5-10/mo) and "AI-powered assistant" ($10-20/mo). No free tier — every user pays from Day 1. This eliminates the free-user LLM cost burden and ensures every household is margin-positive.
 
 **Why no free tier:**
 - LLM costs mean free users are a direct cost center, not just infrastructure overhead
 - The platform pays for all LLM calls — no BYOK (user doesn't bring API keys)
-- A 14-day free trial provides the "try before you buy" experience without ongoing cost exposure
+- A 7-day free trial provides the "try before you buy" experience without ongoing cost exposure
 - Focus on conversion quality over signup volume
 
 ### LLM Cost Architecture: Smart Router
@@ -177,8 +177,8 @@ User message → Agent Backend → LLM Router
 
 | Concern | Mitigation |
 |---|---|
-| Higher acquisition friction | 14-day free trial with full Family tier access (1,000 calls) |
-| Competitor free tiers (Cozi) | Cozi free = no AI. Mom.Ai's value prop is AI agents — you can't demo that for free forever |
+| Higher acquisition friction | 7-day free trial with full Family tier access (1,000 calls) |
+| Competitor free tiers (Cozi) | Cozi free = no AI. Mom.alpha's value prop is AI agents — you can't demo that for free forever |
 | Users won't pay without trying | Trial-to-paid conversion for no-free-tier AI apps: 25-40% (higher than freemium's 5-15%) |
 | Can we add free later? | Yes — if growth stalls, add a 200 calls/mo free tier. Easier to add free than to remove it |
 
@@ -251,9 +251,9 @@ User message → Agent Backend → LLM Router
 | Element | Recommendation |
 |---|---|
 | Trial tier | Full Family tier (all 8 agents, 1,000 calls) |
-| Trial duration | 14 days |
+| Trial duration | 7 days |
 | Credit card required? | **Yes** — reduces tire-kickers, increases trial-to-paid to 35-45% |
-| Trial cost to platform | ~$1.40 in LLM (14 days × ~33 calls/day × $0.0029) |
+| Trial cost to platform | ~$0.67 in LLM (7 days × ~33 calls/day × $0.0029) |
 | Conversion target | 35% (CC-required trials convert 2-3x higher than no-CC) |
 | Trial nudges | Day 1: onboard 2 agents. Day 3: "Your agents handled X tasks this week." Day 7: "You've used Y of 1,000 calls — here's what your agents accomplished." Day 12: "Trial ending in 2 days — your data and agents stay if you subscribe." |
 | Post-trial behavior | **App locks** — data preserved for 30 days, but agents stop. User can resubscribe anytime to resume. |
@@ -269,7 +269,7 @@ User message → Agent Backend → LLM Router
 |---|---|---|---|
 | **Family** | $7.99/mo ($69.99/yr) | 1,000 | Core household — 8 agents, smart model routing |
 | **Family Pro** | $14.99/mo ($129.99/yr) | 2,000 | Power users — Plaid, voice, analytics, priority routing |
-| **14-day trial** | $0 (CC required) | 1,000 (prorated) | Acquisition — full Family experience |
+| **7-day trial** | $0 (CC required) | 1,000 (prorated) | Acquisition — full Family experience |
 
 ### LLM Cost Strategy
 
@@ -294,7 +294,7 @@ User message → Agent Backend → LLM Router
 
 | Decision | Recommendation | Rationale |
 |---|---|---|
-| Free tier? | **No** — 14-day trial only | Every user beyond trial costs $2.90-$8/mo in LLM; free tier is a cost center |
+| Free tier? | **No** — 7-day trial only | Every user beyond trial costs $2.90-$8/mo in LLM; free tier is a cost center |
 | Who pays for LLM? | **Platform absorbs** | Consumer users can't manage API keys; BYOK kills adoption |
 | Ad-supported? | **No** | Destroys "Digital Sanctuary" brand promise |
 | Family vs individual pricing? | **Household pricing** | One subscription covers the family (4 members Family, 6 members Pro) |
@@ -306,11 +306,11 @@ User message → Agent Backend → LLM Router
 
 ## Competitive Position
 
-**vs. Cozi ($29.99/year):** "Cozi is a shared to-do list. Mom.Ai is 8 specialized AI agents that actually do the work for you — planning meals, scanning school emails, tracking budgets, and managing the family calendar with conflict detection. That's 100x the capability at 2.3x the price."
+**vs. Cozi ($29.99/year):** "Cozi is a shared to-do list. Mom.alpha is 8 specialized AI agents that actually do the work for you — planning meals, scanning school emails, tracking budgets, and managing the family calendar with conflict detection. That's 100x the capability at 2.3x the price."
 
-**vs. ChatGPT Plus ($20/month):** "ChatGPT is a general assistant that forgets your family between sessions. Mom.Ai knows your kids' names, ages, allergies, school schedules, and budget — and proactively manages all of it across 8 specialized agents. Half the price, 10x the family relevance."
+**vs. ChatGPT Plus ($20/month):** "ChatGPT is a general assistant that forgets your family between sessions. Mom.alpha knows your kids' names, ages, allergies, school schedules, and budget — and proactively manages all of it across 8 specialized agents. Half the price, 10x the family relevance."
 
-**vs. doing nothing:** "The average mother spends 14+ hours/week on household management tasks. At $25/hour opportunity cost, that's $18,200/year. Mom.Ai Premium at $96/year represents a 190:1 ROI if it saves just 1 hour per week."
+**vs. doing nothing:** "The average mother spends 14+ hours/week on household management tasks. At $25/hour opportunity cost, that's $18,200/year. Mom.alpha Premium at $96/year represents a 190:1 ROI if it saves just 1 hour per week."
 
 ---
 
@@ -335,7 +335,7 @@ User message → Agent Backend → LLM Router
 
 ## Part D: Cross-Validation — Cowork Pricing Skills
 
-Two independent pricing tools from the AlphaAI Cowork Plugin Kit were run against Mom.Ai's data. Here's how they compare.
+Two independent pricing tools from the AlphaAI Cowork Plugin Kit were run against Mom.alpha's data. Here's how they compare.
 
 ### Tool 1: `project-pricing` Skill (Alpha Rate Card)
 
@@ -362,7 +362,7 @@ The project-pricing skill scores complexity on 5 dimensions using the Alpha Spee
 - Pro Build: $15,000-$22,000 (4+ agents, durable execution, multi-tenant)
 - Monthly ongoing: $850-$1,200/mo
 
-**Assessment:** The project-pricing skill's Model 7 (AI Agent/MCP) range of $15K-$22K severely underestimates the build because it assumes a consulting engagement scope. Mom.Ai is a full consumer product (13 screens, custom design system, App Store deployment), not a client workflow automation. The rate card is designed for B2B consulting engagements, not consumer SaaS product builds.
+**Assessment:** The project-pricing skill's Model 7 (AI Agent/MCP) range of $15K-$22K severely underestimates the build because it assumes a consulting engagement scope. Mom.alpha is a full consumer product (13 screens, custom design system, App Store deployment), not a client workflow automation. The rate card is designed for B2B consulting engagements, not consumer SaaS product builds.
 
 **Verdict:** Project-pricing skill is **not the right tool** for pricing a consumer SaaS product. It correctly identifies the complexity (24/30) but its pricing models are built for consulting engagements.
 
@@ -370,7 +370,7 @@ The project-pricing skill scores complexity on 5 dimensions using the Alpha Spee
 
 ### Tool 2: `pricing-strategy` Skill (Alireza Rezvani — SaaS Pricing)
 
-The pricing-strategy skill + `pricing_modeler.py` script is designed for SaaS tier structure and was run with Mom.Ai's projected data.
+The pricing-strategy skill + `pricing_modeler.py` script is designed for SaaS tier structure and was run with Mom.alpha's projected data.
 
 #### Modeler Inputs
 ```json
@@ -414,14 +414,14 @@ The pricing-strategy skill + `pricing_modeler.py` script is designed for SaaS ti
 
 #### Key Insight: The Modeler Disagrees on Mid-Tier Price
 
-The modeler recommends **$4/mo mid-tier** based on the competitor floor ($2.50 Cozi) and standard 2.5x tier multiplier from min viable price. But this misses a critical factor: **Mom.Ai is an AI-native product, not a traditional family organizer.** The competitor set should be split:
+The modeler recommends **$4/mo mid-tier** based on the competitor floor ($2.50 Cozi) and standard 2.5x tier multiplier from min viable price. But this misses a critical factor: **Mom.alpha is an AI-native product, not a traditional family organizer.** The competitor set should be split:
 
 | Segment | Price Range | Products |
 |---|---|---|
 | Family organizers (no AI) | $2.50-$4.99 | Cozi, FamilyWall, OurHome |
 | AI-powered apps | $9.99-$20.00 | Maple, Brilliant, ChatGPT Plus |
 
-Mom.Ai sits firmly in the **AI-powered** segment. The modeler's competitor list includes the non-AI apps, which drags the recommended price down.
+Mom.alpha sits firmly in the **AI-powered** segment. The modeler's competitor list includes the non-AI apps, which drags the recommended price down.
 
 #### Resolution: $7.99 Confirmed, With a $4.99 Test Option
 

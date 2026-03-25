@@ -4,14 +4,14 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-**Mom.Ai** is a mobile-first AI assistant platform that deploys 8 specialized AI agents to manage household tasks for busy mothers. The product is in **pre-development/planning phase** — no application code exists yet. The repo contains planning documents and design assets.
+**Mom.alpha** is a mobile-first AI assistant platform that deploys 8 specialized AI agents to manage household tasks for busy mothers. The product is in **pre-development/planning phase** — no application code exists yet. The repo contains planning documents and design assets.
 
 ## Project Status
 
 - **Phase**: Pre-development (planning & design complete, implementation not started)
 - **Architecture decision**: Option 3 — Cowork Plugin + Render-Only MCP Backend + PWA (Next.js)
 - **Target stack**: Next.js PWA (TypeScript, Tailwind CSS, Zustand, SWR/React Query, next-pwa), FastAPI backend (existing license server + MCP server on Render), Render Postgres
-- **Design system**: "Lullaby & Logic" — existing HTML+Tailwind exports in `stitch_screenshot_of_https_mom.ai/`
+- **Design system**: "Lullaby & Logic" — existing HTML+Tailwind exports in `stitch_screenshot_of_https_mom.alphaspeedai.com/`
 
 ## Key Planning Documents
 
@@ -31,7 +31,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - **~60% backend reuse** from existing Cowork MCP infrastructure (AgentVault license server, MCP HTTP/SSE transport, Google Calendar MCP, Gmail Connector)
 - **Multi-tenant isolation**: All data isolated by `household_id` (app-level RLS)
 
-## Design Assets — `stitch_screenshot_of_https_mom.ai/`
+## Design Assets — `stitch_screenshot_of_https_mom.alphaspeedai.com/`
 
 Pre-built UI designs with **ready-to-use HTML+Tailwind code** and reference screenshots. Each screen has a `code.html` (extractable Tailwind components) and `screen.png` (visual reference).
 
@@ -53,7 +53,7 @@ Pre-built UI designs with **ready-to-use HTML+Tailwind code** and reference scre
 | `lullaby_logic/` | Design system spec (`DESIGN.md`) |
 
 Also includes:
-- `mom.ai_design_plan.html` — Full design plan document
+- `mom.alphaspeedai.com_design_plan.html` — Full design plan document
 - `development_handover_document.html` — Development handover reference
 
 When building components, **extract directly from the `code.html` files** — they contain production-ready Tailwind markup matching the "Lullaby & Logic" design system.
