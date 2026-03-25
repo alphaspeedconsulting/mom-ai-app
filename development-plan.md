@@ -18,7 +18,7 @@
 | **Platform tax on $7.99 sub** | 2.9% Stripe ($0.23) | 30% Apple ($2.40) |
 | **Annual revenue lost to fees (21K users)** | ~$73K | ~$570K |
 | **Update speed** | Deploy and done | OTA for JS, full rebuild for native |
-| **Design system** | Direct Tailwind — design exports are already HTML+Tailwind | Must convert to NativeWind |
+| **Design system** | CSS Zen Garden + Tailwind — theme-swappable via CSS vars, design exports already HTML+Tailwind | Must convert to NativeWind, no CSS Zen Garden |
 | **Camera (receipt OCR)** | Web Camera API — sufficient for photos | Native Camera — slightly better |
 | **Push notifications** | Web Push API (iOS 16.4+, Android full) | FCM — universal |
 | **Offline** | Service Workers + IndexedDB | SQLite + background sync |
@@ -94,7 +94,7 @@ A mobile-first **Progressive Web App** with 8 specialized AI agents, determinist
 | Receipt OCR pipeline | GPT-4o vision via Web Camera API | ~3 days |
 | Cloudflare R2 integration | S3-compatible file storage for receipts/uploads | ~1 day |
 
-**PWA advantage: Design exports from Mom.alpha App are already HTML + Tailwind CSS.** Instead of converting to NativeWind (React Native), we use them almost directly. This saves ~15 days compared to native.
+**PWA advantage: Design exports from Mom.alpha App are already HTML + Tailwind CSS.** Instead of converting to NativeWind (React Native), we extract them and replace hardcoded values with CSS Zen Garden variable tokens. This saves ~15 days compared to native AND gives us theme-swappable UI for free.
 
 ---
 
@@ -145,16 +145,40 @@ A mobile-first **Progressive Web App** with 8 specialized AI agents, determinist
    - Configure `next.config.js` for PWA: manifest.json, service worker, icons
    - Add `manifest.json`: app name, theme color (#32695a), display: standalone, icons (192/512px)
 
-2. **"Lullaby & Logic" design system implementation**
-   - `tailwind.config.ts` with all 35+ color tokens — **copy directly from existing design exports**
-   - Typography: Plus Jakarta Sans (Google Fonts, headlines), Be Vietnam Pro (Google Fonts, body)
-   - Component primitives: Button, Card, Chip, Input, BottomNav, GlassPanel
-   - Design rules enforced via Tailwind utilities:
-     - No-Line Rule: no `border` classes, separation via `bg-*` shifts
-     - Glass & Gradient Rule: `backdrop-blur-[20px]` + `bg-*/60` on floating elements
-     - Ambient shadows: `shadow-[0_8px_24px_rgba(0,55,71,0.06)]`
-   - Spacing scale (base 0.35rem), border-radius tokens
-   - **Accelerator**: Existing HTML exports from `/Users/miguelfranco/Mom.alpha App` are already Tailwind — extract components directly
+2. **"Lullaby & Logic" design system — CSS Zen Garden architecture**
+
+   Follows the AlphaAI CSS Zen Garden 4-layer pattern so the entire theme can be swapped by changing a single CSS file (zero component changes). This enables seasonal themes, dark mode, and white-label partner variants.
+
+   **Layer 1: CSS Custom Properties** (`src/styles/index.css`)
+   - Define all Lullaby & Logic tokens as `:root` variables: `--brand`, `--brand-glow`, `--brand-dim`, `--secondary`, `--tertiary`, `--background`, `--surface`, `--surface-elevated`, `--surface-active`, `--surface-input`, `--foreground`, `--muted-foreground`, `--border`, `--shadow-tint`
+   - Theme variants as CSS classes: `.lullaby-logic` (default), `.midnight-mom` (dark), future themes
+   - **This is the ONLY layer that contains hardcoded color values**
+
+   **Layer 2: Tailwind Config** (`tailwind.config.ts`)
+   - Map CSS variables to Tailwind utilities: `bg-brand` → `hsl(var(--brand))`, `text-foreground` → `hsl(var(--foreground))`, etc.
+   - Typography scale: `text-alphaai-3xs` through `text-alphaai-xl` (matching AlphaAI token system)
+   - Fonts: Plus Jakarta Sans (Google Fonts, headlines), Be Vietnam Pro (Google Fonts, body)
+   - Spacing scale (base 0.35rem), border-radius tokens (`rounded-DEFAULT: 1rem`, `rounded-xl: 3rem`)
+   - **No hardcoded colors in this file — only CSS variable references**
+
+   **Layer 3: Shared Component Classes** (`src/styles/mom-alpha.css`)
+   - `.mom-glass-panel` — glassmorphism (`backdrop-blur-[20px]` + `bg-[hsl(var(--background)/0.6)]`)
+   - `.mom-card` — surface card with ambient shadow (`shadow-[0_8px_24px_var(--shadow-tint)]`)
+   - `.mom-chip` — pebble-shaped chip (tertiary tint, full radius)
+   - `.mom-gradient-hero` — signature gradient (`from-[hsl(var(--brand))] to-[hsl(var(--brand-glow))]`)
+   - `.mom-btn-primary`, `.mom-btn-outline` — button variants
+   - `.mom-editorial-shadow` — ambient shadow using `--shadow-tint` token
+   - **All classes reference CSS variables only — zero hardcoded values**
+
+   **Layer 4: Component TSX files** — structure and layout only, never colors or font sizes
+
+   **Quality enforcement**:
+   - Run `/ui-consistency-review` before every frontend PR merge (11-point audit)
+   - Run `/alphaai-design-system` when building new pages (page anatomy + component patterns)
+   - Run `/alphaai-frontend-design` when designing new screens (creative thinking within token constraints)
+   - **Zero hardcoded hex/rgb/hsl values in any component file** — CI lint rule enforced
+
+   **Accelerator**: Existing HTML exports in `stitch_screenshot_of_https_mom.ai/` contain Tailwind markup — extract components and replace hardcoded values with CSS variable tokens
 
 3. **Database schema migration**
    - Add tables to existing `agentvault-db` Render Postgres:
@@ -187,8 +211,8 @@ A mobile-first **Progressive Web App** with 8 specialized AI agents, determinist
 **Dependencies:** None — this is the starting point.
 
 **Success criteria:**
-- Done when: `next dev` renders home page skeleton with design system tokens; PWA installable from Chrome; OAuth login returns JWT; all 12 tables created in Render Postgres
-- Verified by: Lighthouse PWA audit passes (installable, service worker registered); `curl /auth/google` and `/auth/apple` return redirect URLs; `psql` shows all tables
+- Done when: `next dev` renders home page skeleton with design system tokens; PWA installable from Chrome; OAuth login returns JWT; all 12 tables created in Render Postgres; **theme swap test passes** (swap `:root` class → all UI updates, zero component changes)
+- Verified by: Lighthouse PWA audit passes (installable, service worker registered); `curl /auth/google` and `/auth/apple` return redirect URLs; `psql` shows all tables; `/ui-consistency-review` returns zero hardcoded color violations
 - Risk level: Low
 
 ---
@@ -304,8 +328,8 @@ A mobile-first **Progressive Web App** with 8 specialized AI agents, determinist
 
 **Success criteria:**
 - Done when: User can sign up → activate Calendar Whiz → ask "what's on tomorrow?" → see calendar response in chat → view events on calendar page; all 6 pages match "Lullaby & Logic" design specs
-- Verified by: E2E test (Playwright): signup → trial → activate agent → chat → calendar sync; visual QA against design screenshots; Lighthouse PWA + accessibility audit (≥90)
-- Risk level: Low (design exports are already Tailwind — conversion is straightforward)
+- Verified by: E2E test (Playwright): signup → trial → activate agent → chat → calendar sync; visual QA against design screenshots; Lighthouse PWA + accessibility audit (≥90); `/ui-consistency-review` passes on all 6 pages (zero hardcoded values, all tokens from CSS Zen Garden Layer 1)
+- Risk level: Low (design exports are already Tailwind — convert hardcoded values to CSS variable tokens)
 
 ---
 
@@ -444,6 +468,8 @@ A mobile-first **Progressive Web App** with 8 specialized AI agents, determinist
    - Accessibility: Lighthouse WCAG 2.1 AA audit on all pages (target: ≥90)
    - Performance: Lighthouse performance score ≥90; load test at 1,000 concurrent households
    - PWA: Lighthouse PWA audit passes all checks (installable, offline, push)
+   - **CSS Zen Garden compliance**: `/ui-consistency-review` passes on all 13 pages — zero hardcoded colors, zero arbitrary font sizes, zero inline styles, all tokens from Layer 1 CSS variables
+   - **Theme swap test**: Apply `.midnight-mom` class to `<html>` → verify all pages render correctly with alternate palette, zero broken components
 
 6. **Production deploy — launch from AlphaSpeedAi.com**
    - Deploy as a section of the AlphaSpeed AI platform at `mom.alphaspeedai.com`
@@ -566,7 +592,7 @@ A mobile-first **Progressive Web App** with 8 specialized AI agents, determinist
 |---|---|
 | Web Push on iOS (Safari 16.4+) covers target audience | If many users on older iOS, push notifications won't reach them — fallback to email |
 | Web Camera API sufficient for receipt OCR quality | If quality too low, add option to upload from photo library (already supported) |
-| Tailwind HTML exports from design tool convert cleanly to Next.js components | If markup is too different, add 3-5 days for manual conversion |
+| Tailwind HTML exports from design tool convert cleanly to Next.js components with CSS variable tokens | If markup is too different or has deeply nested hardcoded values, add 3-5 days for manual conversion; `/ui-consistency-review` will catch any remaining hardcoded values |
 | 35% trial-to-paid conversion with CC-required trial | If lower, may need to lower price or add free tier |
 | Gemini Flash quality sufficient for simple intelligent ops | May need GPT-4o mini baseline, increasing LLM costs |
 

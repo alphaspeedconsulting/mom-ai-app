@@ -66,13 +66,26 @@ npx create-next-app@latest mom-ai --typescript --tailwind --app
 ```
 With: Zustand (state), SWR or React Query (data fetching), next-pwa (Service Worker)
 
-### Design System Tokens
-- Primary color: `#32695a`
-- Fonts: Plus Jakarta Sans (headlines), Be Vietnam Pro (body)
-- No borders — separation via background color shifts
-- Glass effects: `backdrop-blur-[20px]` + `bg-*/60` on floating elements
-- Ambient shadows: `shadow-[0_8px_24px_rgba(0,55,71,0.06)]`
-- Spacing base: 0.35rem
+### Design System: CSS Zen Garden Architecture (Theme-Swappable)
+
+The "Lullaby & Logic" theme uses the AlphaAI CSS Zen Garden 4-layer architecture:
+
+| Layer | File | Purpose |
+|---|---|---|
+| Layer 1 | `src/styles/index.css` | CSS custom properties (`:root` vars) — **only file with hardcoded colors** |
+| Layer 2 | `tailwind.config.ts` | Maps CSS vars to utilities (`bg-brand`, `text-alphaai-sm`) |
+| Layer 3 | `src/styles/mom-alpha.css` | Shared component classes (`.mom-glass-panel`, `.mom-card`, `.mom-chip`) |
+| Layer 4 | Component TSX files | Structure only — **zero hardcoded colors or font sizes** |
+
+**Key tokens**: `--brand` (teal #32695a), `--background`, `--surface`, `--foreground`, `--shadow-tint`
+**Fonts**: Plus Jakarta Sans (headlines), Be Vietnam Pro (body)
+**Typography**: Use `text-alphaai-*` tokens only (3xs through xl)
+**To retheme**: Change only Layer 1 CSS variables — zero component files touched
+
+**Quality gates** (run before every frontend PR):
+- `/ui-consistency-review` — 11-point CSS Zen Garden compliance audit
+- `/alphaai-design-system` — Page blueprints and component patterns
+- `/alphaai-frontend-design` — Creative design within token constraints
 
 ### Backend Services (on Render)
 - `agentvault-license-server` — FastAPI: OAuth, JWT, family API routes, call budget tracking
