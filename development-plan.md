@@ -4,7 +4,7 @@
 **Status:** Draft
 **Author:** Claude
 **Architecture:** Option 3 — Cowork Plugin + Render-Only MCP Backend + **PWA (Next.js)**
-**Source Documents:** `projects/mom-ai/prd.md` (v1.1), `projects/mom-ai/architecture-analysis.md` (v1.2), `projects/mom-ai/pricing.md`
+**Source Documents (repo root):** `prd.md`, `architecture-analysis.md`, `pricing.md`, `execution-strategy.md`
 **Infrastructure:** Render Postgres ($19/mo) + FastAPI License Server ($7/mo) + MCP HTTP Server ($7/mo) + Cloudflare R2 (free) + Cloudflare Pages ($0) — deployed at `mom.alphaspeedai.com`
 **Distribution:** Launched directly from **AlphaSpeedAi.com** to leverage existing platform traffic and brand authority
 
@@ -171,7 +171,7 @@ The landing page has **zero dependencies** on the app backend, database, or agen
    - **Mobile**: sticky bottom bar with CTA visible while scrolling
 
 4. **Animated product mockups**
-   - Use existing design screenshots from `stitch_screenshot_of_https_mom.ai/` as source frames
+   - Use existing design screenshots from `stitch_screenshot_of_https_mom.alphaspeedai.com/` as source frames
    - CSS animations: fade/slide between agent chat, calendar, task dashboard, budget screens
    - Phone frame component: realistic device bezel wrapping animated screenshots
    - Lightweight: CSS transitions + `<Image>` with lazy loading — no heavy JS animation libraries
@@ -248,7 +248,7 @@ The landing page has **zero dependencies** on the app backend, database, or agen
    - Run `/alphaai-frontend-design` when designing new screens (creative thinking within token constraints)
    - **Zero hardcoded hex/rgb/hsl values in any component file** — CI lint rule enforced
 
-   **Accelerator**: Existing HTML exports in `stitch_screenshot_of_https_mom.ai/` contain Tailwind markup — extract components and replace hardcoded values with CSS variable tokens
+   **Accelerator**: Existing HTML exports in `stitch_screenshot_of_https_mom.alphaspeedai.com/` contain Tailwind markup — extract components and replace hardcoded values with CSS variable tokens
 
 3. **Database schema migration**
    - Add tables to existing `agentvault-db` Render Postgres:

@@ -140,7 +140,7 @@ Key deliverables:
 4. Mobile: sticky bottom CTA bar
 5. Pre-launch waitlist: email capture form (Resend or Mailchimp integration)
 6. SEO: meta tags, Open Graph, Product schema JSON-LD, sitemap.xml
-7. Animated product mockups using existing screenshots from stitch_screenshot_of_https_mom.ai/
+7. Animated product mockups using existing screenshots from stitch_screenshot_of_https_mom.alphaspeedai.com/
 
 Use /alphaai-frontend-design for creative design within token constraints.
 Use existing design exports as source material for mockup animations.
@@ -258,7 +258,7 @@ Key deliverables:
 
 ALL pages must use CSS Zen Garden tokens only — zero hardcoded hex/rgb/hsl values.
 Mock all API calls using src/types/api-contracts.ts shapes (return stubbed data).
-Extract components from stitch_screenshot_of_https_mom.ai/ HTML exports.
+Extract components from stitch_screenshot_of_https_mom.alphaspeedai.com/ HTML exports.
 Run /ui-consistency-review on each page after building it.
 Run /alphaai-design-system when starting each new page.
 ```

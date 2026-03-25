@@ -19,7 +19,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 |---|---|
 | `prd.md` | Product requirements — personas, user stories, 8 agent definitions, MVP scope |
 | `architecture-analysis.md` | Architecture options scoring, tech stack decisions, integration analysis |
-| `development-plan.md` | Implementation phases (4 phases), task breakdown, database schema, reuse analysis |
+| `development-plan.md` | Implementation phases, task breakdown, database schema, reuse analysis |
+| `execution-strategy.md` | Session plan, parallelization, quality gates, phase dependency graph |
 | `pricing.md` | Tier structure ($7.99/$14.99), LLM cost routing model, revenue projections |
 
 ## Architecture Highlights
@@ -34,6 +35,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Design Assets — `stitch_screenshot_of_https_mom.alphaspeedai.com/`
 
 Pre-built UI designs with **ready-to-use HTML+Tailwind code** and reference screenshots. Each screen has a `code.html` (extractable Tailwind components) and `screen.png` (visual reference).
+
+**Canonical folder name in this repo:** `stitch_screenshot_of_https_mom.alphaspeedai.com/`. If a local Stitch export still uses the legacy path `stitch_screenshot_of_https_mom.ai/`, rename or symlink it when vendoring assets so docs and imports stay aligned.
 
 | Subdirectory | Screen |
 |---|---|
