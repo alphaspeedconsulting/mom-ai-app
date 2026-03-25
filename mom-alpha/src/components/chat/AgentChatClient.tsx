@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useChatStore } from "@/stores/chat-store";
 import { useAgentsStore } from "@/stores/agents-store";
 import { useAuthStore } from "@/stores/auth-store";
+import { useVoiceInput } from "@/hooks/use-voice-input";
 import type { AgentType, QuickAction } from "@/types/api-contracts";
 
 export function AgentChatClient({ agentType }: { agentType: AgentType }) {
@@ -13,8 +14,19 @@ export function AgentChatClient({ agentType }: { agentType: AgentType }) {
   const { messages, isTyping, sendMessage } = useChatStore();
   const { agents, fetchAgents } = useAgentsStore();
   const householdId = useAuthStore((s) => s.user?.household_id);
+  const tier = useAuthStore((s) => s.user?.tier);
   const [input, setInput] = useState("");
   const bottomRef = useRef<HTMLDivElement>(null);
+  const { isListening, isSupported, transcript, startListening, stopListening, clearTranscript } = useVoiceInput();
+  const isPro = tier === "family_pro";
+
+  // Auto-fill input when voice transcript arrives
+  useEffect(() => {
+    if (transcript) {
+      setInput(transcript);
+      clearTranscript();
+    }
+  }, [transcript, clearTranscript]);
 
   const agent = agents.find((a) => a.agent_type === agentType);
   const chatMessages = messages[agentType] || [];
@@ -183,6 +195,22 @@ export function AgentChatClient({ agentType }: { agentType: AgentType }) {
               className="mom-input resize-none pr-12 min-h-[44px] max-h-32"
             />
           </div>
+          {/* Voice input — Family Pro only */}
+          {isPro && isSupported && (
+            <button
+              onClick={isListening ? stopListening : startListening}
+              className={`w-11 h-11 rounded-full flex items-center justify-center flex-shrink-0 transition-colors ${
+                isListening
+                  ? "bg-error text-on-primary animate-pulse"
+                  : "bg-surface-container text-muted-foreground hover:bg-surface-active"
+              }`}
+              aria-label={isListening ? "Stop recording" : "Voice input"}
+            >
+              <span className="material-symbols-outlined text-[20px]">
+                {isListening ? "stop" : "mic"}
+              </span>
+            </button>
+          )}
           <button
             onClick={handleSend}
             disabled={!input.trim()}

@@ -8,10 +8,41 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Status
 
-- **Phase**: Pre-development (planning & design complete, implementation not started)
+- **Phase**: Active development — frontend PWA live in `mom-alpha/`, backend live in Cowork repo
 - **Architecture decision**: Option 3 — Cowork Plugin + Render-Only MCP Backend + PWA (Next.js)
-- **Target stack**: Next.js PWA (TypeScript, Tailwind CSS, Zustand, SWR/React Query, next-pwa), FastAPI backend (existing license server + MCP server on Render), Render Postgres
+- **Stack**: Next.js 16 PWA (TypeScript, Tailwind CSS 4, Zustand 5, static export), FastAPI backend (Render + Postgres)
 - **Design system**: "Lullaby & Logic" — existing HTML+Tailwind exports in `stitch_screenshot_of_https_mom.alphaspeedai.com/`
+
+## Repository Boundary
+
+| Code | Repo |
+|---|---|
+| Next.js PWA (`mom-alpha/`), public planning docs, design assets | **This repo** (`mom-ai-app`) — public |
+| FastAPI backend, agent skills, LLM router, PII masker, DB migrations | **Cowork Basic Plugin Kit** (`cowork_plugin/platform files/mom_alpha/`) — private |
+| Shared API types (source of truth) | `mom-alpha/src/types/api-contracts.ts` (this repo) |
+
+**Rule:** Do not put proprietary agent behavior, MCP skills, or backend source code in this repo.
+
+## Cross-Repo Development Setup
+
+### Start the backend (Cowork repo):
+```bash
+cd "/Users/miguelfranco/Cowork Basic Plugin Kit/cowork_plugin/platform files/mom_alpha"
+cp .env.example .env          # fill in values
+python scripts/migrate.py     # bootstrap DB (run once)
+./scripts/dev.sh              # starts on http://localhost:8000
+```
+
+### Start the frontend (this repo):
+```bash
+cd mom-alpha
+# .env.local already configured for localhost:8000
+npm install
+npm run dev                   # starts on http://localhost:3000
+```
+
+### API contract changes:
+When adding or changing a backend endpoint, update `mom-alpha/src/types/api-contracts.ts` in this repo to match.
 
 ## Key Planning Documents
 

@@ -35,21 +35,6 @@ jobs:
         working-directory: mom-alpha
         run: npm run build
 
-  backend:
-    name: Backend (pytest)
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: mom-alpha/backend
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: actions/setup-python@v5
-        with:
-          python-version: "3.11"
-
-      - name: Install dependencies
-        run: pip install -e ".[test]" 2>/dev/null || pip install -e . && pip install pytest pytest-asyncio httpx
-
-      - name: Run tests
-        run: python -m pytest tests/ -v --tb=short
+  # Backend lives in the private Cowork repo and deploys from there.
+  # Backend CI (pytest) runs in that repo's own pipeline.
+  # See: docs/enhancement-plans/2026-03-25-backend-frontend-integration.md
