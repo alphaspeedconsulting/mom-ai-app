@@ -194,7 +194,10 @@ A mobile-first **Progressive Web App** with 8 specialized AI agents, determinist
      - `expenses` (id, household_id, amount, category, merchant, date, receipt_url, source)
      - `wellness_streaks` (id, household_id, member_id, streak_type, dates jsonb, current_streak)
      - `permission_slips` (id, household_id, title, status, due_date, fee_amount, signed_at)
+     - `consent_records` (id, user_id, household_id, document_type, document_version, document_hash, accepted_at, ip_address, user_agent, consent_method, withdrawn_at) — **append-only, never deleted**
+     - `legal_documents` (id, document_type, version, content_hash, published_at, changelog_summary) — versioned legal document registry
    - Row-level isolation via `household_id` on all queries (app-level enforcement)
+   - `consent_records` table is **append-only** (no UPDATE/DELETE permissions) — immutable audit trail for compliance
 
 4. **Auth extension on license server**
    - Add OAuth routes to existing FastAPI: `/auth/google`, `/auth/apple`, `/auth/facebook`, `/auth/microsoft`
@@ -202,6 +205,10 @@ A mobile-first **Progressive Web App** with 8 specialized AI agents, determinist
    - Map OAuth user → household → JWT with `household_id` + `tier` claims
    - Reuse existing JWT issuance/validation from `jwt_handler.py`
    - CORS configuration: allow `mom.alphaspeedai.com` origin on license server
+   - **Legal consent gate**: After OAuth, before account activation — user must accept ToS + Privacy Policy + AI Disclosure
+   - **Consent recording API**: `POST /api/consent` — records user_id, document_type, document_version, document_hash (SHA-256), IP, user_agent, timestamp to append-only `consent_records` table
+   - **COPPA consent flow**: When child profile added (age < 13), require re-authentication + parental consent checkbox → record in `consent_records` with `consent_method: coppa_verification`
+   - **Document version check**: On each login, compare user's last accepted version per document type vs current version — trigger re-acceptance modal if outdated
 
 5. **CI/CD pipeline**
    - GitHub Actions: lint (ESLint + Prettier) → type check → test → deploy
@@ -286,6 +293,11 @@ A mobile-first **Progressive Web App** with 8 specialized AI agents, determinist
 2. **Login/Signup page** (`/login`)
    - Google, Apple, Facebook, and Microsoft OAuth buttons + email/password (connect to Phase 1 auth)
    - "Take a breath. We'll handle the rest." tagline
+   - **Legal consent screen** (post-OAuth, pre-account activation):
+     - Three required checkboxes: Terms of Service, Privacy Policy, AI Disclosure
+     - Each links to full document text (rendered from versioned markdown/HTML)
+     - "Continue" button disabled until all three accepted
+     - On submit: `POST /api/consent` records each acceptance with document version, SHA-256 hash, IP, user_agent, timestamp
    - 7-day trial activation on first login (CC collection via Stripe Checkout)
    - Stripe Checkout: `POST /api/checkout/trial` → redirect to Stripe hosted page → webhook creates household
    - **No Apple 30% cut** — Stripe processes payment directly at 2.9%
@@ -428,6 +440,15 @@ A mobile-first **Progressive Web App** with 8 specialized AI agents, determinist
    - Usage display in Profile: "342 of 1,000 calls used this month" with progress bar
    - Over-budget banner: "Agents are running in basic mode until [reset date]."
    - Family Pro upsell prompt when user hits 80% of budget
+
+6. **Legal pages & consent management**
+   - **Terms of Service page** (`/legal/terms`): rendered from versioned markdown, includes all provisions (liability limitation, indemnification, arbitration, termination)
+   - **Privacy Policy page** (`/legal/privacy`): COPPA section, LLM provider data disclosure, retention periods, GDPR/CCPA rights
+   - **AI Disclosure page** (`/legal/ai-disclosure`): third-party LLM usage, PII protections, "not professional advice" disclaimer per agent domain
+   - **Legal document version management**: `legal_documents` table stores version, content hash, changelog; admin can publish new versions
+   - **Document update flow**: On version bump → blocking modal for all users on next login → must re-accept → new `consent_records` entry → 14-day grace period before account suspension if not accepted
+   - **Consent history in Settings**: User can view all accepted documents with version and date (`/settings/legal`)
+   - **Admin consent audit API**: `GET /api/admin/consent?user_id=X` → returns full consent history (for compliance requests, legal disputes)
 
 **Dependencies:** Phase 3 (page framework, bottom nav), Phase 4 (agent backends).
 
@@ -585,6 +606,7 @@ A mobile-first **Progressive Web App** with 8 specialized AI agents, determinist
 | Call Budget Tracker | 20 tests (increment, check, reset, over-budget, tier change) | 100% |
 | Deterministic Handlers | 60 tests (CRUD for all 6 entity types × happy path + edge cases) | ≥90% |
 | Auth (OAuth + JWT) | 25 tests (Google, Apple, Facebook, Microsoft, email, token refresh, expired token) | 100% |
+| **Consent Recording** | 20 tests (record consent, version check, re-acceptance trigger, COPPA flow, append-only enforcement, audit query, hash verification) | 100% |
 | Stripe Webhooks | 12 tests (create, renew, cancel, fail, upgrade, downgrade, trial expire) | 100% |
 | **PII Masker** | 200 messages (names, emails, phones, addresses, school names, financial data, edge cases) | 100% — zero PII leakage |
 | **Prompt Guard** | 100 injection attempts (direct, indirect, Unicode tricks, jailbreak patterns) | ≥95% detection rate |
@@ -596,6 +618,11 @@ A mobile-first **Progressive Web App** with 8 specialized AI agents, determinist
 | Flow | Test Description |
 |---|---|
 | Auth → API | OAuth login → JWT issued → API call with JWT → authorized response |
+| Signup → Consent → Activation | OAuth login → legal consent screen → accept all 3 docs → consent records created (verify version, hash, IP, timestamp) → account activated → JWT issued |
+| Consent Block | Attempt to skip consent screen → API rejects with 403 "consent required" → cannot activate account |
+| Document Update → Re-acceptance | Bump ToS version → user logs in → blocking modal → accept → new consent record → access restored |
+| Document Update → Decline | Bump ToS version → user declines → account restricted to read-only → agents disabled → data export still works |
+| COPPA → Child Profile | Add child age 5 → COPPA consent screen → re-authenticate → accept → consent record with coppa_verification method → child profile created |
 | Chat → Intent → Deterministic | Send "add milk to list" → classified deterministic → DB write → response (<50ms) |
 | Chat → Intent → LLM | Send "plan dinners" → classified intelligent → LLM Router → GPT-4o mini → response + budget decrement |
 | Over-budget → Downgrade | Exhaust budget → next intelligent call → Gemini Flash used → response |
@@ -614,7 +641,7 @@ A mobile-first **Progressive Web App** with 8 specialized AI agents, determinist
 
 | Journey | Steps |
 |---|---|
-| New User | Visit mom.alphaspeedai.com → Signup (Google/Apple/Facebook/Microsoft) → Family profile → Trial starts → Activate 2 agents → Chat with agent → View calendar → 7 days → Trial expires → Subscribe $7.99 → Agents resume |
+| New User | Visit mom.alphaspeedai.com → Signup (Google/Apple/Facebook/Microsoft) → **Accept ToS + Privacy Policy + AI Disclosure** → Family profile → **COPPA consent for child under 13** → Trial starts → Activate 2 agents → Chat with agent → View calendar → 7 days → Trial expires → Subscribe $7.99 → Agents resume |
 | Daily Use | Open app → Check Daily Edit → Chat with Grocery Guru ("what's for dinner?") → View calendar → Scan receipt → Check budget usage → Set reminder |
 | Over-budget | Use 1,000 calls → See banner → Agent still responds (Gemini Flash) → Upgrade to Pro → Budget resets to 2,000 |
 | PWA Install | Visit on mobile Chrome → "Add to Home Screen" prompt → Install → Open from home screen → Full standalone experience |
