@@ -720,6 +720,109 @@ The landing page has **zero dependencies** on the app backend, database, or agen
 
 ---
 
+### Phase 9: GA4, Sitemap & SEO Optimization (Post-Launch, Separate Session)
+
+**Goal:** Full analytics instrumentation, sitemap generation, and SEO optimization across all pages. This is a **semi-manual phase** — requires SEO skills to be ported from the Cowork Plugin repo first, and some work will be hands-on (GA4 property setup, Search Console verification, manual meta tag review).
+
+**Prerequisites before this session:**
+1. Port SEO-related skills from Cowork Plugin repo into `.claude/skills/` (manual — done by developer)
+2. GA4 property created in Google Analytics console (manual — done by developer)
+3. Google Search Console verified for `mom.alphaspeedai.com` (manual — done by developer)
+4. All app pages live (Phase 6 complete minimum)
+
+#### Tasks
+
+1. **Google Analytics 4 (GA4) integration**
+   - Install `@next/third-parties` or `gtag.js` via Next.js Script component
+   - GA4 measurement ID configured via environment variable (`NEXT_PUBLIC_GA4_ID`)
+   - Page view tracking: automatic via Next.js App Router navigation events
+   - Custom events to track:
+     - `signup_start` (OAuth button clicked)
+     - `consent_accepted` (legal consent completed)
+     - `trial_activated` (Stripe checkout completed)
+     - `agent_activated` (agent toggled on in marketplace)
+     - `agent_chat_sent` (message sent to agent)
+     - `agent_chat_deterministic` vs `agent_chat_intelligent` (tracks LLM vs non-LLM split)
+     - `receipt_scanned` (Budget Buddy OCR used)
+     - `calendar_synced` (Google or Apple calendar connected)
+     - `waitlist_signup` (email captured on landing page)
+     - `cta_clicked` (which CTA, which page)
+     - `trial_expired` / `subscription_started` / `subscription_cancelled`
+   - Conversion funnels: landing page → signup → consent → trial → first agent interaction → subscription
+   - User properties: `subscription_tier` (trial/family/pro), `agent_count` (active agents), `household_size`
+   - **No PII in GA4**: no names, emails, or household IDs sent to Google Analytics — only anonymized event data
+   - Cookie consent banner (GDPR): analytics cookies only set after user accepts
+
+2. **Sitemap generation**
+   - `next-sitemap` package for automatic sitemap generation on build
+   - Static pages: `/`, `/login`, `/legal/terms`, `/legal/privacy`, `/legal/ai-disclosure`, `/pricing` (if separate from landing)
+   - Dynamic pages: exclude authenticated-only pages from public sitemap (marketplace, chat, calendar, etc.)
+   - `sitemap.xml` served at `mom.alphaspeedai.com/sitemap.xml`
+   - `robots.txt`: allow crawling of public pages, disallow `/api/*`, `/chat/*`, `/tasks/*`, `/profile/*`, `/settings/*`
+   - Submit sitemap to Google Search Console
+
+3. **SEO optimization — per-page audit**
+   - **Landing page** (`/`):
+     - H1: "Take a breath. We'll handle the rest." (primary keyword: "AI family assistant")
+     - Meta description: compelling 155-char summary with target keywords
+     - Open Graph: `og:title`, `og:description`, `og:image` (hero screenshot), `og:url`
+     - Twitter Card: `summary_large_image` with hero visual
+     - Structured data: `Product` schema (JSON-LD) with pricing, description, offers
+     - `SoftwareApplication` schema for app discovery
+   - **Legal pages** (`/legal/*`):
+     - Meta tags, canonical URLs, noindex on legal pages (optional — some prefer indexed for trust)
+   - **All public pages**:
+     - Canonical URLs to prevent duplicate content
+     - Proper heading hierarchy (H1 → H2 → H3, no skipped levels)
+     - Alt text on all images
+     - Internal linking between landing page sections and legal pages
+   - Run SEO skills (ported from Cowork Plugin repo) for automated audit
+
+4. **Performance SEO**
+   - Core Web Vitals verification: FCP <1.5s, LCP <2.5s, CLS <0.1, FID <100ms
+   - Image optimization: Next.js `<Image>` component with WebP/AVIF, lazy loading, proper `sizes` attribute
+   - Font optimization: `next/font` for Plus Jakarta Sans + Be Vietnam Pro (self-hosted, no layout shift)
+   - Preconnect hints for external domains (Google Fonts if not self-hosted, Stripe, analytics)
+   - Verify no render-blocking resources
+
+5. **Social sharing optimization**
+   - Open Graph image: custom 1200x630 image for social sharing (hero visual + logo + tagline)
+   - Twitter Card preview testing
+   - WhatsApp/iMessage preview testing (og:image + og:title render correctly)
+   - LinkedIn sharing preview
+
+6. **Analytics dashboard setup** (manual, developer-assisted)
+   - GA4 Explorations: create funnel report (landing → signup → trial → paid)
+   - GA4 custom report: agent usage breakdown, deterministic vs intelligent call ratio
+   - Set up GA4 alerts: trial conversion rate drops below 3%, bounce rate exceeds 50%
+
+**Dependencies:** Phase 6 (app live), SEO skills ported from Cowork Plugin repo, GA4 property + Search Console setup (manual).
+
+**What's manual vs automated:**
+
+| Task | Automated (Claude session) | Manual (developer) |
+|---|---|---|
+| GA4 code integration | ✅ Install gtag, configure events, add to pages | |
+| GA4 property creation | | ✅ Google Analytics console |
+| Search Console verification | | ✅ DNS TXT record or meta tag |
+| Sitemap generation | ✅ next-sitemap config, robots.txt | |
+| Sitemap submission | | ✅ Search Console UI |
+| SEO meta tags | ✅ Per-page meta, Open Graph, structured data | |
+| SEO skills audit | ✅ Run ported SEO skills | ✅ Port skills from Cowork repo first |
+| Core Web Vitals | ✅ Code optimizations | ✅ PageSpeed Insights verification |
+| OG image creation | | ✅ Design tool (Figma/Canva) |
+| Analytics dashboard | | ✅ GA4 Explorations UI |
+| Cookie consent banner | ✅ Implementation | ✅ Copy/legal review |
+
+**Estimated effort:** ~3 days (2d automated Claude session + 1d manual developer tasks)
+
+**Success criteria:**
+- Done when: GA4 tracking live on all pages with custom events firing; sitemap.xml submitted to Search Console; all public pages pass SEO audit (meta tags, structured data, heading hierarchy, OG tags); Core Web Vitals green; cookie consent banner functional
+- Verified by: GA4 Realtime report shows events; Google Search Console shows sitemap processed; Lighthouse SEO ≥95 on all public pages; PageSpeed Insights mobile ≥90; social sharing preview renders correctly on Twitter/Facebook/LinkedIn/WhatsApp
+- Risk level: Low (mostly additive, no breaking changes)
+
+---
+
 ## 5. Testing Strategy
 
 ### Unit Tests
@@ -841,6 +944,7 @@ The landing page has **zero dependencies** on the app backend, database, or agen
 | **Phase 6:** Polish & Launch | Weeks 8-10 | Month 3 | **Full app LIVE at mom.alphaspeedai.com** (replaces landing page) |
 | **Phase 7:** Full Ecosystem | Weeks 9-12 | Month 3 | 8 agents + Family Pro features |
 | **Phase 8:** Specialized Trackers | Post-launch | Month 4+ | Skincare + Orthodontic/Dental trackers |
+| **Phase 9:** GA4, Sitemap & SEO | Post-launch | Month 3-4 | Analytics, sitemap, SEO audit (requires manual prep + ported SEO skills) |
 
 **Landing page live: ~1 week** (starts collecting interest immediately)
 **Total: ~12 weeks (3 months) to full 8-agent launch**
@@ -859,13 +963,14 @@ The landing page has **zero dependencies** on the app backend, database, or agen
 | Stripe + notifications + Daily Edit | 8 | $9,600 |
 | Testing + QA + performance | 12 | $14,400 |
 | PWA polish + COPPA compliance | 3 | $3,600 |
-| **Total** | **97 days** | **$116,400** |
+| GA4 + sitemap + SEO optimization (Phase 9) | 3 | $3,600 |
+| **Total** | **100 days** | **$120,000** |
 
 ### Savings vs Native App Approach
 
 | Category | PWA | Native (React Native) | Savings |
 |---|---|---|---|
-| Build cost | $116,400 | $142,000 | **$25,600** |
+| Build cost | $120,000 | $145,600 | **$25,600** |
 | Annual platform fees | $0 | $1,300/yr | **$1,300/yr** |
 | Apple/Google subscription tax (Year 1) | $73K | $570K | **$497K** |
 | Time to launch | 11 weeks | 15 weeks | **4 weeks faster** |

@@ -387,6 +387,70 @@ Both reuse existing streak, calendar, and reminder infrastructure.
 
 ---
 
+### Session 7: Phase 9 — GA4, Sitemap & SEO (Solo, semi-manual)
+
+**Estimated duration:** 1 session (medium) + manual developer tasks
+**Prerequisites:**
+1. App live (Phase 6 complete)
+2. **SEO skills ported from Cowork Plugin repo** into `.claude/skills/` (manual — done by developer before session)
+3. **GA4 property created** in Google Analytics console (manual — done by developer before session)
+4. **Google Search Console verified** for `mom.alphaspeedai.com` (manual — done by developer before session)
+
+**Task prompt:**
+```
+Read prd.md and development-plan.md (Phase 9).
+Execute the GA4, Sitemap & SEO optimization phase using /execute-plan.
+
+Prerequisites already completed by developer:
+- SEO skills available in .claude/skills/
+- GA4 measurement ID: [DEVELOPER FILLS IN]
+- Search Console verified for mom.alphaspeedai.com
+
+Key deliverables:
+1. GA4 integration: gtag.js via Next.js Script, page view tracking,
+   custom events (signup_start, consent_accepted, trial_activated,
+   agent_activated, agent_chat_sent, receipt_scanned, calendar_synced,
+   cta_clicked, trial_expired, subscription_started)
+2. User properties: subscription_tier, agent_count, household_size
+3. NO PII in GA4 — only anonymized event data
+4. Cookie consent banner (GDPR) — analytics cookies after consent only
+5. next-sitemap: auto-generated sitemap.xml + robots.txt
+   (public pages only, exclude /api/*, /chat/*, /tasks/*, /profile/*)
+6. Per-page SEO: meta tags, Open Graph, Twitter Card, structured data
+   (Product schema + SoftwareApplication schema on landing page)
+7. Heading hierarchy audit (H1 → H2 → H3, no skipped levels)
+8. Image alt text audit
+9. Core Web Vitals optimization (FCP <1.5s, LCP <2.5s, CLS <0.1)
+10. Font optimization via next/font (self-hosted, no CLS)
+
+Run the ported SEO skills for automated audit on all public pages.
+Run /ui-consistency-review to confirm no regressions.
+Target: Lighthouse SEO ≥95 on all public pages.
+```
+
+**What the developer does before/after this session:**
+
+| Timing | Developer Task |
+|---|---|
+| **Before** | Port SEO skills from Cowork Plugin repo → `.claude/skills/` |
+| **Before** | Create GA4 property in Google Analytics → get measurement ID |
+| **Before** | Verify `mom.alphaspeedai.com` in Google Search Console (DNS TXT record) |
+| **After** | Submit `sitemap.xml` in Search Console UI |
+| **After** | Create GA4 Explorations: funnel report (landing → signup → trial → paid) |
+| **After** | Create custom OG image (1200x630) in Figma/Canva for social sharing |
+| **After** | Set up GA4 alerts: trial conversion <3%, bounce rate >50% |
+| **After** | Test social sharing previews: Twitter, Facebook, LinkedIn, WhatsApp |
+
+**Verification:**
+- GA4 Realtime report shows page views and custom events firing
+- `mom.alphaspeedai.com/sitemap.xml` returns valid XML with all public pages
+- `mom.alphaspeedai.com/robots.txt` blocks authenticated routes
+- Lighthouse SEO ≥95 on landing page and legal pages
+- PageSpeed Insights mobile ≥90
+- Cookie consent banner appears on first visit, blocks analytics until accepted
+
+---
+
 ## Session Summary
 
 | Session | Phase | Parallel? | Estimated Size | Key Risk |
@@ -401,9 +465,11 @@ Both reuse existing streak, calendar, and reminder infrastructure.
 | **5a** | Phase 7a: Wellness + Sleep | Parallel with 5b | Medium | Low (proven patterns) |
 | **5b** | Phase 7b: Tutor + Self-Care | Parallel with 5a | Medium | Low (proven patterns) |
 | **6** | Phase 8: Skincare + Dental | Solo | Medium | Low (reuses existing infra) |
+| **7** | **Phase 9: GA4 + Sitemap + SEO** | **Solo (semi-manual)** | **Medium** | **Requires SEO skills ported from Cowork repo + manual GA4/Search Console setup** |
 
-**Total: 10 sessions across 7 calendar slots** (3 parallel pairs reduce elapsed time).
+**Total: 11 sessions across 8 calendar slots** (3 parallel pairs reduce elapsed time).
 **Landing page live: Session 0 (before any backend work begins).**
+**SEO session: Runs after launch, requires developer prep (GA4 property, Search Console, SEO skills port).**
 
 ---
 
