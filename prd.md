@@ -920,9 +920,9 @@ Three Claude Code skills enforce CSS Zen Garden compliance:
 | Calendar Sync (Apple) | CalDAV protocol (iCloud) + `icalendar` library | Bidirectional sync, polling via `ctag`/`etag` every 5 min, RRULE support |
 | Banking | Plaid | Receipt categorization, bank account linking |
 | Observability | LangSmith + Langfuse | LLM call tracing, agent performance monitoring |
-| CI/CD | GitHub Actions + Cloudflare Pages | Auto-deploy on push, preview per PR |
+| CI/CD | GitHub Actions + GitHub Pages | Auto-deploy on push to `main` (optional staging branch) |
 | Monitoring | Sentry (web) + Grafana Cloud | Error tracking + infrastructure metrics |
-| Hosting | Cloudflare Pages (frontend) | Global CDN, $0 cost, instant deploys |
+| Hosting | GitHub Pages (frontend) | $0, same pattern as Alpha AI Website; DNS CNAME for `mom.alphaspeedai.com` |
 
 ### Architecture Constraints
 1. **Offline-capable**: Core read operations cached via Service Worker + IndexedDB

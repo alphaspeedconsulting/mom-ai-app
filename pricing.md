@@ -72,7 +72,7 @@ Because ~60% of the backend already exists, the build effort is significantly re
 | Render infrastructure | $33 |
 | LLM APIs (~10K households) | $2,000 |
 | LangSmith + Sentry | $65 |
-| Cloudflare Pages (PWA hosting) | $0 |
+| GitHub Pages (PWA hosting) | $0 |
 | Maintenance/bug fixes (20 hrs/mo @ $150) | $3,000 |
 | **Total Monthly Ongoing** | **~$5,206** |
 

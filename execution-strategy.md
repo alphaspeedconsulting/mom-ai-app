@@ -126,7 +126,7 @@ This page ships BEFORE the app exists. It drives interest from AlphaSpeedAi.com
 and collects waitlist emails.
 
 Key deliverables:
-1. Next.js project init with Tailwind + Cloudflare Pages deploy config
+1. Next.js project init with Tailwind + GitHub Pages deploy config (GitHub Actions `deploy-pages`, static export compatible with Pages)
 2. CSS Zen Garden Layer 1-3 (subset: landing page tokens only — will be extended in Phase 1)
 3. Landing page at root route (/) with all sections:
    - Hero: "Take a breath. We'll handle the rest." + animated product mockup
@@ -178,8 +178,8 @@ Execute Phase 1 from development-plan.md using /execute-plan.
 Key deliverables:
 1. Next.js project init with PWA config
 2. CSS Zen Garden 4-layer design system (index.css → tailwind.config.ts → mom-alpha.css → components)
-3. Database schema (all 14 tables including consent_records and legal_documents)
-4. Auth extension: **Google + email/password** required; **Facebook/Microsoft** when provider apps are ready; **Sign in with Apple deferred to Phase 7** (Capacitor); legal consent gate + COPPA flow per `development-plan.md` Phase 1
+3. Database schema (14 tables: 12 app tables + consent_records + legal_documents; later phases add daily_edit_log, skincare_routines, dental_treatments via migrations)
+4. Auth extension: **Google + email/password** required; **Facebook/Microsoft** when provider apps are ready; **Sign in with Apple deferred to Phase 7** (Capacitor); legal consent gate (ToS + Privacy + AI Disclosure) per `development-plan.md` Phase 1
 5. API contract types file (src/types/api-contracts.ts) — this is the handshake for parallel Phase 2/3
 6. CI/CD pipeline
 7. Test fixtures under `/tests/fixtures/` + READMEs; `.env.example`; Render env groups + secret inventory (`development-plan.md` Phase 1 §6–7)
@@ -191,7 +191,7 @@ Run /ui-consistency-review on the design system before completing.
 - `next dev` renders home page skeleton with design system tokens
 - PWA installable from Chrome (Lighthouse PWA audit)
 - **Google** OAuth login returns JWT (other providers when enabled)
-- All 14 tables created in Render Postgres
+- All 14 Phase 1 tables created in Render Postgres (later tables added via migrations in their respective phases)
 - `/ui-consistency-review` returns zero violations
 - `src/types/api-contracts.ts` committed with all request/response shapes
 
@@ -255,7 +255,7 @@ Execute Phase 3 from development-plan.md using /execute-plan.
 
 Key deliverables:
 1. Login/Signup: **Google** (+ email) first; **Facebook/Microsoft** when enabled; **no Apple button** until Phase 7; legal consent screen (3 checkboxes: ToS, Privacy, AI Disclosure)
-2. Onboarding page (family profile setup, COPPA consent for children under 13)
+2. Onboarding page (family profile setup)
 3. Home/Marketplace page (agent discovery, carousel, activate toggle)
 4. Agent Chat page (per-agent dynamic route, message bubbles, quick action chips, typing indicator)
 5. Family Calendar page (monthly grid, color coding, filter chips, calendar account linking UI)
@@ -273,7 +273,7 @@ Run /alphaai-design-system when starting each new page.
 - All 6 pages render and navigate correctly
 - `/ui-consistency-review` passes on all 6 pages (zero hardcoded colors)
 - Theme swap test: apply `.midnight-mom` class → all pages adopt alternate palette
-- Legal consent screen blocks progression until all 3 checkboxes accepted
+- Legal consent screen blocks account activation until all 3 checkboxes accepted (ToS, Privacy, AI Disclosure)
 - Lighthouse accessibility ≥90 on all pages
 
 ---
@@ -347,7 +347,7 @@ Phase 5b:
 Phase 6:
 1. Performance optimization (deterministic <50ms, intelligent <2s P95)
 2. PWA polish (offline, install prompt, splash screen)
-3. COPPA compliance verification
+3. Privacy compliance verification (18+ app, parent-managed data, no child-facing UI)
 4. Security hardening (full PII pipeline audit)
 5. Full test suite (unit + integration + E2E + CSS Zen Garden compliance + theme swap)
 6. Production deploy to mom.alphaspeedai.com
@@ -385,10 +385,24 @@ Run /run-tests and /ui-consistency-review.
 **Prerequisites:** Phase 7 complete (Wellness Hub operational).
 
 ```
-Execute Phase 8 from development-plan.md:
-1. Skincare Tracker (routine logging, product schedules, conflict detection, facial appointments)
-2. Orthodontic & Dental Tracker (device reminders, compliance streaks, treatment timeline)
-Both reuse existing streak, calendar, and reminder infrastructure.
+Read prd.md and development-plan.md (Phase 8).
+Execute Phase 8 from development-plan.md using /execute-plan.
+
+Key deliverables:
+1. Skincare Tracker: routine logging, product schedule tracking, conflict detection
+   ("Don't use retinol and AHA on the same night"), facial appointment calendar sync,
+   product inventory tracking
+2. Orthodontic & Dental Tracker: device schedule reminders per family member,
+   compliance streak tracking, treatment milestone timeline, appointment calendar sync
+3. New DB tables: skincare_routines, dental_treatments (migrations via alembic)
+4. Both agents follow the proven deterministic/intelligent split from Phase 4
+5. Reuse existing infrastructure: wellness_streaks table, calendar sync (Google + CalDAV),
+   reminder system, agent chat interface
+
+Design: extend Wellness Hub page with tabs, or new /agents/skincare and /agents/dental pages.
+Extract components from stitch_screenshot_of_https_mom.alphaspeedai.com/ if applicable.
+Run /ui-consistency-review on all new/modified pages.
+Run /run-tests for each tracker.
 ```
 
 ---
@@ -491,6 +505,18 @@ Every session ends with these checks before moving to the next:
 | Plan completion | `/verify-plan-completion` | All phase tasks checked off |
 | Code quality | `/code-review` | 4-pass architecture compliance |
 | Git | `/git-push` | All changes committed and pushed |
+
+---
+
+## Session Recovery Protocol
+
+If a session fails mid-phase (context exhaustion, broken code, model error):
+
+1. **Do not compact.** Lossy compression will make the problem worse.
+2. **Commit what works.** If any completed tasks produce working code, commit them with a clear message (e.g., `Phase 2 partial: intent classifier + call budget done, LLM router WIP`).
+3. **Revert what doesn't.** `git stash` or `git checkout -- <broken files>` for uncommitted broken changes.
+4. **Start a new session** pointing at the last good commit. The new session reads committed code (ground truth) and picks up from the unfinished tasks in the phase.
+5. **Narrow the prompt.** If a full phase was too large for one session, split the remaining tasks into a smaller prompt targeting only the unfinished work.
 
 ---
 

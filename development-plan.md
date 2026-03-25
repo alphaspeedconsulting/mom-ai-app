@@ -5,7 +5,7 @@
 **Author:** Claude
 **Architecture:** Option 3 — Cowork Plugin + Render-Only MCP Backend + **PWA (Next.js)**
 **Source Documents (repo root):** `prd.md`, `architecture-analysis.md`, `pricing.md`, `execution-strategy.md`
-**Infrastructure:** Render Postgres ($19/mo) + FastAPI License Server ($7/mo) + MCP HTTP Server ($7/mo) + Cloudflare R2 (free) + Cloudflare Pages ($0) — deployed at `mom.alphaspeedai.com`
+**Infrastructure:** Render Postgres ($19/mo) + FastAPI License Server ($7/mo) + MCP HTTP Server ($7/mo) + Cloudflare R2 (free) + **GitHub Pages ($0)** for the Next.js frontend — deployed at `mom.alphaspeedai.com` (DNS CNAME to GitHub Pages; same deploy pattern as Alpha AI Website)
 **Distribution:** Launched directly from **AlphaSpeedAi.com** to leverage existing platform traffic and brand authority
 
 ---
@@ -23,8 +23,8 @@
 | **Push notifications** | Web Push API (iOS 16.4+, Android full) | FCM — universal |
 | **Offline** | Service Workers + IndexedDB | SQLite + background sync |
 | **App Store discovery** | AlphaSpeedAi.com traffic + SEO + cross-promotion | App Store search |
-| **Build cost** | ~$98K | ~$124K |
-| **Ongoing cost** | $0 hosting (Cloudflare Pages) + $0 platform fees | $1,300/yr (Apple + Google + Expo EAS) |
+| **Build cost** | ~$126K | ~$146K |
+| **Ongoing cost** | $0 hosting (GitHub Pages) + $0 platform fees | $1,300/yr (Apple + Google + Expo EAS) |
 
 **Decision: PWA first.** Wrap in Capacitor later if App Store distribution becomes important.
 
@@ -50,7 +50,7 @@ A mobile-first **Progressive Web App** with 8 specialized AI agents, determinist
 | `agentvault-db` (Render Postgres) | **Extend** | Add family schema tables |
 | **Next.js PWA** | **New** | 13 pages, "Lullaby & Logic" design system, Tailwind CSS, Service Worker |
 | Cloudflare R2 | **New** | File storage for receipts, user uploads |
-| Cloudflare Pages (or Render Static) | **New** | PWA hosting — $0 |
+| GitHub Pages (via GitHub Actions, like main marketing site) | **New** | PWA hosting — $0 |
 | Family Optimizer MCP | **Reuse** | Calendar Whiz agent backbone |
 | Gmail Connector MCP | **Reuse** | School Event Hub email scanning |
 | Google Calendar MCP | **Reuse** | Bidirectional calendar sync |
@@ -149,8 +149,9 @@ The landing page has **zero dependencies** on the app backend, database, or agen
 
 1. **Next.js project init** (if not already done — shared with Phase 1)
    - `npx create-next-app@latest mom-alpha --typescript --tailwind --app`
-   - Configure for Cloudflare Pages deployment
-   - Set up `mom.alphaspeedai.com` subdomain DNS
+   - Configure for **GitHub Pages** deployment (GitHub Actions `deploy-pages`, static export or compatible Next.js output)
+   - **GitHub Pages serves static files only** — use Next.js **`output: 'export'`** (or equivalent) for shipping; all server logic and APIs live on **Render**, not on Pages
+   - Set up `mom.alphaspeedai.com` subdomain DNS (CNAME to GitHub Pages as documented for custom domains)
 
 2. **CSS Zen Garden design system** (minimal — landing page tokens only)
    - Layer 1: `:root` CSS variables for Lullaby & Logic theme
@@ -163,7 +164,7 @@ The landing page has **zero dependencies** on the app backend, database, or agen
    - **Agent showcase** ("Meet Your Team"): 8 agent cards in horizontal scroll/grid, each with icon + name + 1-line description + mini animated preview
    - **"A Day With Mom.alpha"**: timeline narrative section showing a mom's day with agents helping at each moment (7am Daily Edit → 8am school slip → 12pm receipt scan → 3pm calendar conflict → 8pm self-care)
    - **Feature deep-dives**: 3-4 sections with screenshot mockups + descriptions (calendar sync, agent chat, receipt scanning, school events)
-   - **Trust & privacy**: "Your family's data is sacred" — PII stripping, zero-retention, encryption, COPPA badges
+   - **Trust & privacy**: "Your family's data is sacred" — PII stripping, zero-retention, encryption, privacy badges
    - **Pricing**: side-by-side Family vs Family Pro comparison table with annual discount callout
    - **FAQ**: expandable accordion (what is it, how does AI work, data safety, calendars, cancel anytime, devices)
    - **Final CTA**: "Ready to take a breath?" + trial button
@@ -278,12 +279,11 @@ The landing page has **zero dependencies** on the app backend, database, or agen
    - CORS configuration: allow `mom.alphaspeedai.com` origin on license server
    - **Legal consent gate**: After OAuth, before account activation — user must accept ToS + Privacy Policy + AI Disclosure
    - **Consent recording API**: `POST /api/consent` — records user_id, document_type, document_version, document_hash (SHA-256), IP, user_agent, timestamp to append-only `consent_records` table
-   - **COPPA consent flow**: When child profile added (age < 13), require re-authentication + parental consent checkbox → record in `consent_records` with `consent_method: coppa_verification`
    - **Document version check**: On each login, compare user's last accepted version per document type vs current version — trigger re-acceptance modal if outdated
 
 5. **CI/CD pipeline**
    - GitHub Actions: lint (ESLint + Prettier) → type check → test → deploy
-   - Frontend: Cloudflare Pages auto-deploy on push (or Render Static Site)
+   - Frontend: **GitHub Pages** auto-deploy on push via GitHub Actions (same family of workflow as Alpha AI Website)
    - Backend: existing Render auto-deploy on push (already configured)
 
 6. **Test data creation** (implements **Test Data Requirements** in §5)
@@ -303,13 +303,13 @@ The landing page has **zero dependencies** on the app backend, database, or agen
      - `DATABASE_URL` (Postgres); `R2_ACCESS_KEY_ID`, `R2_SECRET_ACCESS_KEY` (R2)
      - `NEXT_PUBLIC_*` (e.g. GA4 in Phase 9) — never put secrets in `NEXT_PUBLIC_` vars
    - Commit **`.env.example`** (keys only, no values) in the app repo
-   - Verify env group inheritance across Cloudflare Pages previews, license server, and MCP services
+   - Verify secrets/build env vars in GitHub Actions for production (and optional staging) workflows, plus Render env groups for license server and MCP services
 
 **Dependencies:** None — this is the starting point.
 
 **Success criteria:**
-- Done when: `next dev` renders home page skeleton with design system tokens; PWA installable from Chrome; **Google** OAuth login returns JWT; all **14** Phase 1 tables created in Render Postgres (see schema list above; e.g. `daily_edit_log` lands in Phase 5); **theme swap test passes** (swap `:root` class → all UI updates, zero component changes); test fixtures exist under `/tests/fixtures/` with READMEs; `.env.example` lists required vars
-- Verified by: Lighthouse PWA audit passes (installable, service worker registered); `curl` (or browser) hits `/auth/google` and receives OAuth redirect; optional providers verified when enabled; `psql` shows all tables; `/ui-consistency-review` returns zero hardcoded color violations
+- Done when: `next dev` renders home page skeleton with design system tokens; PWA installable from Chrome; **Google** OAuth login returns JWT; all Phase 1 tables created in Render Postgres (12 app tables + `consent_records` + `legal_documents` = 14; `daily_edit_log` lands in Phase 5); **theme swap test passes** (swap `:root` class → all UI updates, zero component changes); test fixtures exist under `/tests/fixtures/` with READMEs; `.env.example` lists required vars
+- Verified by: Lighthouse PWA audit passes (installable, service worker registered); `curl` (or browser) hits `/auth/google` and receives OAuth redirect; optional providers verified when enabled; `psql` shows all 14 tables; `/ui-consistency-review` returns zero hardcoded color violations
 - Risk level: Low
 
 ---
@@ -573,7 +573,7 @@ The landing page has **zero dependencies** on the app backend, database, or agen
 
 6. **Legal pages & consent management**
    - **Terms of Service page** (`/legal/terms`): rendered from versioned markdown, includes all provisions (liability limitation, indemnification, arbitration, termination)
-   - **Privacy Policy page** (`/legal/privacy`): COPPA section, LLM provider data disclosure, retention periods, GDPR/CCPA rights
+   - **Privacy Policy page** (`/legal/privacy`): app is for users 18+ (parent-managed family data), LLM provider data disclosure, retention periods, GDPR/CCPA rights
    - **AI Disclosure page** (`/legal/ai-disclosure`): third-party LLM usage, PII protections, "not professional advice" disclaimer per agent domain
    - **Legal document version management**: `legal_documents` table stores version, content hash, changelog; admin can publish new versions
    - **Document update flow**: On version bump → blocking modal for all users on next login → must re-accept → new `consent_records` entry → 14-day grace period before account suspension if not accepted
@@ -597,7 +597,7 @@ The landing page has **zero dependencies** on the app backend, database, or agen
 
 ### Phase 6: Polish, Testing & Launch (Weeks 8-10)
 
-**Goal:** Performance optimization, comprehensive testing, COPPA compliance, deploy to production URL.
+**Goal:** Performance optimization, comprehensive testing, privacy compliance, deploy to production URL.
 
 #### Tasks
 
@@ -618,11 +618,12 @@ The landing page has **zero dependencies** on the app backend, database, or agen
    - Splash screen with Mom.alpha logo + primary gradient
    - `manifest.json` verified: correct icons, theme color, display: standalone
 
-3. **COPPA compliance**
-   - Verifiable parental consent flow for child profiles (under 13)
-   - No PII collection from children beyond name + age
-   - Data minimization: child data only stored as part of parent's household
-   - Privacy policy page (`/privacy`) with COPPA section
+3. **Privacy compliance**
+   - App is intended for users 18+ (parents/guardians) — stated in Privacy Policy and ToS
+   - Family member data (children's names, ages, allergies, school info) is entered and managed by the parent account holder — no data is collected directly from children
+   - Children do not interact with the app — no child accounts, no child-facing UI, no child login
+   - If child-facing features are ever added (child accounts, child-accessible UI), COPPA compliance review will be conducted at that point
+   - Privacy policy and ToS pages already created in Phase 5 (`/legal/privacy`, `/legal/terms`) — verify they include the above statements
 
 4. **Security hardening & LLM data protection**
 
@@ -669,7 +670,7 @@ The landing page has **zero dependencies** on the app backend, database, or agen
 
 6. **Production deploy — launch from AlphaSpeedAi.com**
    - Deploy as a section of the AlphaSpeed AI platform at `mom.alphaspeedai.com`
-   - Cloudflare Pages (frontend) + Render (backend) — both auto-deploy on push
+   - **GitHub Pages** (frontend) + Render (backend) — both auto-deploy on push
    - DNS configuration + TLS certificate (shared with AlphaSpeedAi.com domain)
    - Monitoring: Sentry for frontend errors, existing LangSmith for backend
    - **No App Store submission needed** — live the moment it deploys
@@ -903,7 +904,7 @@ The landing page has **zero dependencies** on the app backend, database, or agen
 | Call Budget Tracker | 20 tests (increment, check, reset, over-budget, tier change) | 100% |
 | Deterministic Handlers | 60 tests (CRUD for all 6 entity types × happy path + edge cases) | ≥90% |
 | Auth (OAuth + JWT) | 20 tests for **PWA launch** (Google + email/password, token refresh, expired/invalid JWT, household mapping); **+15 tests** when Apple / Facebook / Microsoft routes ship | 100% |
-| **Consent Recording** | 20 tests (record consent, version check, re-acceptance trigger, COPPA flow, append-only enforcement, audit query, hash verification) | 100% |
+| **Consent Recording** | 15 tests (record consent, version check, re-acceptance trigger, append-only enforcement, audit query, hash verification) | 100% |
 | Stripe Webhooks | 12 tests (create, renew, cancel, fail, upgrade, downgrade, trial expire) | 100% |
 | **PII Masker** | 200 messages (names, emails, phones, addresses, school names, financial data, edge cases) | 100% — zero PII leakage |
 | **Prompt Guard** | 100 injection attempts (direct, indirect, Unicode tricks, jailbreak patterns) | ≥95% detection rate |
@@ -919,7 +920,6 @@ The landing page has **zero dependencies** on the app backend, database, or agen
 | Consent Block | Attempt to skip consent screen → API rejects with 403 "consent required" → cannot activate account |
 | Document Update → Re-acceptance | Bump ToS version → user logs in → blocking modal → accept → new consent record → access restored |
 | Document Update → Decline | Bump ToS version → user declines → account restricted to read-only → agents disabled → data export still works |
-| COPPA → Child Profile | Add child age 5 → COPPA consent screen → re-authenticate → accept → consent record with coppa_verification method → child profile created |
 | Chat → Intent → Deterministic | Send "add milk to list" → classified deterministic → DB write → response (<50ms) |
 | Chat → Intent → LLM | Send "plan dinners" → classified intelligent → LLM Router → GPT-4o mini → response + budget decrement |
 | Over-budget → Downgrade | Exhaust budget → next intelligent call → Gemini Flash used → response |
@@ -939,7 +939,7 @@ The landing page has **zero dependencies** on the app backend, database, or agen
 
 | Journey | Steps |
 |---|---|
-| New User | Visit mom.alphaspeedai.com → Signup (**Google** + email path; **Apple** after Capacitor if enabled; **Facebook/Microsoft** when toggled on) → **Accept ToS + Privacy Policy + AI Disclosure** → Family profile → **COPPA consent for child under 13** → Trial starts → Activate 2 agents → Chat with agent → View calendar → 7 days → Trial expires → Subscribe $7.99 → Agents resume |
+| New User | Visit mom.alphaspeedai.com → Signup (**Google** + email path; **Apple** after Capacitor if enabled; **Facebook/Microsoft** when toggled on) → **Accept ToS + Privacy Policy + AI Disclosure** → Family profile → Trial starts → Activate 2 agents → Chat with agent → View calendar → 7 days → Trial expires → Subscribe $7.99 → Agents resume |
 | Daily Use | Open app → Check Daily Edit → Chat with Grocery Guru ("what's for dinner?") → View calendar → Scan receipt → Check budget usage → Set reminder |
 | Over-budget | Use 1,000 calls → See banner → Agent still responds (Gemini Flash) → Upgrade to Pro → Budget resets to 2,000 |
 | PWA Install | Visit on mobile Chrome → "Add to Home Screen" prompt → Install → Open from home screen → Full standalone experience |
@@ -995,9 +995,9 @@ The landing page has **zero dependencies** on the app backend, database, or agen
 |---|---|
 | Database migration | Additive only (new tables); zero downtime; `alembic upgrade head` on Render |
 | Backend deploy | Render auto-deploys on push; zero downtime (rolling restart) |
-| Frontend deploy | Cloudflare Pages auto-deploys on push; instant global CDN propagation |
-| Rollback | Backend: Render instant rollback; Frontend: Cloudflare Pages rollback to previous deploy |
-| Staging environment | Cloudflare Pages preview deployments per PR (built-in) |
+| Frontend deploy | GitHub Actions → GitHub Pages on push to `main` (CDN via GitHub) |
+| Rollback | Backend: Render instant rollback; Frontend: revert commit and re-run workflow, or redeploy prior Actions artifact |
+| Staging environment | Optional: `staging` branch → second Pages target / environment; PR “preview URLs” are not native to Pages — use CI build-only jobs or a separate preview host if required |
 
 ---
 
@@ -1017,7 +1017,7 @@ The landing page has **zero dependencies** on the app backend, database, or agen
 | **Phase 9:** GA4, Sitemap & SEO | Post-launch | Month 3-4 | Analytics, sitemap, SEO audit (requires manual prep + ported SEO skills) |
 
 **Landing page live: ~1 week** (starts collecting interest immediately)
-**Total: ~13 weeks (3 months) to full 8-agent launch** — includes fixtures, env/secrets hardening, WebSocket + LLM ops monitoring, UI error/empty states, Daily Edit dedup cron, and richer PWA offline behavior  
+**Total: ~13 weeks (3 months) to full 8-agent launch** — includes fixtures, env/secrets hardening, WebSocket + LLM ops monitoring, UI error/empty states, Daily Edit dedup cron, and richer PWA offline behavior
 **MVP (4 agents) live at: ~11 weeks (~2.5 months)**
 
 ### Estimated Effort
@@ -1032,16 +1032,16 @@ The landing page has **zero dependencies** on the app backend, database, or agen
 | LLM data protection (PII masker, prompt guard, audit logging) | 5 | $6,000 |
 | Stripe + notifications + Daily Edit | 8 | $9,600 |
 | Testing + QA + performance (+ fixture maintenance) | 13 | $15,600 |
-| PWA polish + offline queueing + COPPA compliance | 4 | $4,800 |
+| PWA polish + offline queueing + privacy compliance | 3 | $3,600 |
 | GA4 + sitemap + SEO optimization (Phase 9) | 3 | $3,600 |
-| **Total** | **106 days** | **$127,200** |
+| **Total** | **105 days** | **$126,000** |
 
 ### Savings vs Native App Approach
 
 | Category | PWA | Native (React Native) | Savings |
 |---|---|---|---|
-| Build cost | $127,200 | $145,600 | **$18,400** |
+| Build cost | $126,000 | $145,600 | **$19,600** |
 | Annual platform fees | $0 | $1,300/yr | **$1,300/yr** |
 | Apple/Google subscription tax (Year 1) | $73K | $570K | **$497K** |
 | Time to launch | 11 weeks | 15 weeks | **4 weeks faster** |
-| **Total Year 1 savings** | | | **~$501,300** |
+| **Total Year 1 savings** | | | **~$517,900** |
