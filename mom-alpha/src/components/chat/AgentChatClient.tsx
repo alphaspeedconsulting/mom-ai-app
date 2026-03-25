@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useChatStore } from "@/stores/chat-store";
 import { useAgentsStore } from "@/stores/agents-store";
@@ -141,8 +141,8 @@ export function AgentChatClient({ agentType }: { agentType: AgentType }) {
                     </span>
                   </div>
                   <div className="flex-1 min-w-0">
-                    <div className="mom-chat-agent text-alphaai-sm whitespace-pre-wrap">
-                      {msg.content}
+                    <div className="mom-chat-agent text-alphaai-sm">
+                      {renderMarkdown(msg.content)}
                     </div>
                     {msg.quick_actions && msg.quick_actions.length > 0 && (
                       <div className="flex flex-wrap gap-2 mt-2">
@@ -224,6 +224,28 @@ export function AgentChatClient({ agentType }: { agentType: AgentType }) {
       </div>
     </div>
   );
+}
+
+function renderMarkdown(content: string): React.ReactNode {
+  const lines = content.split("\n");
+  return lines.map((line, i) => {
+    const isLast = i === lines.length - 1;
+    // Split on **bold** spans
+    const parts = line.split(/(\*\*[^*]+\*\*)/g);
+    const rendered = parts.map((part, j) =>
+      part.startsWith("**") && part.endsWith("**") ? (
+        <strong key={j}>{part.slice(2, -2)}</strong>
+      ) : (
+        part
+      )
+    );
+    return (
+      <span key={i}>
+        {rendered}
+        {!isLast && <br />}
+      </span>
+    );
+  });
 }
 
 function getStarterPrompts(agentType: string): string[] {

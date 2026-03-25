@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useAgentsStore } from "@/stores/agents-store";
 import { useAuthStore } from "@/stores/auth-store";
 import type { AgentCard, AgentType } from "@/types/api-contracts";
@@ -18,14 +19,50 @@ const SUGGESTED_AGENTS: AgentType[] = [
 ];
 
 export default function DashboardPage() {
-  const { agents, isLoading, fetchAgents, toggleAgent } = useAgentsStore();
+  const router = useRouter();
+  const { agents, isLoading, error, fetchAgents, toggleAgent } = useAgentsStore();
   const user = useAuthStore((s) => s.user);
+  const token = useAuthStore((s) => s.token);
+  const logout = useAuthStore((s) => s.logout);
+  const [isMounted, setIsMounted] = useState(false);
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState<(typeof CATEGORIES)[number]>("All");
 
   useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (!isMounted) return;
+    if (!token) {
+      router.replace("/login?mode=signup");
+      return;
+    }
     fetchAgents();
-  }, [fetchAgents]);
+  }, [isMounted, token, fetchAgents, router]);
+
+  useEffect(() => {
+    if (!error) return;
+    // Invalid/expired/malformed tokens should return user to auth screen.
+    const normalized = error.toLowerCase();
+    if (
+      normalized.includes("401") ||
+      normalized.includes("422") ||
+      normalized.includes("invalid") ||
+      normalized.includes("unauthorized")
+    ) {
+      logout();
+      router.replace("/login?mode=signup");
+    }
+  }, [error, logout, router]);
+
+  if (!isMounted || !token) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <CardSkeleton />
+      </div>
+    );
+  }
 
   const filteredAgents = agents.filter((a) => {
     const matchSearch =
@@ -63,7 +100,7 @@ export default function DashboardPage() {
         </div>
       </header>
 
-      <main className="max-w-lg mx-auto px-4 pt-24 pb-4 space-y-6">
+      <main className="max-w-lg mx-auto px-4 pt-24 pb-24 space-y-6">
         {/* Search */}
         <div className="relative">
           <span className="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-[20px] text-muted-foreground">

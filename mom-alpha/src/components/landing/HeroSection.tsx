@@ -32,8 +32,8 @@ export function HeroSection() {
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
-              <a href="#waitlist" className="mom-btn-primary text-alphaai-md py-4 px-8">
-                Get Early Access
+              <a href="/login?mode=signup" className="mom-btn-primary text-alphaai-md py-4 px-8">
+                Start Free Trial
               </a>
               <a href="#agents" className="mom-btn-outline text-alphaai-md py-4 px-8">
                 Meet Your Team

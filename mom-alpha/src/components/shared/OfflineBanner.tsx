@@ -3,11 +3,13 @@
 import { useEffect, useState } from "react";
 
 export function OfflineBanner() {
-  const [isOffline, setIsOffline] = useState(
-    typeof navigator !== "undefined" ? !navigator.onLine : false
-  );
+  const [isOffline, setIsOffline] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
+    setIsMounted(true);
+    setIsOffline(!window.navigator.onLine);
+
     const handleOnline = () => setIsOffline(false);
     const handleOffline = () => setIsOffline(true);
 
@@ -20,7 +22,7 @@ export function OfflineBanner() {
     };
   }, []);
 
-  if (!isOffline) return null;
+  if (!isMounted || !isOffline) return null;
 
   return (
     <div className="fixed top-0 left-0 right-0 z-[100] bg-secondary-container text-secondary px-4 py-2 text-center text-alphaai-sm font-medium">

@@ -2,7 +2,10 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { useAuthStore } from "@/stores/auth-store";
+import { auth, ApiError } from "@/lib/api-client";
+import type { AuthResponse } from "@/types/api-contracts";
 
 type AuthMode = "login" | "signup";
 
@@ -13,11 +16,19 @@ interface ConsentState {
 }
 
 export default function LoginPage() {
-  const [mode, setMode] = useState<AuthMode>("login");
+  const searchParams = useSearchParams();
+  const [mode, setMode] = useState<AuthMode>(() =>
+    searchParams.get("mode") === "signup" ? "signup" : "login"
+  );
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [showConsent, setShowConsent] = useState(false);
+  const [authPending, setAuthPending] = useState<AuthResponse | null>(null);
+  const [submitError, setSubmitError] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const googleClientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID;
   const [consent, setConsent] = useState<ConsentState>({
     terms: false,
     privacy: false,
@@ -28,26 +39,39 @@ export default function LoginPage() {
   const allConsented = consent.terms && consent.privacy && consent.ai_disclosure;
 
   const handleGoogleLogin = () => {
-    // Phase 4: real Google OAuth flow
-    setShowConsent(true);
+    if (!googleClientId) {
+      setSubmitError("Google login is not configured for local dev yet. Use email sign up below.");
+      return;
+    }
+    setSubmitError("Google OAuth flow is coming next. Use email sign up below for local testing.");
   };
 
-  const handleEmailSubmit = (e: React.FormEvent) => {
+  const handleEmailSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Phase 4: real POST /api/auth/email
-    setShowConsent(true);
+    setSubmitError(null);
+    setIsSubmitting(true);
+    try {
+      const response =
+        mode === "signup"
+          ? await auth.signup({ email, password, name: name.trim() || "Mom" })
+          : await auth.loginEmail({ email, password });
+      setAuthPending(response);
+      setShowConsent(true);
+    } catch (error) {
+      if (error instanceof ApiError) {
+        setSubmitError(error.detail);
+      } else {
+        setSubmitError("Could not sign in right now. Please try again.");
+      }
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleConsentSubmit = () => {
-    // Phase 4: POST /api/consent then POST /api/checkout/trial
-    login("mock_jwt_token", {
-      id: "u1",
-      email: email || "mom@example.com",
-      name: "Sarah",
-      household_id: "h1",
-      tier: "trial",
-      consent_current: true,
-    });
+    if (authPending) {
+      login(authPending.access_token, authPending.user);
+    }
     window.location.href = "/dashboard";
   };
 
@@ -162,6 +186,7 @@ export default function LoginPage() {
           {/* Google OAuth */}
           <button
             onClick={handleGoogleLogin}
+            type="button"
             className="w-full flex items-center justify-center gap-3 bg-surface-container-low hover:bg-surface-container border border-border-subtle/20 rounded-full py-3 px-6 font-medium text-foreground text-alphaai-base transition-colors mb-4"
           >
             <svg width="20" height="20" viewBox="0 0 24 24">
@@ -182,6 +207,16 @@ export default function LoginPage() {
 
           {/* Email form */}
           <form onSubmit={handleEmailSubmit} className="space-y-3">
+            {mode === "signup" && (
+              <input
+                type="text"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                placeholder="Full name"
+                required
+                className="mom-input"
+              />
+            )}
             <input
               type="email"
               value={email}
@@ -210,9 +245,15 @@ export default function LoginPage() {
                 </span>
               </button>
             </div>
-            <button type="submit" className="mom-btn-primary w-full">
-              {mode === "login" ? "Sign In" : "Create Account"}
+            <button type="submit" disabled={isSubmitting} className="mom-btn-primary w-full disabled:opacity-60">
+              {isSubmitting ? "Please wait..." : null}
+              {!isSubmitting ? (mode === "login" ? "Sign In" : "Create Account") : null}
             </button>
+            {submitError && (
+              <p className="text-alphaai-xs text-error text-center">
+                {submitError}
+              </p>
+            )}
           </form>
 
           {/* Toggle mode */}
