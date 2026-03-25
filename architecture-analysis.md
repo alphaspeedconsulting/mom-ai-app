@@ -1,4 +1,4 @@
-# Architecture Analysis: Mom.Ai
+# Architecture Analysis: Mom.alpha
 
 **Version**: 1.1.0
 **Date**: 2026-03-24
@@ -29,7 +29,7 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────┐
-│                        Mom.Ai Platform Workflow                          │
+│                        Mom.alpha Platform Workflow                          │
 ├─────────────────────────────────────────────────────────────────────────┤
 │                                                                          │
 │  ┌──────────┐    ┌──────────────┐    ┌─────────────────────────────┐    │
@@ -170,7 +170,7 @@ Each option scored on 6 dimensions (0-10 scale), weighted by workflow requiremen
 
 | Dimension | Score | Rationale |
 |---|---|---|
-| Complexity Fit | 8 | MCP skill-per-agent composition maps directly to Mom.Ai's domain model; governance gates built-in |
+| Complexity Fit | 8 | MCP skill-per-agent composition maps directly to Mom.alpha's domain model; governance gates built-in |
 | Reuse Potential | 9 | Family Optimizer MCP, Gmail connector, Google Calendar MCP, AI Product Agents — already built and production-deployed |
 | Integration Depth | 9 | 16+ MCP connectors already live; dashboard bridge pattern for mobile backend; AgentVault license system handles premium gating |
 | Frequency/Scale | 7 | MCP HTTP/SSE mode works for mobile backend; WebSocket layer on existing FastAPI service handles real-time sync |
@@ -187,7 +187,7 @@ Each option scored on 6 dimensions (0-10 scale), weighted by workflow requiremen
   - **Render `agentvault-mcp`** (MCP HTTP/SSE, starter @ $7/mo) — agent orchestration
 - **Real-time Sync**: WebSocket layer added to existing FastAPI license server (`fastapi-socketio` or bare `websockets`)
 - **File Storage**: Cloudflare R2 (S3-compatible, 10GB free, no egress fees)
-- **Agent Layer**: MCP skills (one per Mom.Ai agent) + existing AI Product Agents pipeline
+- **Agent Layer**: MCP skills (one per Mom.alpha agent) + existing AI Product Agents pipeline
 - **LLM**: Claude (native via Cowork) + GPT-4o via MCP tool calls
 - **Auth**: Google/Apple OAuth added to existing license server (JWT flow already built)
 - **Monetization**: AgentVault license/tier system (already built — Basic/Advanced/Custom)
@@ -208,9 +208,9 @@ Each option scored on 6 dimensions (0-10 scale), weighted by workflow requiremen
 - **Massive reuse** — Family Optimizer MCP already handles multi-calendar family scheduling and parent-split activity planning
 - **Gmail connector** already handles email scanning (School Event Hub email parsing = existing capability)
 - **License infrastructure** already production-ready (Stripe + tier gating + JWT caching)
-- **Governance layer** (NIST AI RMF + evidence gates) gives Mom.Ai a trust & safety story competitors lack
+- **Governance layer** (NIST AI RMF + evidence gates) gives Mom.alpha a trust & safety story competitors lack
 - **Dual surface** — Cowork desktop for power users, React Native for on-the-go; same MCP backend
-- **30+ canonical workflows** in toolkit; several map directly to Mom.Ai agents (family scheduling, email intelligence, research)
+- **30+ canonical workflows** in toolkit; several map directly to Mom.alpha agents (family scheduling, email intelligence, research)
 - **Fastest time-to-market** of all options — ~60% of backend already exists
 - **Single vendor for hosting** — everything on Render, one bill, one deploy pipeline
 - **PostgreSQL** — relational model is ideal for family data (members, events, tasks, preferences)
@@ -218,7 +218,7 @@ Each option scored on 6 dimensions (0-10 scale), weighted by workflow requiremen
 **Cons:**
 - **WebSocket scaling on Render** — Render starter plan supports persistent connections, but at 100K+ households may need to upgrade to $25/mo plan or add a dedicated WebSocket service
 - **PWA limitations on iOS** — Safari PWA has no background sync; Web Push requires iOS 16.4+
-- **No App Store discovery** — acquisition via social/SEO instead of App Store search
+- **No App Store discovery** — acquisition via AlphaSpeedAi.com traffic, SEO, and cross-promotion instead of App Store search
 - **Two client codebases** — Cowork plugin + Next.js PWA to maintain (but shared backend)
 - **Claude dependency** — Cowork is Anthropic's platform; less control than self-hosted LangGraph
 - **No managed auth UI** — must build OAuth flows manually (vs Supabase Auth's drop-in components)
@@ -236,7 +236,7 @@ Each option scored on 6 dimensions (0-10 scale), weighted by workflow requiremen
 
 **Key Reusable Components from Existing Toolkit:**
 
-| Existing MCP/Skill | Maps to Mom.Ai Agent | Reuse % |
+| Existing MCP/Skill | Maps to Mom.alpha Agent | Reuse % |
 |---|---|---|
 | Family Optimizer MCP | Calendar Whiz | ~70% (add conflict resolution UI) |
 | Gmail Connector + Learning Filter | School Event Hub (email scanning) | ~60% (add school-specific parsing) |
@@ -244,7 +244,7 @@ Each option scored on 6 dimensions (0-10 scale), weighted by workflow requiremen
 | Weekend Plan skill | Calendar view + family scheduling UI | ~40% (mobile adaptation) |
 | Dashboard Bridge pattern | Mobile API gateway | ~80% (same HTTP/SSE transport) |
 | AgentVault License System | Premium subscription gating | ~95% (direct reuse) |
-| Governance Layer | Permission slip signing, payments | ~85% (add Mom.Ai specific gates) |
+| Governance Layer | Permission slip signing, payments | ~85% (add Mom.alpha specific gates) |
 | Render Postgres + render.yaml | Database + deploy pipeline | ~90% (add family tables) |
 
 ---
@@ -290,7 +290,7 @@ Each option scored on 6 dimensions (0-10 scale), weighted by workflow requiremen
 
 **Pros:**
 - Maximum control and zero vendor lock-in
-- Can optimize every layer for Mom.Ai's specific needs
+- Can optimize every layer for Mom.alpha's specific needs
 - No framework overhead or abstraction leaks
 
 **Cons:**
@@ -432,10 +432,10 @@ Start with Option 3. At $33/mo infrastructure and ~60% backend reuse, this is th
 | **File Storage** | New (Cloudflare R2) | S3-compatible, free tier, ~1 day integration |
 | **Calendar Sync** | **Reuse** (Google Calendar MCP + Family Optimizer MCP) | Already built and deployed |
 | **Email Scanning** | **Reuse** (Gmail Connector + Learning Filter MCP) | School Event Hub email parsing = Gmail MCP + school-specific rules |
-| **Agent Orchestration** | **Reuse** (MCP skills via `agentvault-mcp`) | One skill per Mom.Ai agent; existing AI Product Agents pipeline |
+| **Agent Orchestration** | **Reuse** (MCP skills via `agentvault-mcp`) | One skill per Mom.alpha agent; existing AI Product Agents pipeline |
 | **License/Premium Gating** | **Reuse** (AgentVault tier system) | Already handles Stripe + JWT + tier-based tool access |
 | **Governance (Payments, Signing)** | **Reuse** (Evidence gates + approval flow) | Permission slip signing, payment approvals already have governance patterns |
-| **Desktop Companion** | **Reuse** (Cowork Plugin) | Power users get full Mom.Ai via Cowork plugin — free distribution channel |
+| **Desktop Companion** | **Reuse** (Cowork Plugin) | Power users get full Mom.alpha via Cowork plugin — free distribution channel |
 | **Observability** | **Reuse** (LangSmith + Langfuse already configured) | Already integrated with AI Product Agents |
 
 **New backend work: ~11 days.** Estimated reuse: ~60% of backend already exists.
@@ -631,9 +631,9 @@ The intent classifier itself does NOT consume a call budget unit. Only the final
 
 ### AI Capability Registry Mapping
 
-The following capabilities from the 98-item registry are recommended for Mom.Ai:
+The following capabilities from the 98-item registry are recommended for Mom.alpha:
 
-| Capability | Category | Role in Mom.Ai | Priority |
+| Capability | Category | Role in Mom.alpha | Priority |
 |---|---|---|---|
 | **GPT-4o** | Language Model | Primary LLM — multimodal (vision for OCR), fast, cost-effective | P0 |
 | **Claude Sonnet 4.6** | Language Model | Fallback LLM — superior reasoning for complex agent decisions | P0 |

@@ -1,4 +1,4 @@
-# Product Requirements Document: Mom.Ai
+# Product Requirements Document: Mom.alpha
 
 **Version**: 1.1.0
 **Date**: 2026-03-24
@@ -10,15 +10,17 @@
 
 ## Section 1: Executive Summary
 
-**Mom.Ai** is a mobile-first AI assistant platform that deploys 9+ specialized AI agents to manage the everyday mental load of busy mothers — from grocery planning and school events to family health tracking and budgeting. The platform's core thesis is that household management is a multi-domain orchestration problem best solved by purpose-built AI agents that share context, coordinate proactively, and surface only what matters.
+**Mom.alpha** is a mobile-first AI assistant platform that deploys 9+ specialized AI agents to manage the everyday mental load of busy mothers — from grocery planning and school events to family health tracking and budgeting. The platform's core thesis is that household management is a multi-domain orchestration problem best solved by purpose-built AI agents that share context, coordinate proactively, and surface only what matters.
 
 **Core Value Proposition**: "Take a breath. We'll handle the rest."
 
 **Target Launch**: MVP with 4 core agents (Calendar Whiz, Grocery Guru, School Event Hub, Budget Buddy) + marketplace shell. Full 8-agent ecosystem in v1.1. (Pediatric Assistant removed from scope — no medical/health data handling.)
 
-**Business Model**: Freemium with 14-day premium trial. Premium tier unlocks advanced agent capabilities, unlimited agent activations, and family member sync.
+**Business Model**: Freemium with 7-day premium trial. Premium tier unlocks advanced agent capabilities, unlimited agent activations, and family member sync.
 
-**Key Differentiator**: Unlike generic AI assistants (Siri, Alexa, Google Assistant), Mom.Ai provides domain-specialized agents with persistent family context, cross-agent coordination, and a design language ("Lullaby & Logic") purpose-built for reducing cognitive load rather than adding it.
+**Distribution Strategy**: Mom.alpha launches directly from **AlphaSpeedAi.com** — leveraging the existing AlphaSpeed AI platform's established traffic, brand authority, and user base to drive rapid adoption. The app lives at `mom.alphaspeedai.com` as a flagship consumer product within the AlphaSpeed ecosystem, benefiting from cross-promotion across the AlphaSpeed product suite, SEO authority, and the platform's existing marketing channels.
+
+**Key Differentiator**: Unlike generic AI assistants (Siri, Alexa, Google Assistant), Mom.alpha provides domain-specialized agents with persistent family context, cross-agent coordination, and a design language ("Lullaby & Logic") purpose-built for reducing cognitive load rather than adding it.
 
 ---
 
@@ -96,10 +98,10 @@ Mothers disproportionately carry the "invisible labor" of household management: 
 ### User Stories
 
 #### Epic 1: Onboarding & Family Setup
-- **US-1.1**: As a new user, I can sign up with Google/Apple OAuth in under 60 seconds so I don't face friction at first launch.
+- **US-1.1**: As a new user, I can sign up with Google, Apple, Facebook, or Microsoft OAuth in under 60 seconds so I don't face friction at first launch.
 - **US-1.2**: As a new user, I can set up my family profile (members, ages, dietary restrictions, preferences) during onboarding so agents have context from day one.
 - **US-1.3**: As a new user, I receive a personalized agent recommendation based on my family profile so I know which agents to activate first.
-- **US-1.4**: As a new user, I start a 14-day free trial (CC required) with full Family tier access (1,000 calls) so I can experience all 8 agents before subscribing.
+- **US-1.4**: As a new user, I start a 7-day free trial (CC required) with full Family tier access (1,000 calls) so I can experience all agents before subscribing.
 
 #### Epic 2: Agent Marketplace & Discovery
 - **US-2.1**: As a user, I can browse agents by category (Household, Wellness, Education) so I can find relevant ones quickly.
@@ -161,10 +163,10 @@ Mothers disproportionately carry the "invisible labor" of household management: 
 
 | ID | Requirement | Priority |
 |---|---|---|
-| FR-1.1 | OAuth 2.0 login via Google and Apple Sign-In | P0 |
+| FR-1.1 | OAuth 2.0 login via Google, Apple, Facebook, and Microsoft Sign-In | P0 |
 | FR-1.2 | Email/password registration with email verification | P0 |
 | FR-1.3 | Family profile creation: add members with name, age, photo, tags | P0 |
-| FR-1.4 | Premium trial activation (14-day) on signup | P0 |
+| FR-1.4 | Premium trial activation (7-day) on signup | P0 |
 | FR-1.5 | Session management with secure token refresh | P0 |
 | FR-1.6 | Multi-device sync (phone, tablet, web) with conflict resolution | P1 |
 
@@ -321,7 +323,7 @@ Agent operations are split into two tiers to minimize LLM costs. **Deterministic
 | ID | Requirement | Priority |
 |---|---|---|
 | FR-12.1 | Stripe subscription management (Family $7.99 / Family Pro $14.99, no free tier) | P0 |
-| FR-12.2 | 14-day free trial with CC required (full Family tier, 1,000 calls) | P0 |
+| FR-12.2 | 7-day free trial with CC required (full Family tier, 1,000 calls) | P0 |
 | FR-12.3 | Monthly LLM call budget tracking per household (1,000 Family / 2,000 Pro) | P0 |
 | FR-12.4 | Call usage display in app ("X of 1,000 calls used this month") | P0 |
 | FR-12.5 | Graceful downgrade to Gemini Flash when over monthly budget (no hard cutoff) | P0 |
@@ -499,10 +501,10 @@ Agent operations are split into two tiers to minimize LLM costs. **Deterministic
 ## Section 9: Acceptance Criteria & Test Plan
 
 ### AC-1: Onboarding Flow
-- [ ] User completes Google OAuth signup in < 60 seconds
+- [ ] User completes Google/Apple/Facebook/Microsoft OAuth signup in < 60 seconds
 - [ ] Family profile with 2+ members created during onboarding
 - [ ] At least 1 agent recommended and activated by end of onboarding
-- [ ] Premium trial automatically starts (14-day countdown visible)
+- [ ] Premium trial automatically starts (7-day countdown visible)
 - [ ] User lands on Home/Marketplace after onboarding
 
 ### AC-2: Agent Marketplace
@@ -564,7 +566,7 @@ Agent operations are split into two tiers to minimize LLM costs. **Deterministic
 - [ ] OAuth tokens refreshed securely, never stored in plain text
 
 ### AC-10: Subscription & Call Budget
-- [ ] 14-day free trial starts with CC on file; full Family tier (1,000 calls) accessible
+- [ ] 7-day free trial starts with CC on file; full Family tier (1,000 calls) accessible
 - [ ] Trial converts to paid Family ($7.99) automatically after 14 days unless cancelled
 - [ ] Call budget counter accurately tracks only intelligent (LLM) operations
 - [ ] "X of 1,000 calls used" displays correctly in app settings/profile
@@ -604,7 +606,7 @@ Agent operations are split into two tiers to minimize LLM costs. **Deterministic
 
 ## Appendix B: Competitive Landscape
 
-| Competitor | Category | Mom.Ai Differentiator |
+| Competitor | Category | Mom.alpha Differentiator |
 |---|---|---|
 | Cozi | Family organizer | No AI, no proactive management, no agent ecosystem |
 | FamilyWall | Family calendar/lists | Limited to calendar + lists, no intelligence |
