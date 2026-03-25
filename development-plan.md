@@ -308,7 +308,7 @@ The landing page has **zero dependencies** on the app backend, database, or agen
 **Dependencies:** None — this is the starting point.
 
 **Success criteria:**
-- Done when: `next dev` renders home page skeleton with design system tokens; PWA installable from Chrome; **Google** OAuth login returns JWT; all 12 tables created in Render Postgres; **theme swap test passes** (swap `:root` class → all UI updates, zero component changes); test fixtures exist under `/tests/fixtures/` with READMEs; `.env.example` lists required vars
+- Done when: `next dev` renders home page skeleton with design system tokens; PWA installable from Chrome; **Google** OAuth login returns JWT; all **14** Phase 1 tables created in Render Postgres (see schema list above; e.g. `daily_edit_log` lands in Phase 5); **theme swap test passes** (swap `:root` class → all UI updates, zero component changes); test fixtures exist under `/tests/fixtures/` with READMEs; `.env.example` lists required vars
 - Verified by: Lighthouse PWA audit passes (installable, service worker registered); `curl` (or browser) hits `/auth/google` and receives OAuth redirect; optional providers verified when enabled; `psql` shows all tables; `/ui-consistency-review` returns zero hardcoded color violations
 - Risk level: Low
 
