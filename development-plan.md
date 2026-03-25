@@ -75,7 +75,7 @@ A mobile-first **Progressive Web App** with 8 specialized AI agents, determinist
 
 | Component | What Changes | Effort |
 |---|---|---|
-| License Server (FastAPI) | Add Google/Apple OAuth routes, WebSocket layer, family CRUD endpoints, call budget counter | ~5 days |
+| License Server (FastAPI) | Add Google (+ optional Facebook/Microsoft) OAuth routes, **WebSocket layer**, family CRUD endpoints, call budget counter; **Apple OAuth deferred to Phase 7** | ~5–6 days |
 | MCP Server | Add 8 Mom.alpha agent skill definitions, intent classifier, LLM router | ~8 days |
 | Family Optimizer MCP | Add conflict detection UI hooks, multi-child scheduling | ~3 days |
 | Gmail Connector MCP | Add school-specific email parsing rules (events, slips, fees) | ~3 days |
@@ -270,8 +270,9 @@ The landing page has **zero dependencies** on the app backend, database, or agen
    - `consent_records` table is **append-only** (no UPDATE/DELETE permissions) — immutable audit trail for compliance
 
 4. **Auth extension on license server**
-   - Add OAuth routes to existing FastAPI: `/auth/google`, `/auth/apple`, `/auth/facebook`, `/auth/microsoft`
-   - Support all major consumer OAuth providers (Google, Apple, Facebook, Microsoft) + email/password fallback
+   - **PWA launch (Phase 1–3) minimum:** `/auth/google` + email/password fallback — required for first production users
+   - **Optional (enable when provider app registrations are ready):** `/auth/facebook`, `/auth/microsoft` — additional signup options beyond Google
+   - **Deferred to Phase 7:** `/auth/apple` (Sign in with Apple) — Apple Developer Program ($99/yr) + Service ID + native pairing; ship with **Capacitor** if pursuing App Store (see Phase 7)
    - Map OAuth user → household → JWT with `household_id` + `tier` claims
    - Reuse existing JWT issuance/validation from `jwt_handler.py`
    - CORS configuration: allow `mom.alphaspeedai.com` origin on license server
@@ -285,11 +286,30 @@ The landing page has **zero dependencies** on the app backend, database, or agen
    - Frontend: Cloudflare Pages auto-deploy on push (or Render Static Site)
    - Backend: existing Render auto-deploy on push (already configured)
 
+6. **Test data creation** (implements **Test Data Requirements** in §5)
+   - Hand-labeled **500** chat messages (250 deterministic, 250 intelligent, balanced across all 8 agent domains) — required for Phase 2 intent classifier validation
+   - **50** photographed sample receipts (grocery, restaurant, gas, online) — Phase 4 OCR testing
+   - **20** real school newsletter emails (Seesaw, ClassDojo, ParentSquare, etc.) — Phase 4 email parsing
+   - Google Calendar **test account** with **30** events across **2** family members
+   - Store everything under `/tests/fixtures/` with a **README** per dataset (provenance, labeling rules, redaction)
+
+7. **Environment & secrets management**
+   - Create Render env groups: `mom-ai-dev`, `mom-ai-staging`, `mom-ai-prod` (adjust names to match org conventions)
+   - Document each secret: owner, source, rotation policy:
+     - `OPENAI_API_KEY`, `GOOGLE_AI_API_KEY` (LLM)
+     - `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET` (billing)
+     - `VAPID_PUBLIC_KEY`, `VAPID_PRIVATE_KEY` (Web Push)
+     - `GOOGLE_OAUTH_CLIENT_ID`, `GOOGLE_OAUTH_CLIENT_SECRET`; add `FACEBOOK_*`, `MICROSOFT_*` when those routes ship
+     - `DATABASE_URL` (Postgres); `R2_ACCESS_KEY_ID`, `R2_SECRET_ACCESS_KEY` (R2)
+     - `NEXT_PUBLIC_*` (e.g. GA4 in Phase 9) — never put secrets in `NEXT_PUBLIC_` vars
+   - Commit **`.env.example`** (keys only, no values) in the app repo
+   - Verify env group inheritance across Cloudflare Pages previews, license server, and MCP services
+
 **Dependencies:** None — this is the starting point.
 
 **Success criteria:**
-- Done when: `next dev` renders home page skeleton with design system tokens; PWA installable from Chrome; OAuth login returns JWT; all 12 tables created in Render Postgres; **theme swap test passes** (swap `:root` class → all UI updates, zero component changes)
-- Verified by: Lighthouse PWA audit passes (installable, service worker registered); `curl /auth/google` and `/auth/apple` return redirect URLs; `psql` shows all tables; `/ui-consistency-review` returns zero hardcoded color violations
+- Done when: `next dev` renders home page skeleton with design system tokens; PWA installable from Chrome; **Google** OAuth login returns JWT; all 12 tables created in Render Postgres; **theme swap test passes** (swap `:root` class → all UI updates, zero component changes); test fixtures exist under `/tests/fixtures/` with READMEs; `.env.example` lists required vars
+- Verified by: Lighthouse PWA audit passes (installable, service worker registered); `curl` (or browser) hits `/auth/google` and receives OAuth redirect; optional providers verified when enabled; `psql` shows all tables; `/ui-consistency-review` returns zero hardcoded color violations
 - Risk level: Low
 
 ---
@@ -305,7 +325,7 @@ The landing page has **zero dependencies** on the app backend, database, or agen
    - Categories: `calendar_crud`, `list_crud`, `reminder_set`, `status_query`, `streak_log`, `payment_query`, `filter_search` → deterministic
    - Fallback: if no rule matches → classify as intelligent
    - Add to MCP server as middleware before agent skill invocation
-   - Target: ≥90% accuracy on test dataset of 500 messages
+   - Target: **≥90%** accuracy on the full 500-message dataset; **≥80%** required before Phase 3 integration begins (continue tuning toward 90% in parallel)
 
 2. **LLM Router**
    - New module in MCP server: `llm_router.py`
@@ -340,7 +360,27 @@ The landing page has **zero dependencies** on the app backend, database, or agen
      - `school-event-hub.md` — wraps Gmail Connector + deterministic slip tracking
      - `budget-buddy.md` — deterministic expense queries + intelligent OCR/analysis
 
-**Dependencies:** Phase 1 (database schema, auth).
+6. **WebSocket layer** (real-time UI)
+   - Dedicated WebSocket endpoint on the license server, e.g. `wss://api.mom.alphaspeedai.com/ws` (set final hostname to match Render custom domain / TLS)
+   - **Auth:** JWT on initial handshake (query param or subprotocol — pick one and document); validate before joining a room
+   - **Protocol:** JSON envelope `{type, payload, timestamp}` — types include `task_update`, `notification`, `budget_change`, `agent_status`
+   - **Client:** exponential backoff reconnect (1s → 2s → 4s → 8s, cap 30s) + jitter; heartbeat ping ~30s
+   - **Consumers:** Tasks Dashboard (progress), Notification Center (live), Chat (typing indicators during intelligent ops)
+   - **Server:** FastAPI WebSockets (or equivalent), connection pool, **per-household** room grouping
+
+7. **LLM cost monitoring (internal ops)**
+   - Extend Langfuse (or existing tracing): tag each call with `model_name`, `household_id`, `agent_type`, `tokens_used`, `estimated_cost`
+   - Internal endpoint: `GET /api/admin/llm-costs` — daily/weekly spend by model (protect with admin auth)
+   - **Alerts:** if daily spend > **2×** rolling projected average → notify admin (email or Slack webhook)
+   - **Distribution check:** actual Gemini Flash / GPT-4o mini / GPT-4o mix vs target (60 / 25 / 15); flag if GPT-4o share **>20%**
+
+**Dependencies:** Phase 1 (database schema, auth, **test fixtures available for classifier work**).
+
+**Minimum unblock gate** (must pass before **Phase 3** starts):
+- Intent classifier ≥**80%** on the 500-message fixture set (iterate to 90% in parallel)
+- At least **2** deterministic handler categories working end-to-end (`calendar_crud`, `list_crud`)
+- Call budget **increment + check** working against real `call_budget` rows
+- WebSocket endpoint accepts a valid JWT and delivers at least one test broadcast to a subscribed client
 
 **Success criteria:**
 - Done when: A chat message like "add milk to grocery list" executes in <50ms with zero LLM calls; "plan dinners for the week" routes to GPT-4o mini and decrements call budget; over-budget household gets Gemini Flash response
@@ -361,7 +401,9 @@ The landing page has **zero dependencies** on the app backend, database, or agen
    - **Accelerator**: Convert existing `onboarding/code.html` export to Next.js component
 
 2. **Login/Signup page** (`/login`)
-   - Google, Apple, Facebook, and Microsoft OAuth buttons + email/password (connect to Phase 1 auth)
+   - **Ship first:** Google OAuth + email/password (Phase 1 routes)
+   - **When ready:** Facebook and Microsoft OAuth buttons (same Phase 1 routes, behind feature flags if useful)
+   - **Apple Sign-In:** UI and backend deferred to **Phase 7** with Capacitor (Apple Developer Program + Service ID); omit Apple button on PWA to avoid half-implemented flows
    - "Take a breath. We'll handle the rest." tagline
    - **Legal consent screen** (post-OAuth, pre-account activation):
      - Three required checkboxes: Terms of Service, Privacy Policy, AI Disclosure
@@ -407,10 +449,22 @@ The landing page has **zero dependencies** on the app backend, database, or agen
    - Real-time updates via WebSocket
    - **Accelerator**: Convert existing `refined_tasks_dashboard/code.html` export
 
-**Dependencies:** Phase 1 (design system, auth), Phase 2 (agent backend, chat API).
+7. **Error & empty states**
+   - **Loading:** shared shimmer/skeleton components for chat, calendar grid, task cards, agent cards
+   - **Errors:** Chat — "Agent is temporarily unavailable" + retry; Calendar — connect-calendar CTA when empty; Tasks — empty state + link to agents; Home — first-run "explore agents" state
+   - **Global:** React error boundary with friendly fallback + refresh
+   - **Offline:** subtle banner ("You're offline — some features may be limited")
+   - Reuse design exports where they exist; otherwise new screens in **Lullaby & Logic** tokens (CSS Zen Garden layers)
+
+**Dependencies:** Phase 1 (design system, auth), Phase 2 (agent backend, chat API — **meet Phase 2 minimum unblock gate first**).
+
+**Minimum unblock gate** (must pass before **Phase 4**):
+- Chat page returns **deterministic** responses for at least one agent path
+- Calendar page renders events from **local/API data** (full Google/Apple sync may still be finishing in parallel)
+- Home shows agent cards + activation toggle; bottom nav works across MVP routes
 
 **Success criteria:**
-- Done when: User can sign up → activate Calendar Whiz → ask "what's on tomorrow?" → see calendar response in chat → view events on calendar page; all 6 pages match "Lullaby & Logic" design specs
+- Done when: User can sign up → activate Calendar Whiz → ask "what's on tomorrow?" → see calendar response in chat → view events on calendar page; all 6 pages match "Lullaby & Logic" design specs; error/empty states behave correctly when data or services are missing
 - Verified by: E2E test (Playwright): signup → trial → activate agent → chat → calendar sync; visual QA against design screenshots; Lighthouse PWA + accessibility audit (≥90); `/ui-consistency-review` passes on all 6 pages (zero hardcoded values, all tokens from CSS Zen Garden Layer 1)
 - Risk level: Low (design exports are already Tailwind — convert hardcoded values to CSS variable tokens)
 
@@ -459,7 +513,12 @@ The landing page has **zero dependencies** on the app backend, database, or agen
    - Budget Buddy page (`/agents/budget`) — Household Health hero, Scan Receipt button, Recurring Pulse, category grid
    - **Accelerator**: Convert `school_event_hub/code.html` and `budget_buddy_agent/code.html` exports
 
-**Dependencies:** Phase 2 (intent classifier, LLM router), Phase 3 (chat page, calendar page).
+**Dependencies:** Phase 2 (intent classifier, LLM router), Phase 3 (chat page, calendar page — **meet Phase 3 minimum unblock gate first**).
+
+**Minimum unblock gate** (must pass before **Phase 5**):
+- **Calendar Whiz** + **Grocery Guru:** deterministic + intelligent paths exercised in staging
+- **School Event Hub:** deterministic slip/list flows working (ML/email parsing can still harden in parallel)
+- **Budget Buddy:** deterministic expense queries working (OCR polish in parallel)
 
 **Success criteria:**
 - Done when: Each agent handles ≥5 deterministic operations and ≥3 intelligent operations correctly; receipt OCR extracts merchant + amount with ≥85% accuracy; school email parsing extracts events with ≥80% accuracy
@@ -493,10 +552,11 @@ The landing page has **zero dependencies** on the app backend, database, or agen
    - **iOS support**: Safari 16.4+ supports Web Push — covers most target users
 
 3. **Daily Edit (morning summary)**
-   - Render Cron Job: run at user-configured time (default 7am local)
-   - Aggregate previous day's agent activity across household
-   - Generate summary via LLM (GPT-4o mini, 1 call/day/household)
-   - Deliver as web push notification + in-app notification entry
+   - Render Cron Job: runs every **15 minutes** on a fixed UTC schedule (not one cron per user)
+   - Each run: scan `households` for users whose configured local delivery time (store **timezone + local hour**, default **7:00 AM**) falls inside the current 15-minute window (convert to UTC server-side)
+   - For matched households: aggregate prior-day agent activity → one **GPT-4o mini** summary per household per day → Web Push + in-app notification row
+   - **Dedup:** `daily_edit_log` (or equivalent) keyed by `(household_id, local_date)` so overlapping cron windows never double-send
+   - **Schema:** add table via migration in this phase (or Phase 1 if you prefer a single schema cut — document in `alembic` changelog)
 
 4. **Remaining pages**
    - **User Profile** (`/profile`): photo + tier badge, family members bento, dietary canvas, communication prefs, security settings
@@ -520,7 +580,13 @@ The landing page has **zero dependencies** on the app backend, database, or agen
    - **Consent history in Settings**: User can view all accepted documents with version and date (`/settings/legal`)
    - **Admin consent audit API**: `GET /api/admin/consent?user_id=X` → returns full consent history (for compliance requests, legal disputes)
 
-**Dependencies:** Phase 3 (page framework, bottom nav), Phase 4 (agent backends).
+**Dependencies:** Phase 3 (page framework, bottom nav), Phase 4 (agent backends — **meet Phase 4 minimum unblock gate first**).
+
+**Minimum unblock gate** (must pass before **Phase 6**):
+- Stripe subscription lifecycle end-to-end (create → renew → cancel) in staging
+- Web Push delivers on **Chrome + Safari** (16.4+) for a test household
+- All **13** pages render with **real** (non-mock) data paths wired
+- Daily Edit cron fires once per household per local day (verify dedup table)
 
 **Success criteria:**
 - Done when: User receives web push notification when School Event Hub finds a new permission slip; Daily Edit arrives at configured time; trial expiry locks features correctly; Stripe webhook processes subscription lifecycle
@@ -543,9 +609,11 @@ The landing page has **zero dependencies** on the app backend, database, or agen
    - Image optimization: Next.js `<Image>` component + R2 upload compression
    - Code splitting: dynamic imports for agent-specific pages
 
-2. **PWA polish**
-   - Service Worker: cache static assets, offline calendar + grocery lists (IndexedDB)
-   - Queue deterministic operations when offline, sync on reconnect
+2. **PWA polish + offline strategy (v1)**
+   - Service Worker: cache **all** static assets (JS, CSS, fonts, icons) for fast repeat visits
+   - **Offline read:** last-fetched calendar + grocery lists in IndexedDB; show **"Last updated [timestamp]"** when serving cache
+   - **Offline writes:** queue deterministic ops (add list item, check item, log streak) in IndexedDB; on reconnect replay **sequentially** with visible sync status ("Syncing N changes…")
+   - **v1 conflict policy:** **last-write-wins** for queued ops — no multi-device merge; document limitation; upgrade post-launch if needed
    - "Add to Home Screen" prompt on second visit
    - Splash screen with Mom.alpha logo + primary gradient
    - `manifest.json` verified: correct icons, theme color, display: standalone
@@ -654,6 +722,7 @@ The landing page has **zero dependencies** on the app backend, database, or agen
 6. **Optional: Capacitor native wrapper**
    - If App Store distribution needed, wrap PWA in Capacitor
    - Same codebase, same Tailwind — just add native shell
+   - **Add Sign in with Apple** at this stage (Apple Developer Program $99/yr + Service ID + entitlements) — pairs naturally with App Store submission
    - Decision point: evaluate based on first 30 days of organic traffic
 
 **Dependencies:** Phase 4 (agent framework proven with 4 agents), Phase 5 (subscription tiers).
@@ -833,7 +902,7 @@ The landing page has **zero dependencies** on the app backend, database, or agen
 | LLM Router | 30 tests (model selection per agent × complexity level × budget state) | 100% branch coverage |
 | Call Budget Tracker | 20 tests (increment, check, reset, over-budget, tier change) | 100% |
 | Deterministic Handlers | 60 tests (CRUD for all 6 entity types × happy path + edge cases) | ≥90% |
-| Auth (OAuth + JWT) | 25 tests (Google, Apple, Facebook, Microsoft, email, token refresh, expired token) | 100% |
+| Auth (OAuth + JWT) | 20 tests for **PWA launch** (Google + email/password, token refresh, expired/invalid JWT, household mapping); **+15 tests** when Apple / Facebook / Microsoft routes ship | 100% |
 | **Consent Recording** | 20 tests (record consent, version check, re-acceptance trigger, COPPA flow, append-only enforcement, audit query, hash verification) | 100% |
 | Stripe Webhooks | 12 tests (create, renew, cancel, fail, upgrade, downgrade, trial expire) | 100% |
 | **PII Masker** | 200 messages (names, emails, phones, addresses, school names, financial data, edge cases) | 100% — zero PII leakage |
@@ -864,12 +933,13 @@ The landing page has **zero dependencies** on the app backend, database, or agen
 | Receipt OCR | Upload receipt photo → GPT-4o vision → extracted data → expense record created |
 | Email Parse | Forward school email → Gmail Connector → parsed events → calendar entries |
 | Web Push | Server sends push → Service Worker receives → notification displayed |
+| WebSocket + JWT | Client connects with valid JWT → joins household channel → server emits test `task_update` / `notification` event → client receives |
 
 ### E2E Tests (Playwright)
 
 | Journey | Steps |
 |---|---|
-| New User | Visit mom.alphaspeedai.com → Signup (Google/Apple/Facebook/Microsoft) → **Accept ToS + Privacy Policy + AI Disclosure** → Family profile → **COPPA consent for child under 13** → Trial starts → Activate 2 agents → Chat with agent → View calendar → 7 days → Trial expires → Subscribe $7.99 → Agents resume |
+| New User | Visit mom.alphaspeedai.com → Signup (**Google** + email path; **Apple** after Capacitor if enabled; **Facebook/Microsoft** when toggled on) → **Accept ToS + Privacy Policy + AI Disclosure** → Family profile → **COPPA consent for child under 13** → Trial starts → Activate 2 agents → Chat with agent → View calendar → 7 days → Trial expires → Subscribe $7.99 → Agents resume |
 | Daily Use | Open app → Check Daily Edit → Chat with Grocery Guru ("what's for dinner?") → View calendar → Scan receipt → Check budget usage → Set reminder |
 | Over-budget | Use 1,000 calls → See banner → Agent still responds (Gemini Flash) → Upgrade to Pro → Budget resets to 2,000 |
 | PWA Install | Visit on mobile Chrome → "Add to Home Screen" prompt → Install → Open from home screen → Full standalone experience |
@@ -947,31 +1017,31 @@ The landing page has **zero dependencies** on the app backend, database, or agen
 | **Phase 9:** GA4, Sitemap & SEO | Post-launch | Month 3-4 | Analytics, sitemap, SEO audit (requires manual prep + ported SEO skills) |
 
 **Landing page live: ~1 week** (starts collecting interest immediately)
-**Total: ~12 weeks (3 months) to full 8-agent launch**
-**MVP (4 agents) live at: ~10 weeks (2.5 months)**
+**Total: ~13 weeks (3 months) to full 8-agent launch** — includes fixtures, env/secrets hardening, WebSocket + LLM ops monitoring, UI error/empty states, Daily Edit dedup cron, and richer PWA offline behavior  
+**MVP (4 agents) live at: ~11 weeks (~2.5 months)**
 
 ### Estimated Effort
 
 | Category | Days | Cost @ $150/hr |
 |---|---|---|
 | Landing page (Phase 0 — design system subset + content + SEO + waitlist) | 3 | $3,600 |
-| Next.js PWA (13 pages + CSS Zen Garden design system) | 25 | $30,000 |
-| Agent backend (intent classifier, LLM router, 8 skills) | 25 | $30,000 |
-| Infrastructure extensions (auth, WebSocket, R2, schema) | 11 | $13,200 |
+| Next.js PWA (13 pages + CSS Zen Garden + error/empty states) | 27 | $32,400 |
+| Agent backend (intent classifier, LLM router, 8 skills, **LLM cost dashboard**) | 27 | $32,400 |
+| Infrastructure extensions (auth, **WebSocket layer**, R2, schema, **secrets mgmt**, test fixtures) | 13 | $15,600 |
 | Apple Calendar CalDAV sync module | 5 | $6,000 |
 | LLM data protection (PII masker, prompt guard, audit logging) | 5 | $6,000 |
 | Stripe + notifications + Daily Edit | 8 | $9,600 |
-| Testing + QA + performance | 12 | $14,400 |
-| PWA polish + COPPA compliance | 3 | $3,600 |
+| Testing + QA + performance (+ fixture maintenance) | 13 | $15,600 |
+| PWA polish + offline queueing + COPPA compliance | 4 | $4,800 |
 | GA4 + sitemap + SEO optimization (Phase 9) | 3 | $3,600 |
-| **Total** | **100 days** | **$120,000** |
+| **Total** | **106 days** | **$127,200** |
 
 ### Savings vs Native App Approach
 
 | Category | PWA | Native (React Native) | Savings |
 |---|---|---|---|
-| Build cost | $120,000 | $145,600 | **$25,600** |
+| Build cost | $127,200 | $145,600 | **$18,400** |
 | Annual platform fees | $0 | $1,300/yr | **$1,300/yr** |
 | Apple/Google subscription tax (Year 1) | $73K | $570K | **$497K** |
 | Time to launch | 11 weeks | 15 weeks | **4 weeks faster** |
-| **Total Year 1 savings** | | | **~$508,900** |
+| **Total Year 1 savings** | | | **~$501,300** |

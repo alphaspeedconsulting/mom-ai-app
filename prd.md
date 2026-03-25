@@ -109,7 +109,7 @@ Mothers disproportionately carry the "invisible labor" of household management: 
 - **US-0.8**: As a visitor on mobile, the landing page is optimized for thumb-scrolling with sticky CTA and fast load time (<2s FCP).
 
 #### Epic 1: Onboarding & Family Setup
-- **US-1.1**: As a new user, I can sign up with Google, Apple, Facebook, or Microsoft OAuth in under 60 seconds so I don't face friction at first launch.
+- **US-1.1**: As a new user, I can sign up with **Google** (and email/password) in under 60 seconds at PWA launch; I can use **Facebook or Microsoft** when those providers are enabled; **Sign in with Apple** ships with the optional **Capacitor** / App Store track (Phase 7) so we avoid incomplete Apple flows on web-only.
 - **US-1.2**: As a new user, I can set up my family profile (members, ages, dietary restrictions, preferences) during onboarding so agents have context from day one.
 - **US-1.3**: As a new user, I receive a personalized agent recommendation based on my family profile so I know which agents to activate first.
 - **US-1.4**: As a new user, I start a 7-day free trial (CC required) with full Family tier access (1,000 calls) so I can experience all agents before subscribing.
@@ -312,7 +312,7 @@ MOBILE: Sticky bottom bar with CTA visible at all times while scrolling
 
 | ID | Requirement | Priority |
 |---|---|---|
-| FR-1.1 | OAuth 2.0 login via Google, Apple, Facebook, and Microsoft Sign-In | P0 |
+| FR-1.1 | OAuth 2.0: **Google** + email/password **P0** at PWA launch; **Facebook** and **Microsoft** **P0** when provider app registrations are complete (may trail Google by a sprint); **Apple Sign-In** **P1** — Phase 7 with Capacitor / App Store (Apple Developer Program + Service ID) | P0/P1 |
 | FR-1.2 | Email/password registration with email verification | P0 |
 | FR-1.3 | Family profile creation: add members with name, age, photo, tags | P0 |
 | FR-1.4 | Premium trial activation (7-day) on signup | P0 |
@@ -374,7 +374,7 @@ Every legal acceptance is immutably recorded for compliance and dispute resoluti
 #### Signup Flow Legal Integration
 
 ```
-OAuth Login (Google/Apple/Facebook/Microsoft)
+OAuth Login (Google required at launch; Facebook/Microsoft when enabled; Apple with Capacitor in Phase 7)
     ↓
 Legal Consent Screen:
     ☐ "I agree to the Terms of Service" (link to full text)
@@ -937,7 +937,7 @@ Three Claude Code skills enforce CSS Zen Garden compliance:
 ## Section 9: Acceptance Criteria & Test Plan
 
 ### AC-1: Onboarding Flow
-- [ ] User completes Google/Apple/Facebook/Microsoft OAuth signup in < 60 seconds
+- [ ] User completes **Google** (or enabled provider) OAuth signup in < 60 seconds; Facebook/Microsoft when live; Apple validated in Phase 7 Capacitor build
 - [ ] **Legal consent screen** appears after OAuth, before account activation — ToS + Privacy Policy + AI Disclosure checkboxes all required
 - [ ] "Continue" button disabled until all 3 legal documents accepted
 - [ ] Each acceptance creates a `consent_records` entry with: user_id, document_type, document_version, SHA-256 hash, IP, user_agent, timestamp

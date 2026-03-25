@@ -179,9 +179,10 @@ Key deliverables:
 1. Next.js project init with PWA config
 2. CSS Zen Garden 4-layer design system (index.css → tailwind.config.ts → mom-alpha.css → components)
 3. Database schema (all 14 tables including consent_records and legal_documents)
-4. Auth extension (Google, Apple, Facebook, Microsoft OAuth + legal consent gate)
+4. Auth extension: **Google + email/password** required; **Facebook/Microsoft** when provider apps are ready; **Sign in with Apple deferred to Phase 7** (Capacitor); legal consent gate + COPPA flow per `development-plan.md` Phase 1
 5. API contract types file (src/types/api-contracts.ts) — this is the handshake for parallel Phase 2/3
 6. CI/CD pipeline
+7. Test fixtures under `/tests/fixtures/` + READMEs; `.env.example`; Render env groups + secret inventory (`development-plan.md` Phase 1 §6–7)
 
 Run /ui-consistency-review on the design system before completing.
 ```
@@ -189,7 +190,7 @@ Run /ui-consistency-review on the design system before completing.
 **Verification before moving on:**
 - `next dev` renders home page skeleton with design system tokens
 - PWA installable from Chrome (Lighthouse PWA audit)
-- OAuth login returns JWT
+- **Google** OAuth login returns JWT (other providers when enabled)
 - All 14 tables created in Render Postgres
 - `/ui-consistency-review` returns zero violations
 - `src/types/api-contracts.ts` committed with all request/response shapes
@@ -215,15 +216,17 @@ Read prd.md, development-plan.md, and src/types/api-contracts.ts.
 Execute Phase 2 from development-plan.md using /execute-plan.
 
 Key deliverables:
-1. Intent classifier (rule-based + regex, ≥90% accuracy target)
+1. Intent classifier (rule-based + regex; ≥80% before Phase 3 integration, ≥90% target on full 500-message set)
 2. LLM Router (Gemini Flash / GPT-4o mini / GPT-4o selection)
 3. PII masker pipeline (strip/tokenize before LLM, in-memory token map, re-map on response)
 4. Prompt guard (injection detection, Unicode normalization, output validation)
 5. Call budget tracker (increment, check, reset, over-budget downgrade)
 6. Deterministic operation handlers (calendar, lists, reminders, streaks, expenses, slips)
 7. 4 MVP agent skill definitions (Calendar Whiz, Grocery Guru, School Event Hub, Budget Buddy)
-8. CalDAV sync module for Apple Calendar
-9. Consent recording API (POST /api/consent, append-only)
+8. **WebSocket layer** (JWT handshake, household rooms, JSON envelope protocol — `development-plan.md` Phase 2)
+9. **LLM cost monitoring** (Langfuse tags, `GET /api/admin/llm-costs`, spend alerts — `development-plan.md` Phase 2)
+10. CalDAV sync module for Apple Calendar
+11. Consent recording API (POST /api/consent, append-only)
 
 All API endpoints must match the shapes in src/types/api-contracts.ts exactly.
 Run /run-tests after each major component.
@@ -235,6 +238,8 @@ Run /run-tests after each major component.
 - PII masker strips names/addresses/phones from 200 test messages with zero leakage
 - Prompt guard blocks ≥95% of 100 injection test patterns
 - CalDAV connects to iCloud test account and syncs events
+- WebSocket: valid JWT → connect → receive at least one test event on a household channel
+- **Phase 2 minimum unblock gate** satisfied before Phase 4 work begins (see `development-plan.md`)
 
 ---
 
@@ -249,12 +254,13 @@ Read prd.md, development-plan.md, and src/types/api-contracts.ts.
 Execute Phase 3 from development-plan.md using /execute-plan.
 
 Key deliverables:
-1. Login/Signup page with OAuth buttons + legal consent screen (3 checkboxes: ToS, Privacy, AI Disclosure)
+1. Login/Signup: **Google** (+ email) first; **Facebook/Microsoft** when enabled; **no Apple button** until Phase 7; legal consent screen (3 checkboxes: ToS, Privacy, AI Disclosure)
 2. Onboarding page (family profile setup, COPPA consent for children under 13)
 3. Home/Marketplace page (agent discovery, carousel, activate toggle)
 4. Agent Chat page (per-agent dynamic route, message bubbles, quick action chips, typing indicator)
 5. Family Calendar page (monthly grid, color coding, filter chips, calendar account linking UI)
-6. Tasks Dashboard page (agent status, progress bars, real-time updates placeholder)
+6. Tasks Dashboard page (agent status, progress bars, WebSocket-driven updates when backend ready)
+7. **Error & empty states** + offline banner (`development-plan.md` Phase 3 §7)
 
 ALL pages must use CSS Zen Garden tokens only — zero hardcoded hex/rgb/hsl values.
 Mock all API calls using src/types/api-contracts.ts shapes (return stubbed data).
