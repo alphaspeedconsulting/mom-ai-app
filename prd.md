@@ -102,6 +102,10 @@ Mothers disproportionately carry the "invisible labor" of household management: 
 - **US-1.2**: As a new user, I can set up my family profile (members, ages, dietary restrictions, preferences) during onboarding so agents have context from day one.
 - **US-1.3**: As a new user, I receive a personalized agent recommendation based on my family profile so I know which agents to activate first.
 - **US-1.4**: As a new user, I start a 7-day free trial (CC required) with full Family tier access (1,000 calls) so I can experience all agents before subscribing.
+- **US-1.5**: As a new user, I must accept the Terms of Service, Privacy Policy, and AI Disclosure before completing signup so the platform has legally recorded consent.
+- **US-1.6**: As a new user adding children (under 13), I must provide verifiable parental consent (COPPA) and acknowledge the AI Disclosure for child data handling.
+- **US-1.7**: As a user, I can review the current Terms of Service, Privacy Policy, and AI Disclosure at any time from Settings.
+- **US-1.8**: As a user, when legal documents are updated, I am notified and must re-accept before continuing to use the platform.
 
 #### Epic 2: Agent Marketplace & Discovery
 - **US-2.1**: As a user, I can browse agents by category (Household, Wellness, Education) so I can find relevant ones quickly.
@@ -169,6 +173,96 @@ Mothers disproportionately carry the "invisible labor" of household management: 
 | FR-1.4 | Premium trial activation (7-day) on signup | P0 |
 | FR-1.5 | Session management with secure token refresh | P0 |
 | FR-1.6 | Multi-device sync (phone, tablet, web) with conflict resolution | P1 |
+| FR-1.7 | Legal consent gate: user must accept ToS + Privacy Policy + AI Disclosure before account activation | P0 |
+| FR-1.8 | COPPA parental consent gate: verifiable consent when adding child profile (under 13) | P0 |
+| FR-1.9 | Consent re-acceptance flow when legal documents are updated (version bump) | P0 |
+
+### FR-1A: Legal Documents & Consent Architecture
+
+Mom.alpha handles sensitive family data (including children's information) and routes to third-party LLM providers. Comprehensive legal protection is required at signup and throughout the user lifecycle.
+
+#### Legal Documents (3 required at signup)
+
+| Document | Purpose | Key Provisions |
+|---|---|---|
+| **Terms of Service (ToS)** | Governs use of the platform | Service description, acceptable use, account responsibilities, intellectual property, limitation of liability, indemnification, dispute resolution (arbitration clause), termination rights, governing law |
+| **Privacy Policy** | Data handling transparency | What data is collected (family profiles, calendar, financial, chat), how it's used, third-party sharing (LLM providers — with zero-retention disclosure), COPPA section for child data, data retention periods, right to access/export/delete (GDPR/CCPA), cookie policy |
+| **AI Disclosure & Consent** | Transparent AI use | Disclosure that agents use third-party LLM providers (OpenAI, Google, Anthropic), PII stripping protections, zero-retention API policies, that AI-generated content is not professional advice (financial, medical, legal), limitation of liability for AI recommendations, user's right to opt out of intelligent operations (deterministic-only mode) |
+
+#### Key Legal Protections
+
+| Protection | Implementation |
+|---|---|
+| **Limitation of Liability** | Platform not liable for: AI-generated recommendations (financial, scheduling, wellness), missed calendar events, incorrect receipt parsing, school event extraction errors. Capped at subscription fees paid in prior 12 months. |
+| **Indemnification** | User indemnifies Mom.alpha against claims arising from: user-provided content, misuse of agent recommendations, third-party service interactions initiated through agents. |
+| **AI Disclaimer** | Prominently displayed: "Mom.alpha agents provide suggestions, not professional advice. Always verify important decisions independently." Specific disclaimers for Budget Buddy (not financial advice), Wellness Hub (not medical advice), Tutor Finder (not endorsements). |
+| **Arbitration Clause** | Mandatory binding arbitration for disputes (with 30-day opt-out window post-signup). Class action waiver. Small claims court exception. |
+| **Data Processing** | Transparent disclosure of all third-party data processors (LLM providers, Stripe, Plaid, Google Calendar API, Apple CalDAV). Links to each provider's data policy. |
+| **COPPA Compliance** | Verifiable parental consent before any child data is stored or processed. No child data sent to LLM providers (age only, no names/details). Parent can delete all child data at any time. |
+| **Termination** | User can cancel anytime. Data preserved 30 days post-cancellation, then permanently deleted. Platform can terminate for ToS violations with notice. |
+
+#### Consent Recording & Audit Trail
+
+Every legal acceptance is immutably recorded for compliance and dispute resolution:
+
+| Field | Description |
+|---|---|
+| `id` | Unique consent record ID (UUID) |
+| `user_id` | User who accepted |
+| `household_id` | Associated household |
+| `document_type` | `tos`, `privacy_policy`, `ai_disclosure`, `coppa_parental_consent` |
+| `document_version` | Semantic version of the document at time of acceptance (e.g., `1.0.0`) |
+| `document_hash` | SHA-256 hash of the exact document text accepted — immutable proof |
+| `accepted_at` | Timestamp (UTC) of acceptance |
+| `ip_address` | IP address at time of acceptance |
+| `user_agent` | Browser/device user agent string |
+| `consent_method` | `checkbox_signup`, `re_acceptance_prompt`, `coppa_verification`, `in_app_update` |
+| `withdrawn_at` | Timestamp if consent was later withdrawn (triggers account restriction) |
+
+**Audit guarantees:**
+- Consent records are **append-only** — never updated or deleted (even if user deletes account, consent records retained for legal compliance per retention policy)
+- Each document version change creates a new record — full history preserved
+- SHA-256 hash of document text ensures we can prove exactly what the user accepted
+- Queryable by user, household, document type, version, and date range for compliance audits
+- Exportable as part of GDPR/CCPA data subject access requests
+
+#### Signup Flow Legal Integration
+
+```
+OAuth Login (Google/Apple/Facebook/Microsoft)
+    ↓
+Legal Consent Screen:
+    ☐ "I agree to the Terms of Service" (link to full text)
+    ☐ "I agree to the Privacy Policy" (link to full text)
+    ☐ "I understand Mom.alpha uses AI (AI Disclosure)" (link to full text)
+    [All 3 required to proceed]
+    ↓
+Record consent: user_id + document_type + version + hash + IP + timestamp
+    ↓
+Family Profile Setup
+    ↓
+If adding child under 13:
+    COPPA Consent Screen:
+    ☐ "I am the parent/legal guardian and consent to processing my child's data"
+    [Verifiable: re-enter password or re-authenticate]
+    ↓
+    Record COPPA consent: same audit fields + coppa_verification method
+    ↓
+Trial Activation + Payment (Stripe Checkout)
+    ↓
+Home / Marketplace
+```
+
+#### Document Update Flow
+
+When legal documents are updated (version bump):
+
+1. All users see a **blocking modal** on next app open: "We've updated our [Terms of Service / Privacy Policy / AI Disclosure]"
+2. Modal shows summary of changes + link to full document + diff from previous version
+3. User must accept to continue using the platform
+4. New consent record created with new `document_version` and `document_hash`
+5. If user declines: account restricted to read-only (can export data, can't use agents) until accepted
+6. Grace period: 14 days to accept before account suspension
 
 ### FR-2: Agent Marketplace
 
@@ -699,10 +793,27 @@ Three Claude Code skills enforce CSS Zen Garden compliance:
 
 ### AC-1: Onboarding Flow
 - [ ] User completes Google/Apple/Facebook/Microsoft OAuth signup in < 60 seconds
+- [ ] **Legal consent screen** appears after OAuth, before account activation — ToS + Privacy Policy + AI Disclosure checkboxes all required
+- [ ] "Continue" button disabled until all 3 legal documents accepted
+- [ ] Each acceptance creates a `consent_records` entry with: user_id, document_type, document_version, SHA-256 hash, IP, user_agent, timestamp
 - [ ] Family profile with 2+ members created during onboarding
+- [ ] When child under 13 added: COPPA consent screen appears, requires re-authentication + parental consent checkbox, recorded in `consent_records`
 - [ ] At least 1 agent recommended and activated by end of onboarding
 - [ ] Premium trial automatically starts (7-day countdown visible)
 - [ ] User lands on Home/Marketplace after onboarding
+
+### AC-1A: Legal Document Management
+- [ ] Terms of Service, Privacy Policy, and AI Disclosure render correctly from versioned content at `/legal/terms`, `/legal/privacy`, `/legal/ai-disclosure`
+- [ ] Each document has a version number and SHA-256 content hash stored in `legal_documents` table
+- [ ] When a document version is bumped: all users see blocking re-acceptance modal on next login
+- [ ] Re-acceptance creates new `consent_records` entry with updated version and hash
+- [ ] Users who decline re-acceptance are restricted to read-only mode (can export data, cannot use agents)
+- [ ] 14-day grace period before account suspension for users who haven't re-accepted
+- [ ] `consent_records` table is append-only — no UPDATE or DELETE operations permitted
+- [ ] Consent history viewable in Settings (`/settings/legal`) showing all accepted documents with version and date
+- [ ] Admin audit API returns full consent history for any user (for compliance/legal requests)
+- [ ] Consent records are included in GDPR/CCPA data export requests
+- [ ] Consent records are NOT deleted when user deletes account (retained per legal retention policy)
 
 ### AC-2: Agent Marketplace
 - [ ] All 8 agents displayed with cards showing name, description, category
