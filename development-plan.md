@@ -590,6 +590,61 @@ A mobile-first **Progressive Web App** with 8 specialized AI agents, determinist
 
 **Success criteria:**
 - Done when: All 8 agents functional with deterministic + intelligent split; Family Pro upgrade path works end-to-end; voice input transcribes and sends to agent correctly
+
+---
+
+### Phase 8 (Backlog): Specialized Trackers — Skincare, Orthodontic/Dental (Post-Launch)
+
+**Goal:** Expand the agent ecosystem with high-retention lifestyle trackers that leverage the existing Wellness Hub infrastructure and calendar sync.
+
+#### Tasks
+
+1. **Skincare Tracker** (sub-agent of Self-Care Reminder or standalone)
+   - **Deterministic operations**:
+     - Log daily skincare routine (cleanser, serum, moisturizer, SPF, retinol, masks)
+     - Track product usage by day (e.g., "Retinol: Mon/Wed/Fri", "Sheet mask: Sundays")
+     - View weekly/monthly skincare calendar with color-coded product categories
+     - Set recurring reminders ("Retinol night — skip vitamin C", "Face mask day")
+     - Track facial appointments (schedule, confirm, reschedule) with calendar sync
+     - Product inventory tracking ("Running low on hyaluronic acid serum")
+   - **Intelligent operations**:
+     - Routine conflict detection ("Don't use retinol and AHA on the same night")
+     - Product interaction warnings based on logged routine
+     - Personalized schedule suggestions based on skin goals and current routine
+     - "When did I last do a mask?" queries from natural language
+   - **Calendar integration**: Facial appointments auto-sync to Family Calendar; recurring product schedules visible in weekly view
+   - **Design**: Extend Wellness Hub page with skincare tab, or new `/agents/skincare` page with product grid + calendar streak view
+
+2. **Orthodontic & Dental Care Tracker** (sub-agent of Wellness Hub or standalone)
+   - **Deterministic operations**:
+     - Track orthodontic device schedules per family member (expander turns, rubber band changes, retainer wear, Invisalign tray changes)
+     - Recurring reminders: "Turn AS expander 1 click tonight", "Change rubber bands", "Switch to tray #14"
+     - Dental appointment tracking (cleanings, ortho check-ups, emergency visits) with calendar sync
+     - Log compliance: "Did Leo wear his retainer today?" streak tracking
+     - Track treatment milestones: "Braces on: March 2025 → Expected off: September 2026"
+     - Medication/care reminders: "Apply ortho wax", "Saltwater rinse after adjustment"
+   - **Intelligent operations**:
+     - "When is Leo's next expander adjustment?" natural language queries
+     - Proactive reminders based on treatment schedule ("It's been 3 days since last expander turn — you may be behind")
+     - Appointment prep suggestions ("Ortho appointment tomorrow — bring insurance card, write down questions about wire change")
+   - **Calendar integration**: All orthodontic and dental appointments auto-sync to Family Calendar; recurring device schedules appear as daily to-dos
+   - **Per-family-member tracking**: Each child (and parent) can have independent orthodontic/dental schedules
+   - **Design**: Extend Wellness Hub with dental/ortho tab, or new `/agents/dental` page with treatment timeline + compliance streaks
+
+#### Architecture Notes
+- Both trackers follow the proven deterministic/intelligent split — most operations are CRUD (zero LLM cost)
+- Reuse Wellness Hub streak tracking infrastructure (`wellness_streaks` table) with new `streak_type` values
+- Reuse calendar sync (Google + Apple CalDAV) for appointment management
+- New DB tables: `skincare_routines` (household_id, member_id, product, schedule_days, category), `dental_treatments` (household_id, member_id, treatment_type, device_schedule, start_date, expected_end_date, milestones jsonb)
+- LLM cost: minimal — only product interaction warnings and natural language queries use LLM calls
+
+**Dependencies:** Phase 7 (Wellness Hub agent operational, streak infrastructure proven).
+
+**Estimated effort:** ~8 days total (4d skincare + 4d dental). Heavily reuses existing streak, calendar, and reminder infrastructure.
+
+**Success criteria:**
+- Done when: User can log retinol schedule, get reminded on correct days, track facial appointments synced to calendar; user can set orthodontic device reminders per child, track compliance streaks, see treatment timeline
+- Verified by: Streak tracking accuracy tests; calendar sync tests for appointments; reminder delivery tests; product conflict detection tests (skincare)
 - Verified by: Per-agent test suites; tier upgrade integration test; voice input accuracy test on Chrome + Safari
 - Risk level: Low (proven patterns from Phase 4; agents 5-8 are simpler than the MVP 4)
 

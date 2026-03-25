@@ -159,6 +159,22 @@ Mothers disproportionately carry the "invisible labor" of household management: 
 - **US-10.2**: As a user, I can set communication style preferences so agents match my tone.
 - **US-10.3**: As a user, I have full control over privacy, notification preferences, and connected devices.
 
+#### Epic 11: Skincare Tracker (Backlog — Post-Launch)
+- **US-11.1**: As a user, I can log my daily skincare routine (cleanser, retinol, masks, SPF) so I know what I used and when.
+- **US-11.2**: As a user, I can set recurring product schedules ("Retinol: Mon/Wed/Fri", "Sheet mask: Sundays") so I get reminded on the right days.
+- **US-11.3**: As a user, I can schedule and track facial appointments that auto-sync to my Family Calendar.
+- **US-11.4**: As a user, I get a warning if I schedule conflicting products on the same day (e.g., retinol + AHA exfoliant).
+- **US-11.5**: As a user, I can ask "When did I last do a face mask?" and get an answer from my logged history.
+- **US-11.6**: As a user, I can view a weekly/monthly skincare calendar showing my routine at a glance.
+
+#### Epic 12: Orthodontic & Dental Care Tracker (Backlog — Post-Launch)
+- **US-12.1**: As a user, I can set recurring orthodontic device reminders per child (expander turns, rubber band changes, retainer wear, Invisalign tray swaps).
+- **US-12.2**: As a user, I get daily reminders like "Turn Leo's expander 1 click tonight" so I never forget.
+- **US-12.3**: As a user, I can track compliance streaks ("Leo wore retainer: 14 days in a row") to encourage consistency.
+- **US-12.4**: As a user, I can schedule dental and ortho appointments that auto-sync to the Family Calendar with prep reminders.
+- **US-12.5**: As a user, I can view a treatment timeline per child (braces on date → milestones → expected removal date).
+- **US-12.6**: As a user, I can ask "When is Leo's next ortho appointment?" or "How many expander turns has Leo done this week?" in natural language.
+
 ---
 
 ## Section 5: Functional Requirements
