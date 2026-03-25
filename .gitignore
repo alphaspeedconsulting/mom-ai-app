@@ -2,13 +2,14 @@
 .DS_Store
 Thumbs.db
 
+# Local AI editor config (never commit — may contain paths and permissions)
+.claude/
+.cursor/
+
 # Environment and secrets
 .env
 .env.*
 !.env.example
-
-# Claude — machine-local permissions and paths
-.claude/settings.local.json
 
 # Logs
 *.log
@@ -39,5 +40,5 @@ htmlcov/
 /.bundle/
 vendor/bundle/
 
-# IDE (keep .cursor/ in repo; ignore JetBrains)
+# IDE
 .idea/
