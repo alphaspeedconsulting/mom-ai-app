@@ -133,9 +133,79 @@ A mobile-first **Progressive Web App** with 8 specialized AI agents, determinist
 
 ## 4. Implementation Phases
 
+### Phase 0: Landing Page (Week 0-1)
+
+**Goal:** Ship a high-converting landing page at `mom.alphaspeedai.com` BEFORE the app is built. This starts collecting interest, validates messaging, and gives AlphaSpeedAi.com something to drive traffic to immediately.
+
+#### Why Phase 0
+
+The landing page has **zero dependencies** on the app backend, database, or agent infrastructure. It's a standalone Next.js page with static content, animations, and an email capture form. It can ship while everything else is being built, and it starts:
+- Collecting waitlist emails (validates demand before investing in full build)
+- Building SEO authority (Google indexes the page, domain authority grows)
+- Providing a CTA target for AlphaSpeedAi.com homepage cross-promotion
+- Testing messaging and conversion rates (iterate copy before launch)
+
+#### Tasks
+
+1. **Next.js project init** (if not already done — shared with Phase 1)
+   - `npx create-next-app@latest mom-alpha --typescript --tailwind --app`
+   - Configure for Cloudflare Pages deployment
+   - Set up `mom.alphaspeedai.com` subdomain DNS
+
+2. **CSS Zen Garden design system** (minimal — landing page tokens only)
+   - Layer 1: `:root` CSS variables for Lullaby & Logic theme
+   - Layer 2: `tailwind.config.ts` with color + typography token mapping
+   - Layer 3: `mom-alpha.css` with landing page component classes (`.mom-glass-panel`, `.mom-gradient-hero`, `.mom-card`, `.mom-btn-primary`)
+   - This is a subset of the full design system — Phase 1 extends it for the app
+
+3. **Landing page** (`/` — root route)
+   - **Hero section**: headline ("Take a breath. We'll handle the rest."), subheadline, primary CTA, animated product mockup (phone frame with cycling screenshots from design exports)
+   - **Agent showcase** ("Meet Your Team"): 8 agent cards in horizontal scroll/grid, each with icon + name + 1-line description + mini animated preview
+   - **"A Day With Mom.alpha"**: timeline narrative section showing a mom's day with agents helping at each moment (7am Daily Edit → 8am school slip → 12pm receipt scan → 3pm calendar conflict → 8pm self-care)
+   - **Feature deep-dives**: 3-4 sections with screenshot mockups + descriptions (calendar sync, agent chat, receipt scanning, school events)
+   - **Trust & privacy**: "Your family's data is sacred" — PII stripping, zero-retention, encryption, COPPA badges
+   - **Pricing**: side-by-side Family vs Family Pro comparison table with annual discount callout
+   - **FAQ**: expandable accordion (what is it, how does AI work, data safety, calendars, cancel anytime, devices)
+   - **Final CTA**: "Ready to take a breath?" + trial button
+   - **Footer**: Powered by AlphaSpeed AI + legal links + copyright
+   - **Mobile**: sticky bottom bar with CTA visible while scrolling
+
+4. **Animated product mockups**
+   - Use existing design screenshots from `stitch_screenshot_of_https_mom.ai/` as source frames
+   - CSS animations: fade/slide between agent chat, calendar, task dashboard, budget screens
+   - Phone frame component: realistic device bezel wrapping animated screenshots
+   - Lightweight: CSS transitions + `<Image>` with lazy loading — no heavy JS animation libraries
+
+5. **Pre-launch waitlist** (if app not live yet)
+   - Email capture form: "Get early access" with email input + submit
+   - Integration: Resend or Mailchimp API for email collection
+   - Confirmation: inline "You're on the list!" message (no redirect)
+   - Post-launch: swap waitlist form for "Start Free Trial" CTA linking to `/login`
+
+6. **SEO optimization**
+   - Meta tags: title, description, Open Graph (og:image from hero screenshot), Twitter Card
+   - Structured data: Product schema (JSON-LD) for rich search results
+   - H1/H2 hierarchy optimized for "AI family assistant", "AI household manager"
+   - Next.js static generation (SSG) for maximum crawlability and speed
+   - `sitemap.xml` and `robots.txt`
+
+7. **AlphaSpeedAi.com integration**
+   - Hero banner or featured product card on AlphaSpeedAi.com homepage linking to `mom.alphaspeedai.com`
+   - Shared navigation: "Products" dropdown includes Mom.alpha
+   - Consistent brand treatment: "Powered by AlphaSpeed AI" in footer
+
+**Dependencies:** None — this is the true starting point. Can begin before any backend work.
+
+**Success criteria:**
+- Done when: `mom.alphaspeedai.com` is live with landing page; Lighthouse Performance ≥95, SEO ≥95; hero loads in <1.5s FCP; mobile sticky CTA works; waitlist captures emails; `/ui-consistency-review` passes (zero hardcoded colors)
+- Verified by: Lighthouse audit; PageSpeed Insights mobile ≥90; email capture test; visual QA against design system; cross-browser test (Chrome, Safari, Firefox, mobile Safari)
+- Risk level: Low (static page, no backend dependency)
+
+---
+
 ### Phase 1: Foundation & Infrastructure (Weeks 1-2)
 
-**Goal:** Project scaffolding, database schema, auth system, design system, CI/CD pipeline.
+**Goal:** Project scaffolding, database schema, auth system, full design system (extending Phase 0), CI/CD pipeline.
 
 #### Tasks
 
@@ -762,14 +832,17 @@ A mobile-first **Progressive Web App** with 8 specialized AI agents, determinist
 
 | Phase | Weeks | Calendar | Key Milestone |
 |---|---|---|---|
+| **Phase 0:** Landing Page | Week 0-1 | Pre-Month 1 | **mom.alphaspeedai.com landing page LIVE** — collecting interest |
 | **Phase 1:** Foundation | Weeks 1-2 | Month 1 | PWA boots, auth works, DB ready, design system implemented |
 | **Phase 2:** Agent Backend | Weeks 2-4 | Month 1 | Intent classifier + LLM router + call budget working |
 | **Phase 3:** MVP Pages | Weeks 3-5 | Month 1-2 | 6 core pages with design system |
 | **Phase 4:** MVP Agents | Weeks 4-7 | Month 2 | 4 agents fully functional |
 | **Phase 5:** Payments & Notifications | Weeks 6-9 | Month 2-3 | Stripe, Web Push, Daily Edit, remaining pages |
-| **Phase 6:** Polish & Launch | Weeks 8-10 | Month 3 | **mom.alphaspeedai.com is LIVE** |
+| **Phase 6:** Polish & Launch | Weeks 8-10 | Month 3 | **Full app LIVE at mom.alphaspeedai.com** (replaces landing page) |
 | **Phase 7:** Full Ecosystem | Weeks 9-12 | Month 3 | 8 agents + Family Pro features |
+| **Phase 8:** Specialized Trackers | Post-launch | Month 4+ | Skincare + Orthodontic/Dental trackers |
 
+**Landing page live: ~1 week** (starts collecting interest immediately)
 **Total: ~12 weeks (3 months) to full 8-agent launch**
 **MVP (4 agents) live at: ~10 weeks (2.5 months)**
 
@@ -777,6 +850,7 @@ A mobile-first **Progressive Web App** with 8 specialized AI agents, determinist
 
 | Category | Days | Cost @ $150/hr |
 |---|---|---|
+| Landing page (Phase 0 — design system subset + content + SEO + waitlist) | 3 | $3,600 |
 | Next.js PWA (13 pages + CSS Zen Garden design system) | 25 | $30,000 |
 | Agent backend (intent classifier, LLM router, 8 skills) | 25 | $30,000 |
 | Infrastructure extensions (auth, WebSocket, R2, schema) | 11 | $13,200 |
@@ -785,16 +859,14 @@ A mobile-first **Progressive Web App** with 8 specialized AI agents, determinist
 | Stripe + notifications + Daily Edit | 8 | $9,600 |
 | Testing + QA + performance | 12 | $14,400 |
 | PWA polish + COPPA compliance | 3 | $3,600 |
-| **Total** | **94 days** | **$112,800** |
-
-*+12 days vs original estimate for CalDAV integration (+5d), LLM security pipeline (+5d), and expanded test suite (+2d). These are critical for user trust and competitive positioning.*
+| **Total** | **97 days** | **$116,400** |
 
 ### Savings vs Native App Approach
 
 | Category | PWA | Native (React Native) | Savings |
 |---|---|---|---|
-| Build cost | $112,800 | $138,000 | **$25,200** |
+| Build cost | $116,400 | $142,000 | **$25,600** |
 | Annual platform fees | $0 | $1,300/yr | **$1,300/yr** |
 | Apple/Google subscription tax (Year 1) | $73K | $570K | **$497K** |
 | Time to launch | 11 weeks | 15 weeks | **4 weeks faster** |
-| **Total Year 1 savings** | | | **~$509,200** |
+| **Total Year 1 savings** | | | **~$508,900** |

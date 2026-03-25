@@ -48,6 +48,9 @@ This gives the model **ground truth** (committed code) rather than **compressed 
 ## Dependency Graph
 
 ```
+Phase 0: Landing Page (standalone — zero backend dependencies)
+   │
+   ▼
 Phase 1: Foundation (schema, auth, design system, legal consent, CI/CD)
    ├─────────────────────────────┐
    ▼                             ▼
@@ -90,6 +93,7 @@ Phase 8 (Backlog): Skincare Tracker + Orthodontic/Dental Tracker
 
 | Parallel pair | Why it works | Coordination point |
 |---|---|---|
+| **Phase 0 + Phase 1 (partial)** | Landing page is static content. Phase 1 backend work (schema, auth) is independent. Can overlap in same calendar week. | Shared design system tokens — Phase 0 creates subset, Phase 1 extends. |
 | **Phase 2 + Phase 3** | Backend doesn't need UI. Frontend mocks the API. Both depend only on Phase 1. | API contract types file committed in Phase 1. |
 | **Phase 4 + Phase 5a** | Stripe webhooks and Web Push are completely independent of which agents are wired up. | Both need Phase 1 DB schema. |
 | **Phase 7a + Phase 7b** | Each agent is independent. Same skill definition pattern from Phase 2. | Shared `wellness_streaks` table schema. |
@@ -107,6 +111,59 @@ Phase 8 (Backlog): Skincare Tracker + Orthodontic/Dental Tracker
 ---
 
 ## Session-by-Session Execution Plan
+
+### Session 0: Phase 0 — Landing Page (Solo, ships first)
+
+**Estimated duration:** 1 session (medium)
+**Prerequisites:** None — this is the true starting point. Ships before anything else.
+
+**Task prompt:**
+```
+Read prd.md (Section 5: FR-0 Landing Page) and development-plan.md (Phase 0).
+Build the Mom.alpha landing page using /execute-plan.
+
+This page ships BEFORE the app exists. It drives interest from AlphaSpeedAi.com
+and collects waitlist emails.
+
+Key deliverables:
+1. Next.js project init with Tailwind + Cloudflare Pages deploy config
+2. CSS Zen Garden Layer 1-3 (subset: landing page tokens only — will be extended in Phase 1)
+3. Landing page at root route (/) with all sections:
+   - Hero: "Take a breath. We'll handle the rest." + animated product mockup
+   - Agent showcase: 8 agent cards with icons + descriptions + mini visual demos
+   - "A Day With Mom.alpha": timeline narrative (7am → 8pm story arc)
+   - Feature deep-dives: 3-4 sections with screenshot mockups from design exports
+   - Trust & privacy: "Your family data is never used to train AI" + badges
+   - Pricing: Family vs Family Pro comparison table
+   - FAQ: expandable accordion
+   - Final CTA + footer with AlphaSpeed AI branding
+4. Mobile: sticky bottom CTA bar
+5. Pre-launch waitlist: email capture form (Resend or Mailchimp integration)
+6. SEO: meta tags, Open Graph, Product schema JSON-LD, sitemap.xml
+7. Animated product mockups using existing screenshots from stitch_screenshot_of_https_mom.ai/
+
+Use /alphaai-frontend-design for creative design within token constraints.
+Use existing design exports as source material for mockup animations.
+Run /ui-consistency-review before completing.
+Target: Lighthouse Performance ≥95, SEO ≥95, FCP <1.5s.
+```
+
+**Verification:**
+- `mom.alphaspeedai.com` is live with landing page
+- Lighthouse Performance ≥95, SEO ≥95
+- Hero loads in <1.5s FCP
+- Sticky mobile CTA works on iOS Safari + Chrome Android
+- Email capture records to Resend/Mailchimp
+- `/ui-consistency-review` passes (zero hardcoded colors)
+- Open Graph preview renders correctly when shared on social media
+
+**Why this ships first:** The landing page has zero dependencies on the backend. While Phase 1+ builds the actual app, the landing page is already:
+- Collecting waitlist emails (validating demand)
+- Building SEO authority (Google indexing starts)
+- Giving AlphaSpeedAi.com a product page to cross-promote
+- Testing headline/CTA messaging (iterate copy based on analytics)
+
+---
 
 ### Session 1: Phase 1 — Foundation (Solo)
 
@@ -334,6 +391,7 @@ Both reuse existing streak, calendar, and reminder infrastructure.
 
 | Session | Phase | Parallel? | Estimated Size | Key Risk |
 |---|---|---|---|---|
+| **0** | **Phase 0: Landing Page** | **Solo (ships first)** | **Medium** | **Copy/messaging resonance, animation performance** |
 | **1** | Phase 1: Foundation | Solo | Large | Design system token consistency |
 | **2a** | Phase 2: Backend | Parallel with 2b | Large | Intent classifier accuracy, PII masker coverage |
 | **2b** | Phase 3: Frontend | Parallel with 2a | Large | CSS Zen Garden compliance across 6 pages |
@@ -344,7 +402,8 @@ Both reuse existing streak, calendar, and reminder infrastructure.
 | **5b** | Phase 7b: Tutor + Self-Care | Parallel with 5a | Medium | Low (proven patterns) |
 | **6** | Phase 8: Skincare + Dental | Solo | Medium | Low (reuses existing infra) |
 
-**Total: 9 sessions across 6 calendar slots** (3 parallel pairs reduce elapsed time).
+**Total: 10 sessions across 7 calendar slots** (3 parallel pairs reduce elapsed time).
+**Landing page live: Session 0 (before any backend work begins).**
 
 ---
 

@@ -97,6 +97,17 @@ Mothers disproportionately carry the "invisible labor" of household management: 
 
 ### User Stories
 
+#### Epic 0: Landing Page & Pre-Launch
+
+- **US-0.1**: As a visitor arriving from AlphaSpeedAi.com, I immediately understand what Mom.alpha does and why it matters within 5 seconds of landing.
+- **US-0.2**: As a visitor, I can see each of the 8 AI agents with visual demos of what they do (animated mockups, before/after scenarios) so the product feels real.
+- **US-0.3**: As a visitor, I can see a relatable "day in the life" story showing how Mom.alpha transforms household chaos into calm so I see myself using it.
+- **US-0.4**: As a visitor, I can start my 7-day free trial directly from the landing page with one click (CTA → signup flow).
+- **US-0.5**: As a visitor, I can see pricing (Family $7.99 / Family Pro $14.99) with a clear comparison of what each tier includes.
+- **US-0.6**: As a visitor, I can see trust signals — privacy commitment ("Your family data is never used to train AI"), security badges, and the AlphaSpeed AI brand.
+- **US-0.7**: As a visitor, I can join a waitlist (email capture) if the product isn't live yet, so the landing page can ship before the app.
+- **US-0.8**: As a visitor on mobile, the landing page is optimized for thumb-scrolling with sticky CTA and fast load time (<2s FCP).
+
 #### Epic 1: Onboarding & Family Setup
 - **US-1.1**: As a new user, I can sign up with Google, Apple, Facebook, or Microsoft OAuth in under 60 seconds so I don't face friction at first launch.
 - **US-1.2**: As a new user, I can set up my family profile (members, ages, dietary restrictions, preferences) during onboarding so agents have context from day one.
@@ -178,6 +189,124 @@ Mothers disproportionately carry the "invisible labor" of household management: 
 ---
 
 ## Section 5: Functional Requirements
+
+### FR-0: Landing Page (`mom.alphaspeedai.com`)
+
+The landing page is the primary acquisition surface. It ships BEFORE the app and drives waitlist signups, trial conversions, and SEO traffic. It must sell the vision, make the product feel tangible, and convert visitors into users.
+
+| ID | Requirement | Priority |
+|---|---|---|
+| FR-0.1 | Hero section: headline + subheadline + primary CTA ("Start Your Free Trial") + animated product mockup | P0 |
+| FR-0.2 | Agent showcase: all 8 agents with icon, name, description, and visual demo (animated mockup or interactive preview) | P0 |
+| FR-0.3 | "A Day With Mom.alpha" story section: before/after narrative showing a mom's day without vs with Mom.alpha | P0 |
+| FR-0.4 | Feature deep-dives: 3-4 expandable sections showing key features in action (calendar sync, receipt scanning, school events, chat with agents) | P0 |
+| FR-0.5 | Pricing section: Family ($7.99/mo) vs Family Pro ($14.99/mo) comparison table with feature breakdown + annual discount callout | P0 |
+| FR-0.6 | Trust & privacy section: "Your family data is never used to train AI" + zero-retention badges + encryption callout + COPPA compliance | P0 |
+| FR-0.7 | Social proof section: testimonials, household count (once live), press mentions (placeholder initially) | P1 |
+| FR-0.8 | Pre-launch waitlist: email capture form with Mailchimp/Resend integration (if app not yet live) | P0 |
+| FR-0.9 | Sticky mobile CTA: fixed bottom bar with "Start Free Trial" button visible while scrolling | P0 |
+| FR-0.10 | SEO-optimized: meta tags, Open Graph, structured data (Product schema), descriptive H1/H2 hierarchy, <2s FCP | P0 |
+| FR-0.11 | AlphaSpeed AI branding: "Powered by AlphaSpeed AI" in footer + consistent nav linking back to alphaspeedai.com | P0 |
+| FR-0.12 | Responsive: mobile-first (390px), tablet (768px), desktop (1024px+) with layout adaptation per breakpoint | P0 |
+| FR-0.13 | CTA → signup flow: "Start Free Trial" buttons link to `/login` (legal consent → OAuth → trial) | P0 |
+| FR-0.14 | FAQ section: expandable accordion covering pricing, privacy, "how does AI work", cancel anytime, device support | P1 |
+
+#### Landing Page Sections (Top to Bottom)
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│ NAV: Logo + AlphaSpeedAi.com link + "Start Free Trial" button  │
+├─────────────────────────────────────────────────────────────────┤
+│ HERO                                                            │
+│ "Take a breath. We'll handle the rest."                        │
+│ Subheadline: 8 AI agents that manage your household so you     │
+│ don't have to.                                                  │
+│ [Start Your 7-Day Free Trial]                                   │
+│ Animated product mockup: phone frame showing agent chat +       │
+│ calendar + task dashboard cycling through                       │
+├─────────────────────────────────────────────────────────────────┤
+│ AGENT SHOWCASE                                                  │
+│ "Meet Your Team"                                                │
+│ Horizontal scroll or grid of 8 agent cards:                     │
+│ Calendar Whiz · Grocery Guru · Budget Buddy · School Event Hub  │
+│ Tutor Finder · Wellness Hub · Sleep Tracker · Self-Care Reminder│
+│ Each card: icon + name + 1-line description + mini visual demo  │
+│ Click/tap → expands to show agent in action (animated mockup)   │
+├─────────────────────────────────────────────────────────────────┤
+│ "A DAY WITH MOM.ALPHA"                                          │
+│ Split-screen or timeline narrative:                              │
+│ 7:00am — Daily Edit summary arrives                             │
+│ 7:30am — Grocery Guru: "Here's tonight's dinner plan"          │
+│ 8:15am — School Event Hub: "Permission slip due today — sign?"  │
+│ 12:00pm — Budget Buddy: "Receipt scanned — $47.32 groceries"  │
+│ 3:30pm — Calendar Whiz: "Leo's soccer conflicts with Maya's    │
+│           dentist — here are 3 options"                         │
+│ 8:00pm — Self-Care: "You've had a full day. 10-min mask time?" │
+├─────────────────────────────────────────────────────────────────┤
+│ FEATURE DEEP-DIVES                                              │
+│ 3-4 sections with screenshot + description:                     │
+│ • Smart Family Calendar (Google + Apple sync, conflict AI)      │
+│ • Chat With Your Agents (natural language, quick actions)       │
+│ • Receipt Scanning & Budget Tracking (camera → auto-categorize) │
+│ • School Event Auto-Pilot (email scan → calendar → sign slips) │
+├─────────────────────────────────────────────────────────────────┤
+│ TRUST & PRIVACY                                                 │
+│ "Your family's data is sacred"                                  │
+│ • "AI providers never see your personal information" (PII strip)│
+│ • "Zero data retention — nothing stored by AI providers"        │
+│ • "Bank-grade encryption (AES-256 + TLS 1.3)"                  │
+│ • "COPPA compliant — children's data protected"                 │
+│ Privacy badge icons + link to full Privacy Policy               │
+├─────────────────────────────────────────────────────────────────┤
+│ PRICING                                                         │
+│ Side-by-side: Family ($7.99/mo) vs Family Pro ($14.99/mo)      │
+│ Feature comparison table                                        │
+│ "Save 27% with annual billing"                                  │
+│ [Start Free Trial] on both columns                              │
+├─────────────────────────────────────────────────────────────────┤
+│ FAQ (accordion)                                                 │
+│ • "What is Mom.alpha?"                                          │
+│ • "How does the AI work? Is my data safe?"                     │
+│ • "Which calendars does it sync with?"                          │
+│ • "Can I cancel anytime?"                                       │
+│ • "What devices does it work on?"                               │
+│ • "Is there a free tier?"                                       │
+├─────────────────────────────────────────────────────────────────┤
+│ FINAL CTA                                                       │
+│ "Ready to take a breath?"                                       │
+│ [Start Your 7-Day Free Trial]                                   │
+├─────────────────────────────────────────────────────────────────┤
+│ FOOTER                                                          │
+│ Powered by AlphaSpeed AI · Terms · Privacy · AI Disclosure     │
+│ © 2026 AlphaSpeed Consulting                                   │
+└─────────────────────────────────────────────────────────────────┘
+
+MOBILE: Sticky bottom bar with CTA visible at all times while scrolling
+```
+
+#### Landing Page Content Strategy
+
+| Content Type | Purpose | SEO Benefit |
+|---|---|---|
+| H1: "Take a breath. We'll handle the rest." | Emotional hook — immediate resonance with overwhelmed moms | Target keyword: "AI family assistant" |
+| Agent descriptions (8x) | Feature discovery + product comprehension | Long-tail: "AI grocery planner", "AI school event tracker", "AI family budget" |
+| "Day in the life" narrative | Makes abstract AI features tangible through storytelling | Time-on-page signal + shareability |
+| FAQ section | Overcomes objections, reduces bounce | Featured snippet opportunities for "AI family app" queries |
+| Trust section | Converts privacy-conscious parents who hesitate on AI products | E-A-T signal for Google (expertise, authority, trust) |
+| Pricing table | Transparent pricing reduces friction, improves conversion | Price comparison keyword targeting |
+
+#### Landing Page Performance Targets
+
+| Metric | Target |
+|---|---|
+| First Contentful Paint (FCP) | < 1.5s |
+| Largest Contentful Paint (LCP) | < 2.5s |
+| Cumulative Layout Shift (CLS) | < 0.1 |
+| Lighthouse Performance | ≥ 95 |
+| Lighthouse SEO | ≥ 95 |
+| Mobile PageSpeed Insights | ≥ 90 |
+| Conversion rate (visit → trial signup) | ≥ 5% (target) |
+| Bounce rate | < 40% (target) |
 
 ### FR-1: Authentication & User Management
 
