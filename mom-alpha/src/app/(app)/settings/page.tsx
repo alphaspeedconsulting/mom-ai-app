@@ -23,7 +23,6 @@ const BRAND_LABELS = {
 export default function SettingsPage() {
   const user = useAuthStore((s) => s.user);
   const logout = useAuthStore((s) => s.logout);
-  const updateUser = useAuthStore((s) => s.updateUser);
   const { openPortal, startCheckout } = useSubscriptionStore();
   const {
     members,
@@ -31,8 +30,6 @@ export default function SettingsPage() {
     latestInvite,
     error: householdError,
     isLoading: isHouseholdLoading,
-    createHousehold,
-    joinHousehold,
     fetchMembers,
     fetchUsage,
     inviteCoParent,
@@ -41,20 +38,17 @@ export default function SettingsPage() {
   const { permission, subscribe } = usePushNotifications();
 
   const [billingCycle, setBillingCycle] = useState<"monthly" | "yearly">("monthly");
-  const [promoCode, setPromoCode] = useState("");
+  const [promoCode, setPromoCode] = useState<string>(() => {
+    if (typeof window === "undefined") return "";
+    return localStorage.getItem("mom-alpha-promo-code") ?? "";
+  });
   const [isCheckingOut, setIsCheckingOut] = useState(false);
   const [checkoutStatus] = useState<"success" | "cancelled" | null>(() => {
     if (typeof window === "undefined") return null;
     const value = new URLSearchParams(window.location.search).get("checkout");
     return value === "success" || value === "cancelled" ? value : null;
   });
-  const [showHouseholdOnboardingHint] = useState<boolean>(() => {
-    if (typeof window === "undefined") return false;
-    return new URLSearchParams(window.location.search).get("onboarding") === "household";
-  });
-  const [householdName, setHouseholdName] = useState("");
   const [inviteEmail, setInviteEmail] = useState("");
-  const [inviteToken, setInviteToken] = useState("");
   const [copyState, setCopyState] = useState<"idle" | "copied">("idle");
 
   useEffect(() => {
@@ -65,37 +59,13 @@ export default function SettingsPage() {
 
   const handleUpgrade = async (tier: "family" | "family_pro") => {
     setIsCheckingOut(true);
+    const code = promoCode.trim() || undefined;
+    if (code) localStorage.removeItem("mom-alpha-promo-code");
     try {
-      await startCheckout(tier, billingCycle, promoCode.trim() || undefined);
+      await startCheckout(tier, billingCycle, code);
     } catch {
       setIsCheckingOut(false);
     }
-  };
-
-  const handleCreateHousehold = async () => {
-    if (!householdName.trim()) return;
-    const household = await createHousehold(householdName.trim());
-    if (!household) return;
-    updateUser({
-      household_id: household.id,
-      household_role: "admin",
-      household_membership_status: "active",
-    });
-    await Promise.all([fetchMembers(household.id), fetchUsage(household.id)]);
-    setHouseholdName("");
-  };
-
-  const handleJoinHousehold = async () => {
-    if (!inviteToken.trim()) return;
-    const household = await joinHousehold({ invite_token: inviteToken.trim() });
-    if (!household) return;
-    updateUser({
-      household_id: household.id,
-      household_role: "member",
-      household_membership_status: "active",
-    });
-    await Promise.all([fetchMembers(household.id), fetchUsage(household.id)]);
-    setInviteToken("");
   };
 
   const handleInviteCoParent = async () => {
@@ -257,7 +227,7 @@ export default function SettingsPage() {
                 </div>
 
                 {/* Beta promo code — visible only in beta mode */}
-                {IS_BETA && (
+                {(IS_BETA || !!promoCode) && (
                   <input
                     type="text"
                     value={promoCode}
@@ -288,16 +258,6 @@ export default function SettingsPage() {
             Household & Co-Parent Access
           </h3>
           <div className="mom-card p-4 space-y-3">
-            {showHouseholdOnboardingHint && !user?.household_id && (
-              <div className="rounded-xl border border-brand/20 bg-brand/10 p-3">
-                <p className="text-alphaai-xs text-brand font-semibold">
-                  One last step: set up your shared household.
-                </p>
-                <p className="text-alphaai-3xs text-brand/80 mt-1">
-                  Create a household or join with a co-parent invite token.
-                </p>
-              </div>
-            )}
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-alphaai-sm font-medium text-foreground">
@@ -315,51 +275,18 @@ export default function SettingsPage() {
             </div>
 
             {!user?.household_id && (
-              <>
-                <div className="space-y-2">
-                  <label className="text-alphaai-xs text-muted-foreground">
-                    Create a household
-                  </label>
-                  <div className="flex gap-2">
-                    <input
-                      value={householdName}
-                      onChange={(e) => setHouseholdName(e.target.value)}
-                      placeholder="Franco Family"
-                      className="mom-input flex-1"
-                      aria-label="Household name"
-                    />
-                    <button
-                      onClick={handleCreateHousehold}
-                      disabled={isHouseholdLoading || !householdName.trim()}
-                      className="mom-btn-primary text-alphaai-xs py-2 px-3 disabled:opacity-60"
-                    >
-                      Create
-                    </button>
-                  </div>
+              <Link
+                href="/onboarding/household"
+                className="flex items-center justify-between p-3 rounded-xl border border-brand/30 bg-brand/5 hover:bg-brand/10 transition-colors"
+              >
+                <div>
+                  <p className="text-alphaai-sm font-semibold text-brand">Set up your household</p>
+                  <p className="text-alphaai-3xs text-brand/70 mt-0.5">
+                    Add family members and invite a co-parent
+                  </p>
                 </div>
-
-                <div className="space-y-2">
-                  <label className="text-alphaai-xs text-muted-foreground">
-                    Join via invite token
-                  </label>
-                  <div className="flex gap-2">
-                    <input
-                      value={inviteToken}
-                      onChange={(e) => setInviteToken(e.target.value)}
-                      placeholder="Paste invite token"
-                      className="mom-input flex-1"
-                      aria-label="Invite token"
-                    />
-                    <button
-                      onClick={handleJoinHousehold}
-                      disabled={isHouseholdLoading || !inviteToken.trim()}
-                      className="mom-btn-outline text-alphaai-xs py-2 px-3 disabled:opacity-60"
-                    >
-                      Join
-                    </button>
-                  </div>
-                </div>
-              </>
+                <span className="material-symbols-outlined text-[20px] text-brand">arrow_forward</span>
+              </Link>
             )}
 
             {user?.household_id && (

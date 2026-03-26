@@ -4,6 +4,7 @@ import { create } from "zustand";
 import * as api from "@/lib/api-client";
 import type {
   Household,
+  HouseholdCreateRequest,
   HouseholdInviteRequest,
   HouseholdInviteResponse,
   HouseholdMembersResponse,
@@ -21,7 +22,7 @@ interface HouseholdState {
   isLoading: boolean;
   error: string | null;
 
-  createHousehold: (name: string) => Promise<Household | null>;
+  createHousehold: (name: string, members?: HouseholdCreateRequest["members"]) => Promise<Household | null>;
   joinHousehold: (body: JoinHouseholdRequest) => Promise<Household | null>;
   fetchHousehold: (householdId: string) => Promise<void>;
   fetchMembers: (householdId: string) => Promise<void>;
@@ -40,10 +41,10 @@ export const useHouseholdStore = create<HouseholdState>()((set) => ({
   isLoading: false,
   error: null,
 
-  createHousehold: async (name) => {
+  createHousehold: async (name, members = []) => {
     set({ isLoading: true, error: null });
     try {
-      const household = await api.household.create({ name, members: [] });
+      const household = await api.household.create({ name, members });
       set({ household, isLoading: false });
       return household;
     } catch (error) {
