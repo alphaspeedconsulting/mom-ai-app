@@ -67,7 +67,7 @@ export function DayTimeline() {
       <div className="mom-container px-6">
         <div className="text-center mb-16">
           <h2 className="font-headline font-bold text-alphaai-3xl md:text-alphaai-display text-foreground mb-4">
-            A Day With Mom.alpha
+            A Day With Alpha.Mom
           </h2>
           <p className="text-alphaai-lg text-muted-foreground max-w-2xl mx-auto">
             From sunrise to sunset, your AI team works quietly in the background so you can be present for what matters.

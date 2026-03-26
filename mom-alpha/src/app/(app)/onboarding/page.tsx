@@ -47,7 +47,7 @@ export default function OnboardingPage() {
             <span className="text-brand">One calm home.</span>
           </h1>
           <p className="text-alphaai-lg text-muted-foreground max-w-xl mx-auto">
-            Mom.alpha deploys specialized AI agents to handle the mental load —
+            Alpha.Mom deploys specialized AI agents to handle the mental load —
             so you can breathe.
           </p>
         </div>

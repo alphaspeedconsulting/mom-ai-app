@@ -80,7 +80,7 @@ export function PhoneMockup() {
                 <div className="flex items-center gap-2 mb-4">
                   <div className="w-6 h-6 rounded-full mom-gradient-hero" />
                   <span className="text-xs font-bold text-foreground">
-                    Mom.alpha
+                    Alpha.Mom
                   </span>
                 </div>
                 <h3 className="text-sm font-bold text-foreground">

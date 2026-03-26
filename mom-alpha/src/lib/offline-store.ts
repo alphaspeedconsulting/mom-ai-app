@@ -1,5 +1,5 @@
 /**
- * IndexedDB-powered offline storage for Mom.alpha PWA.
+ * IndexedDB-powered offline storage for Alpha.Mom PWA.
  *
  * - Caches last-fetched calendar events and grocery lists for offline read
  * - Queues deterministic write operations for replay on reconnect

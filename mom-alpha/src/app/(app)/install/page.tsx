@@ -69,7 +69,7 @@ export default function InstallPage() {
             Add to your<br />home screen
           </h1>
           <p className="text-alphaai-sm text-muted-foreground">
-            Install Mom.alpha for the full app experience — works offline and opens like a native app.
+            Install Alpha.Mom for the full app experience — works offline and opens like a native app.
           </p>
         </div>
 
@@ -135,7 +135,7 @@ export default function InstallPage() {
             className="mom-btn-primary w-full mb-4 disabled:opacity-60"
           >
             <span className="material-symbols-outlined text-[20px]">install_mobile</span>
-            {installing ? "Installing…" : "Install Mom.alpha"}
+            {installing ? "Installing…" : "Install Alpha.Mom"}
           </button>
         )}
 

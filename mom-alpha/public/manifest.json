@@ -1,6 +1,6 @@
 {
-  "name": "Mom.alpha — AI Family Assistant",
-  "short_name": "Mom.alpha",
+  "name": "Alpha.Mom — AI Family Assistant",
+  "short_name": "Alpha.Mom",
   "description": "8 AI agents that manage your household",
   "start_url": "/",
   "display": "standalone",

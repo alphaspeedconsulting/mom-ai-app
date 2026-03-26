@@ -30,7 +30,7 @@ export function TrustPrivacy() {
             Your Family Data Is Sacred
           </h2>
           <p className="text-alphaai-lg text-muted-foreground max-w-2xl mx-auto">
-            We built Mom.alpha with privacy as the foundation, not an afterthought.
+            We built Alpha.Mom with privacy as the foundation, not an afterthought.
             Your family&apos;s information never leaves the boundaries you set.
           </p>
         </div>

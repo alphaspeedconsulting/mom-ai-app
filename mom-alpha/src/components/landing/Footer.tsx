@@ -7,16 +7,21 @@ export function Footer() {
           <div className="flex flex-col items-center md:items-start gap-2">
             <div className="flex items-center gap-2">
               <div className="w-6 h-6 rounded-full mom-gradient-hero flex items-center justify-center">
-                <span className="text-on-primary font-bold text-alphaai-3xs">M</span>
+                <span className="text-on-primary font-bold text-alphaai-sm">α</span>
               </div>
               <span className="font-headline font-bold text-alphaai-md text-foreground">
-                Mom<span className="text-brand">.alpha</span>
+                Alpha<span className="text-brand">.Mom</span>
               </span>
             </div>
-            <p className="text-alphaai-xs text-muted-foreground">
-              Powered by{" "}
-              <span className="font-semibold text-foreground">AlphaSpeed AI</span>
-            </p>
+            <div className="flex items-center gap-1.5">
+              <span className="text-alphaai-xs text-muted-foreground">Powered by</span>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="/bannerlogo.png"
+                alt="AlphaSpeed AI"
+                className="h-4 w-auto opacity-60"
+              />
+            </div>
           </div>
 
           {/* Links */}

@@ -1,5 +1,5 @@
 /**
- * API Contract Types — Mom.alpha
+ * API Contract Types — Alpha.Mom
  *
  * This file is the single source of truth for all request/response shapes
  * between the Next.js frontend and the FastAPI backend.

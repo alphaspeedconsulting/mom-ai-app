@@ -23,7 +23,7 @@ export default function PrivacyPolicyPage() {
 
           <h2 className="font-headline text-alphaai-md font-semibold text-foreground mt-6 mb-2">1. Who This Policy Applies To</h2>
           <p className="text-alphaai-sm text-muted-foreground mb-4">
-            Mom.alpha is designed for users aged 18 and older (parents and guardians). Family member data, including children&apos;s names, ages, allergies, and school information, is entered and managed exclusively by the parent account holder. Children do not interact with the app directly — there are no child accounts or child-facing UI elements.
+            Alpha.Mom is designed for users aged 18 and older (parents and guardians). Family member data, including children&apos;s names, ages, allergies, and school information, is entered and managed exclusively by the parent account holder. Children do not interact with the app directly — there are no child accounts or child-facing UI elements.
           </p>
 
           <h2 className="font-headline text-alphaai-md font-semibold text-foreground mt-6 mb-2">2. Data We Collect</h2>

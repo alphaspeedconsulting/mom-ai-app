@@ -4,9 +4,9 @@ import { useState } from "react";
 
 const faqs = [
   {
-    question: "What is Mom.alpha?",
+    question: "What is Alpha.Mom?",
     answer:
-      "Mom.alpha is an AI-powered family assistant with 8 specialized agents that handle your household tasks — calendar management, grocery lists, budget tracking, school events, and more. Think of it as a team of digital helpers that work together to keep your family organized.",
+      "Alpha.Mom is an AI-powered family assistant with 8 specialized agents that handle your household tasks — calendar management, grocery lists, budget tracking, school events, and more. Think of it as a team of digital helpers that work together to keep your family organized.",
   },
   {
     question: "How does the AI actually work?",
@@ -16,12 +16,12 @@ const faqs = [
   {
     question: "Is my family's data safe?",
     answer:
-      "Absolutely. All personal information (names, addresses, phone numbers) is stripped before any AI model processes your request. Your data is encrypted at rest (AES-256), never used to train AI models, and you can export or delete everything with one click. Mom.alpha is designed for adults 18+ who manage their household.",
+      "Absolutely. All personal information (names, addresses, phone numbers) is stripped before any AI model processes your request. Your data is encrypted at rest (AES-256), never used to train AI models, and you can export or delete everything with one click. Alpha.Mom is designed for adults 18+ who manage their household.",
   },
   {
     question: "Which calendars does it work with?",
     answer:
-      "Mom.alpha syncs with Google Calendar and Apple Calendar (iCloud). Changes sync bidirectionally — update in Mom.alpha or your native calendar app, and it stays in sync. We detect conflicts across family members and suggest solutions.",
+      "Alpha.Mom syncs with Google Calendar and Apple Calendar (iCloud). Changes sync bidirectionally — update in Alpha.Mom or your native calendar app, and it stays in sync. We detect conflicts across family members and suggest solutions.",
   },
   {
     question: "Can I cancel anytime?",
@@ -31,7 +31,7 @@ const faqs = [
   {
     question: "What devices does it work on?",
     answer:
-      "Mom.alpha is a Progressive Web App (PWA) — it works on any device with a modern browser. Install it on your phone's home screen for a native app experience. Works on iPhone (iOS 16.4+), Android, tablets, and desktop.",
+      "Alpha.Mom is a Progressive Web App (PWA) — it works on any device with a modern browser. Install it on your phone's home screen for a native app experience. Works on iPhone (iOS 16.4+), Android, tablets, and desktop.",
   },
   {
     question: "What's the difference between Family and Family Pro?",

@@ -14,7 +14,7 @@ export function FinalCTA() {
             Ready to take a breath?
           </h2>
           <p className="text-alphaai-lg text-muted-foreground mb-8">
-            Join the waitlist and be the first to experience Mom.alpha.
+            Join the waitlist and be the first to experience Alpha.Mom.
             We&apos;ll notify you the moment we launch.
           </p>
 

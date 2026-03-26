@@ -10,10 +10,10 @@ export function LandingNav() {
       <div className="mom-container flex items-center justify-between px-6 py-4">
         <a href="#" className="flex items-center gap-2">
           <div className="w-8 h-8 rounded-full mom-gradient-hero flex items-center justify-center">
-            <span className="text-on-primary font-bold text-alphaai-sm">M</span>
+            <span className="text-on-primary font-bold text-alphaai-md">α</span>
           </div>
           <span className="font-headline font-bold text-alphaai-lg text-foreground">
-            Mom<span className="text-brand">.alpha</span>
+            Alpha<span className="text-brand">.Mom</span>
           </span>
         </a>
 

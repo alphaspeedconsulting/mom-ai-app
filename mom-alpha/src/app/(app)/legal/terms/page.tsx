@@ -23,17 +23,17 @@ export default function TermsOfServicePage() {
 
           <h2 className="font-headline text-alphaai-md font-semibold text-foreground mt-6 mb-2">1. Acceptance of Terms</h2>
           <p className="text-alphaai-sm text-muted-foreground mb-4">
-            By accessing or using Mom.alpha (&ldquo;the Service&rdquo;), operated by AlphaSpeed AI, you agree to be bound by these Terms of Service. If you do not agree, do not use the Service.
+            By accessing or using Alpha.Mom (&ldquo;the Service&rdquo;), operated by AlphaSpeed AI, you agree to be bound by these Terms of Service. If you do not agree, do not use the Service.
           </p>
 
           <h2 className="font-headline text-alphaai-md font-semibold text-foreground mt-6 mb-2">2. Eligibility</h2>
           <p className="text-alphaai-sm text-muted-foreground mb-4">
-            The Service is intended for users aged 18 and older. By using Mom.alpha, you represent that you are at least 18 years old. Family member data (including children&apos;s information) is entered and managed by the parent account holder.
+            The Service is intended for users aged 18 and older. By using Alpha.Mom, you represent that you are at least 18 years old. Family member data (including children&apos;s information) is entered and managed by the parent account holder.
           </p>
 
           <h2 className="font-headline text-alphaai-md font-semibold text-foreground mt-6 mb-2">3. Service Description</h2>
           <p className="text-alphaai-sm text-muted-foreground mb-4">
-            Mom.alpha provides AI-powered household management assistance through specialized agents. The Service uses third-party AI models to process requests. AI responses are for informational purposes only and do not constitute professional advice in any domain.
+            Alpha.Mom provides AI-powered household management assistance through specialized agents. The Service uses third-party AI models to process requests. AI responses are for informational purposes only and do not constitute professional advice in any domain.
           </p>
 
           <h2 className="font-headline text-alphaai-md font-semibold text-foreground mt-6 mb-2">4. Subscriptions & Billing</h2>

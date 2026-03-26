@@ -14,7 +14,7 @@ export function InstallBanner() {
           install_mobile
         </span>
         <p className="text-alphaai-sm font-medium truncate">
-          Add Mom.alpha to your home screen
+          Add Alpha.Mom to your home screen
         </p>
       </div>
       <div className="flex items-center gap-2 flex-shrink-0">

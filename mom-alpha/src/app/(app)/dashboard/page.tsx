@@ -89,7 +89,7 @@ export default function DashboardPage() {
               <span className="material-symbols-outlined text-[14px] text-on-primary">spa</span>
             </div>
             <h1 className="font-headline text-alphaai-xl font-bold text-foreground">
-              Mom<span className="text-brand">.alpha</span>
+              Alpha<span className="text-brand">.Mom</span>
             </h1>
           </div>
           <Link

@@ -21,9 +21,9 @@ export default function AIDisclosurePage() {
         <article className="prose prose-sm text-foreground">
           <p className="text-alphaai-3xs text-muted-foreground mb-4">Last updated: March 2026 · Version 1.0.0</p>
 
-          <h2 className="font-headline text-alphaai-md font-semibold text-foreground mt-6 mb-2">How Mom.alpha Uses AI</h2>
+          <h2 className="font-headline text-alphaai-md font-semibold text-foreground mt-6 mb-2">How Alpha.Mom Uses AI</h2>
           <p className="text-alphaai-sm text-muted-foreground mb-4">
-            Mom.alpha uses third-party large language models (LLMs) to power intelligent features. This document explains how AI is used, what data it sees, and important limitations.
+            Alpha.Mom uses third-party large language models (LLMs) to power intelligent features. This document explains how AI is used, what data it sees, and important limitations.
           </p>
 
           <h2 className="font-headline text-alphaai-md font-semibold text-foreground mt-6 mb-2">AI Providers</h2>
@@ -42,7 +42,7 @@ export default function AIDisclosurePage() {
             <div>
               <p className="text-alphaai-sm text-foreground font-semibold mb-1">Important Disclaimer</p>
               <p className="text-alphaai-xs text-muted-foreground">
-                AI responses from Mom.alpha agents do not constitute professional advice. Specifically:
+                AI responses from Alpha.Mom agents do not constitute professional advice. Specifically:
               </p>
             </div>
           </div>

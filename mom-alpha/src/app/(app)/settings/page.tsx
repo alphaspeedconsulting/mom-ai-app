@@ -160,7 +160,7 @@ export default function SettingsPage() {
             {checkoutStatus === "success" && (
               <div className="mb-3 p-3 bg-brand/10 rounded-xl border border-brand/20">
                 <p className="text-alphaai-xs text-brand font-semibold">Subscription activated!</p>
-                <p className="text-alphaai-3xs text-brand/80 mt-0.5">Welcome to Mom.alpha. Your agents are ready.</p>
+                <p className="text-alphaai-3xs text-brand/80 mt-0.5">Welcome to Alpha.Mom. Your agents are ready.</p>
               </div>
             )}
             {checkoutStatus === "cancelled" && (

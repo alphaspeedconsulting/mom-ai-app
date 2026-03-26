@@ -2,7 +2,7 @@ export function StructuredData() {
   const productSchema = {
     "@context": "https://schema.org",
     "@type": "SoftwareApplication",
-    name: "Mom.alpha",
+    name: "Alpha.Mom",
     applicationCategory: "LifestyleApplication",
     operatingSystem: "Web",
     description:

@@ -18,8 +18,8 @@ const beVietnamPro = Be_Vietnam_Pro({
 
 export const metadata: Metadata = {
   title: {
-    default: "Mom.alpha — AI Family Assistant",
-    template: "%s | Mom.alpha",
+    default: "Alpha.Mom — AI Family Assistant",
+    template: "%s | Alpha.Mom",
   },
   description:
     "8 AI agents that manage your household — calendar, groceries, budget, school events, and more. Take a breath. We'll handle the rest.",
@@ -38,15 +38,15 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "en_US",
-    siteName: "Mom.alpha",
-    title: "Mom.alpha — AI Family Assistant",
+    siteName: "Alpha.Mom",
+    title: "Alpha.Mom — AI Family Assistant",
     description:
       "8 AI agents that manage your household. Take a breath. We'll handle the rest.",
     url: "https://mom.alphaspeedai.com",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Mom.alpha — AI Family Assistant",
+    title: "Alpha.Mom — AI Family Assistant",
     description:
       "8 AI agents that manage your household. Take a breath. We'll handle the rest.",
   },

@@ -1,5 +1,5 @@
 /**
- * API Client — typed fetch wrapper for all Mom.alpha backend endpoints.
+ * API Client — typed fetch wrapper for all Alpha.Mom backend endpoints.
  *
  * Reads JWT from auth store. All methods throw ApiError on non-2xx responses.
  * Base URL is configurable via NEXT_PUBLIC_API_URL env var.
@@ -287,7 +287,7 @@ export const notifications = {
   sendTestPush: () =>
     request<void>("/api/notifications/push/send", {
       method: "POST",
-      body: JSON.stringify({ title: "Mom.alpha Test", body: "Push notifications are working!" }),
+      body: JSON.stringify({ title: "Alpha.Mom Test", body: "Push notifications are working!" }),
     }),
 };
 
