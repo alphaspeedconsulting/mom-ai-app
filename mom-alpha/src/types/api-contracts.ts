@@ -215,6 +215,7 @@ export interface AgentCard {
   is_available: boolean; // false if tier doesn't include it
   required_tier: SubscriptionTier;
   capabilities: string[];
+  starter_prompts: string[];
 }
 
 export interface AgentToggleRequest {

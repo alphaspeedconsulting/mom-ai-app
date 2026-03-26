@@ -283,6 +283,12 @@ export const notifications = {
       method: "POST",
       body: JSON.stringify(subscription),
     }),
+
+  sendTestPush: () =>
+    request<void>("/api/notifications/push/send", {
+      method: "POST",
+      body: JSON.stringify({ title: "Mom.alpha Test", body: "Push notifications are working!" }),
+    }),
 };
 
 // ---------------------------------------------------------------------------

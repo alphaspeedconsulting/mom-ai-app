@@ -5,6 +5,7 @@ import { useAuthStore } from "@/stores/auth-store";
 import { useSubscriptionStore } from "@/stores/subscription-store";
 import { useHouseholdStore } from "@/stores/household-store";
 import { usePushNotifications } from "@/hooks/use-push-notifications";
+import * as api from "@/lib/api-client";
 import Link from "next/link";
 
 const IS_BETA = process.env.NEXT_PUBLIC_BETA_MODE === "true";
@@ -119,7 +120,17 @@ export default function SettingsPage() {
                   Enable
                 </button>
               ) : (
-                <span className="material-symbols-outlined text-[20px] text-brand">check_circle</span>
+                <div className="flex items-center gap-2">
+                  {IS_BETA && (
+                    <button
+                      onClick={() => api.notifications.sendTestPush()}
+                      className="text-alphaai-3xs text-brand font-medium hover:underline"
+                    >
+                      Test
+                    </button>
+                  )}
+                  <span className="material-symbols-outlined text-[20px] text-brand">check_circle</span>
+                </div>
               )}
             </div>
             <div className="p-4 flex items-center justify-between">

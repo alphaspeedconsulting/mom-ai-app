@@ -44,6 +44,7 @@ export const MOCK_AGENTS: AgentCard[] = [
     is_available: true,
     required_tier: "family",
     capabilities: ["Schedule events", "Conflict detection", "Calendar sync", "Smart rescheduling"],
+    starter_prompts: [],
   },
   {
     agent_type: "grocery_guru",
@@ -55,6 +56,7 @@ export const MOCK_AGENTS: AgentCard[] = [
     is_available: true,
     required_tier: "family",
     capabilities: ["Grocery lists", "Meal planning", "Recipe suggestions", "Dietary filters"],
+    starter_prompts: [],
   },
   {
     agent_type: "budget_buddy",
@@ -66,6 +68,7 @@ export const MOCK_AGENTS: AgentCard[] = [
     is_available: true,
     required_tier: "family",
     capabilities: ["Receipt scanning", "Expense tracking", "Budget alerts", "Savings tips"],
+    starter_prompts: [],
   },
   {
     agent_type: "school_event_hub",
@@ -77,6 +80,7 @@ export const MOCK_AGENTS: AgentCard[] = [
     is_available: true,
     required_tier: "family",
     capabilities: ["Email scanning", "Permission slips", "Event tracking", "Fee payments"],
+    starter_prompts: [],
   },
   {
     agent_type: "tutor_finder",
@@ -88,6 +92,7 @@ export const MOCK_AGENTS: AgentCard[] = [
     is_available: true,
     required_tier: "family_pro",
     capabilities: ["Tutor search", "Compare ratings", "Book sessions", "Progress tracking"],
+    starter_prompts: [],
   },
   {
     agent_type: "health_hub",
@@ -99,6 +104,7 @@ export const MOCK_AGENTS: AgentCard[] = [
     is_available: true,
     required_tier: "family",
     capabilities: ["Appointment reminders", "Wellness streaks", "Medication tracking"],
+    starter_prompts: [],
   },
   {
     agent_type: "sleep_tracker",
@@ -110,6 +116,7 @@ export const MOCK_AGENTS: AgentCard[] = [
     is_available: true,
     required_tier: "family_pro",
     capabilities: ["Sleep logging", "Pattern analysis", "Bedtime reminders", "Tips"],
+    starter_prompts: [],
   },
   {
     agent_type: "self_care_reminder",
@@ -121,6 +128,7 @@ export const MOCK_AGENTS: AgentCard[] = [
     is_available: true,
     required_tier: "family_pro",
     capabilities: ["Self-care prompts", "Mindfulness reminders", "Goal tracking"],
+    starter_prompts: [],
   },
 ];
 

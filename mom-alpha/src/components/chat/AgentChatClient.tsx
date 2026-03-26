@@ -114,7 +114,7 @@ export function AgentChatClient({ agentType }: { agentType: AgentType }) {
             </p>
             {/* Quick start chips */}
             <div className="flex flex-wrap gap-2 mt-6 justify-center">
-              {getStarterPrompts(agentType).map((prompt) => (
+              {(agent?.starter_prompts?.length ? agent.starter_prompts : getStarterPrompts(agentType)).map((prompt) => (
                 <button
                   key={prompt}
                   onClick={() => householdId && sendMessage(agentType, prompt, householdId)}
