@@ -96,7 +96,7 @@ export function FeatureDeepDives() {
             >
               {/* Visual */}
               <div className="flex-1 w-full">
-                <div className={`bg-gradient-to-br ${feature.gradient} rounded-radius-xl p-8 md:p-12 aspect-[4/3] flex items-center justify-center`}>
+                <div className={`bg-gradient-to-br ${feature.gradient} rounded-3xl p-8 md:p-12 aspect-[4/3] flex items-center justify-center`}>
                   <div className="mom-card p-6 md:p-8 w-full max-w-sm">
                     <div className="flex items-center gap-3 mb-4">
                       <span className="material-symbols-outlined text-2xl text-brand">{feature.icon}</span>

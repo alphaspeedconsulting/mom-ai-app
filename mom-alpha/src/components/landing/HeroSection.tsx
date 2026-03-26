@@ -5,8 +5,10 @@ import { PhoneMockup } from "./PhoneMockup";
 export function HeroSection() {
   return (
     <section className="relative overflow-hidden pt-28 pb-16 md:pt-36 md:pb-24">
-      {/* Background gradient */}
-      <div className="absolute inset-0 mom-gradient-hero opacity-5" />
+      {/* Ambient gradient blobs — Lullaby & Logic hero depth */}
+      <div className="absolute -top-40 -right-40 w-[700px] h-[700px] rounded-full blur-[140px] opacity-25 bg-brand-glow pointer-events-none" />
+      <div className="absolute -bottom-40 -left-20 w-[500px] h-[500px] rounded-full blur-[120px] opacity-20 bg-secondary-container pointer-events-none" />
+      <div className="absolute top-1/2 left-1/3 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[300px] rounded-full blur-[160px] opacity-10 bg-tertiary-container pointer-events-none" />
 
       <div className="mom-container px-6 relative z-10">
         <div className="flex flex-col md:flex-row items-center gap-12 md:gap-16">
