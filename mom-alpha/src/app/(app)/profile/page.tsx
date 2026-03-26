@@ -74,6 +74,11 @@ export default function ProfilePage() {
             <span className={`inline-block mt-1 px-3 py-0.5 rounded-full text-alphaai-3xs font-semibold ${TIER_COLORS[user?.tier ?? "trial"]}`}>
               {TIER_LABELS[user?.tier ?? "trial"]}
             </span>
+            {(user?.household_role || user?.parent_brand) && (
+              <p className="text-alphaai-3xs text-muted-foreground mt-1 capitalize">
+                {user?.household_role ?? "member"} · {user?.parent_brand ?? "parent"} profile
+              </p>
+            )}
           </div>
         </section>
 

@@ -23,6 +23,9 @@ export type AgentType =
   | "self_care_reminder";
 
 export type SubscriptionTier = "trial" | "family" | "family_pro";
+export type ParentBrand = "mom" | "dad" | "neutral";
+export type HouseholdRole = "admin" | "member";
+export type HouseholdMembershipStatus = "none" | "pending_invite" | "active";
 
 export type IntentType =
   | "calendar_crud"
@@ -80,6 +83,9 @@ export interface AuthResponse {
     household_id: string | null; // null if first login (needs onboarding)
     tier: SubscriptionTier;
     consent_current: boolean; // true if all consents are up-to-date
+    parent_brand?: ParentBrand;
+    household_role?: HouseholdRole | null;
+    household_membership_status?: HouseholdMembershipStatus;
   };
 }
 
@@ -266,6 +272,10 @@ export interface FamilyMember {
   photo_url: string | null;
   tags: string[];
   color: string;
+  role?: "parent" | "child";
+  parent_brand?: ParentBrand | null;
+  household_role?: HouseholdRole | null;
+  operator_id?: string | null;
 }
 
 export interface HouseholdCreateRequest {
@@ -276,6 +286,62 @@ export interface HouseholdCreateRequest {
     tags?: string[];
     color?: string;
   }>;
+}
+
+export interface HouseholdInviteRequest {
+  email: string;
+  parent_brand?: ParentBrand;
+  role?: Exclude<HouseholdRole, "admin">;
+}
+
+export interface HouseholdInviteResponse {
+  household_id: string;
+  invite_token: string;
+  expires_at: string;
+  invited_email: string;
+}
+
+export interface JoinHouseholdRequest {
+  invite_token: string;
+}
+
+export interface HouseholdMember {
+  operator_id: string;
+  name: string;
+  email?: string | null;
+  role: HouseholdRole;
+  parent_brand?: ParentBrand | null;
+  membership_status: HouseholdMembershipStatus;
+}
+
+export interface HouseholdMembersResponse {
+  household_id: string;
+  members: HouseholdMember[];
+}
+
+export interface SyncDigestItem {
+  id: string;
+  category: "calendar" | "tasks" | "expenses" | "school" | "general";
+  summary: string;
+  created_at: string;
+}
+
+export interface SyncDigestResponse {
+  household_id: string;
+  generated_at: string;
+  items: SyncDigestItem[];
+}
+
+export interface HouseholdUsageDashboard {
+  household_id: string;
+  period: string; // e.g. "2026-03"
+  calls_used: number;
+  calls_limit: number;
+  usage_pct: number;
+  is_soft_capped: boolean;
+  model_override: string | null;
+  by_agent: Record<string, number>;
+  by_model: Record<string, number>;
 }
 
 // =============================================================================
@@ -470,6 +536,7 @@ export interface CheckoutTrialRequest {
   billing_cycle?: "monthly" | "yearly";
   success_url: string;
   cancel_url: string;
+  promotion_code?: string; // Optional beta invite / promo code
 }
 
 export interface CheckoutTrialResponse {

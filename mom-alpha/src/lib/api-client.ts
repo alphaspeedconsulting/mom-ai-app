@@ -28,12 +28,18 @@ import type {
   GroceryList,
   Household,
   HouseholdCreateRequest,
+  HouseholdInviteRequest,
+  HouseholdInviteResponse,
+  HouseholdMembersResponse,
+  HouseholdUsageDashboard,
+  JoinHouseholdRequest,
   LLMCostReport,
   NotificationsResponse,
   PermissionSlip,
   SelfCareCreateRequest,
   SelfCareListResponse,
   SelfCareReminder,
+  SyncDigestResponse,
   SleepHistoryResponse,
   SleepLogRequest,
   TaskListResponse,
@@ -289,6 +295,24 @@ export const household = {
 
   create: (body: HouseholdCreateRequest) =>
     request<Household>("/api/household", { method: "POST", body: JSON.stringify(body) }),
+
+  invite: (householdId: string, body: HouseholdInviteRequest) =>
+    request<HouseholdInviteResponse>(`/api/household/${householdId}/invite`, {
+      method: "POST",
+      body: JSON.stringify(body),
+    }),
+
+  join: (body: JoinHouseholdRequest) =>
+    request<Household>("/api/household/join", { method: "POST", body: JSON.stringify(body) }),
+
+  listMembers: (householdId: string) =>
+    request<HouseholdMembersResponse>(`/api/household/${householdId}/members`),
+
+  syncDigest: (householdId: string) =>
+    request<SyncDigestResponse>(`/api/household/${householdId}/sync-digest`),
+
+  usageDashboard: (householdId: string) =>
+    request<HouseholdUsageDashboard>(`/api/household/${householdId}/usage`),
 };
 
 // ---------------------------------------------------------------------------

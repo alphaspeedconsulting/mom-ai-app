@@ -71,6 +71,10 @@ export default function LoginPage() {
   const handleConsentSubmit = () => {
     if (authPending) {
       login(authPending.access_token, authPending.user);
+      if (!authPending.user.household_id) {
+        window.location.href = "/settings?onboarding=household";
+        return;
+      }
     }
     window.location.href = "/dashboard";
   };

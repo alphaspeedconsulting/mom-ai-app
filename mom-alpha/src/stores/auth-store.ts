@@ -2,7 +2,12 @@
 
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import type { SubscriptionTier } from "@/types/api-contracts";
+import type {
+  HouseholdMembershipStatus,
+  HouseholdRole,
+  ParentBrand,
+  SubscriptionTier,
+} from "@/types/api-contracts";
 
 interface User {
   id: string;
@@ -11,6 +16,9 @@ interface User {
   household_id: string | null;
   tier: SubscriptionTier;
   consent_current: boolean;
+  parent_brand?: ParentBrand;
+  household_role?: HouseholdRole | null;
+  household_membership_status?: HouseholdMembershipStatus;
 }
 
 interface AuthState {
@@ -23,6 +31,7 @@ interface AuthState {
   logout: () => void;
   setLoading: (loading: boolean) => void;
   updateConsent: (current: boolean) => void;
+  updateUser: (patch: Partial<User>) => void;
 }
 
 export const useAuthStore = create<AuthState>()(
@@ -44,6 +53,11 @@ export const useAuthStore = create<AuthState>()(
       updateConsent: (consent_current) =>
         set((state) => ({
           user: state.user ? { ...state.user, consent_current } : null,
+        })),
+
+      updateUser: (patch) =>
+        set((state) => ({
+          user: state.user ? { ...state.user, ...patch } : null,
         })),
     }),
     {
