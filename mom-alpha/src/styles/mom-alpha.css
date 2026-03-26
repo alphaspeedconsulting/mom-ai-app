@@ -134,3 +134,237 @@
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
+
+/* ==========================================================================
+   Component Extensions — previously undefined, now formalized
+   ========================================================================== */
+
+/* Bottom navigation — frosted glass, rounded top corners, upward shadow */
+.mom-bottom-nav {
+  background: hsl(var(--background) / 0.9);
+  backdrop-filter: blur(40px);
+  -webkit-backdrop-filter: blur(40px);
+  border-radius: 2.5rem 2.5rem 0 0;
+  box-shadow: 0 -8px 24px hsl(var(--shadow-tint));
+}
+
+/* Skeleton — animated pulse loading placeholder */
+.mom-skeleton {
+  background: hsl(var(--surface-container));
+  border-radius: var(--radius-default);
+  animation: mom-pulse 1.6s ease-in-out infinite;
+}
+
+@keyframes mom-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+/* Agent avatar — circular icon container */
+.mom-agent-avatar {
+  background: hsl(var(--surface-container));
+  border-radius: 9999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: hsl(var(--brand));
+}
+
+.mom-agent-avatar-sm  { width: 2rem;    height: 2rem;    font-size: 1rem;    }
+.mom-agent-avatar-md  { width: 2.75rem; height: 2.75rem; font-size: 1.25rem; }
+.mom-agent-avatar-lg  { width: 3.5rem;  height: 3.5rem;  font-size: 1.5rem;  }
+
+/* Toggle switch — brand-colored custom checkbox */
+.mom-toggle {
+  position: relative;
+  display: inline-block;
+  width: 2.75rem;
+  height: 1.5rem;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.mom-toggle input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+  position: absolute;
+}
+
+.mom-toggle-track {
+  position: absolute;
+  inset: 0;
+  background: hsl(var(--surface-dim));
+  border-radius: 9999px;
+  transition: background 0.2s ease;
+}
+
+.mom-toggle input:checked ~ .mom-toggle-track {
+  background: hsl(var(--brand));
+}
+
+.mom-toggle-thumb {
+  position: absolute;
+  top: 0.2rem;
+  left: 0.2rem;
+  width: 1.1rem;
+  height: 1.1rem;
+  background: hsl(var(--on-primary));
+  border-radius: 9999px;
+  transition: transform 0.2s ease;
+  box-shadow: 0 1px 4px hsl(var(--shadow-tint));
+}
+
+.mom-toggle input:checked ~ .mom-toggle-thumb {
+  transform: translateX(1.25rem);
+}
+
+/* Input field — surface-input bg, no border, rounded, focus ring */
+.mom-input {
+  width: 100%;
+  background: hsl(var(--surface-input));
+  border: none;
+  border-radius: var(--radius-default);
+  padding: 0.875rem 1rem;
+  font-family: var(--font-body);
+  font-size: 1rem;
+  color: hsl(var(--foreground));
+  outline: none;
+  transition: box-shadow 0.2s ease, background 0.2s ease;
+}
+
+.mom-input::placeholder {
+  color: hsl(var(--muted-foreground) / 0.5);
+}
+
+.mom-input:focus {
+  background: hsl(var(--surface-active));
+  box-shadow: 0 0 0 3px hsl(var(--brand) / 0.15);
+}
+
+/* Chat bubble — agent message (left-aligned) */
+.mom-chat-agent {
+  background: hsl(var(--surface-container));
+  color: hsl(var(--foreground));
+  border-radius: var(--radius-default) var(--radius-default) var(--radius-default) 0.25rem;
+  padding: 0.875rem 1rem;
+  max-width: 80%;
+  box-shadow: 0 2px 8px hsl(var(--shadow-tint));
+}
+
+/* Chat bubble — user message (right-aligned) */
+.mom-chat-user {
+  background: linear-gradient(135deg, hsl(var(--brand)), hsl(var(--brand-dim)));
+  color: hsl(var(--on-primary));
+  border-radius: var(--radius-default) var(--radius-default) 0.25rem var(--radius-default);
+  padding: 0.875rem 1rem;
+  max-width: 80%;
+  box-shadow: 0 2px 8px hsl(var(--shadow-tint));
+}
+
+/* ==========================================================================
+   Ambient Background System — layered gradient depth
+   ========================================================================== */
+
+/* Root container — covers the page, sits behind content */
+.mom-ambient-root {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 0;
+}
+
+/* Ensure page content renders above ambient layer */
+.mom-ambient-root ~ * {
+  position: relative;
+  z-index: 1;
+}
+
+/* Base blob styles */
+.mom-ambient-blob {
+  position: absolute;
+  border-radius: 9999px;
+  filter: blur(80px);
+  opacity: 0.35;
+}
+
+/* Hero variant — strong teal-to-mint */
+.mom-ambient-blob--hero-teal {
+  width: 60vw;
+  height: 60vw;
+  top: -20%;
+  left: -10%;
+  background: hsl(var(--brand));
+  opacity: 0.25;
+}
+
+.mom-ambient-blob--hero-mint {
+  width: 50vw;
+  height: 50vw;
+  top: 10%;
+  right: -5%;
+  background: hsl(var(--brand-glow));
+  opacity: 0.3;
+}
+
+.mom-ambient-blob--hero-lavender {
+  width: 40vw;
+  height: 40vw;
+  bottom: 5%;
+  left: 30%;
+  background: hsl(var(--tertiary-container));
+  opacity: 0.25;
+}
+
+/* Subtle variant — muted teal + peach for app pages */
+.mom-ambient-blob--subtle-teal {
+  width: 55vw;
+  height: 55vw;
+  top: -15%;
+  right: -10%;
+  background: hsl(var(--brand-glow));
+  opacity: 0.2;
+}
+
+.mom-ambient-blob--subtle-peach {
+  width: 45vw;
+  height: 45vw;
+  bottom: -10%;
+  left: -5%;
+  background: hsl(var(--secondary-container));
+  opacity: 0.18;
+}
+
+/* Warm variant — amber + lavender */
+.mom-ambient-blob--warm-amber {
+  width: 50vw;
+  height: 50vw;
+  top: -10%;
+  left: -10%;
+  background: hsl(var(--secondary-container));
+  opacity: 0.25;
+}
+
+.mom-ambient-blob--warm-lavender {
+  width: 40vw;
+  height: 40vw;
+  bottom: 0%;
+  right: -5%;
+  background: hsl(var(--tertiary-container));
+  opacity: 0.22;
+}
+
+/* Secondary chip — warm amber variant */
+.mom-chip-secondary {
+  background: hsl(var(--secondary-container));
+  color: hsl(var(--secondary));
+  border-radius: 9999px;
+  padding: 0.35rem 0.875rem;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}

@@ -62,7 +62,7 @@ export default function DashboardPage() {
 
   if (!isClient || !token) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center">
         <CardSkeleton />
       </div>
     );
@@ -80,16 +80,16 @@ export default function DashboardPage() {
   const suggested = agents.filter((a) => SUGGESTED_AGENTS.includes(a.agent_type));
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* Top app bar — frosted */}
-      <header className="fixed top-0 left-0 right-0 z-40 bg-background/80 backdrop-blur-xl border-b border-border-subtle/10">
+    <div className="min-h-screen">
+      {/* Top app bar — frosted glass */}
+      <header className="fixed top-0 left-0 right-0 z-40 mom-glass-panel rounded-none border-b border-border-subtle/10">
         <div className="max-w-lg mx-auto px-4 py-3 flex items-center justify-between">
-          <div>
-            <p className="text-alphaai-xs text-muted-foreground">
-              Good {getGreeting()}, {user?.name ?? "there"}
-            </p>
+          <div className="flex items-center gap-2">
+            <div className="w-7 h-7 mom-gradient-hero rounded-lg flex items-center justify-center">
+              <span className="material-symbols-outlined text-[14px] text-on-primary">spa</span>
+            </div>
             <h1 className="font-headline text-alphaai-xl font-bold text-foreground">
-              Mom.alpha
+              Mom<span className="text-brand">.alpha</span>
             </h1>
           </div>
           <Link
@@ -105,6 +105,20 @@ export default function DashboardPage() {
       </header>
 
       <main className="max-w-lg mx-auto px-4 pt-24 pb-24 space-y-6">
+        {/* Editorial gradient hero card */}
+        <div className="mom-gradient-hero rounded-2xl p-6 text-on-primary overflow-hidden relative">
+          <div className="absolute -top-8 -right-8 w-40 h-40 bg-white/10 rounded-full blur-2xl pointer-events-none" />
+          <p className="text-alphaai-xs uppercase tracking-widest opacity-70 mb-1 font-medium">
+            Your Digital Sanctuary
+          </p>
+          <h2 className="font-headline text-alphaai-2xl font-extrabold leading-tight mb-1">
+            Good {getGreeting()},
+          </h2>
+          <p className="text-alphaai-base opacity-80">
+            {user?.name ?? "there"} — your agents are ready.
+          </p>
+        </div>
+
         {/* Search */}
         <div className="relative">
           <span className="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-[20px] text-muted-foreground">
@@ -238,7 +252,7 @@ function AgentListCard({
       href={`/chat/${agent.agent_type}`}
       className="mom-card p-4 flex items-center gap-4 hover:bg-surface-container-low transition-colors"
     >
-      <div className="mom-agent-avatar bg-brand-glow/30">
+      <div className="mom-agent-avatar mom-agent-avatar-md bg-brand-glow/30">
         <span className="material-symbols-outlined text-[20px] text-brand">
           {agent.icon}
         </span>

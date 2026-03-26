@@ -38,11 +38,8 @@ export function TrustPrivacy() {
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 max-w-4xl mx-auto">
           {trustPoints.map((point) => (
             <div key={point.title} className="flex gap-4">
-              <div
-                className="w-12 h-12 rounded-xl flex-shrink-0 flex items-center justify-center"
-                style={{ background: "hsl(var(--brand-glow))" }}
-              >
-                <span className="material-symbols-outlined text-xl" style={{ color: "hsl(var(--brand))" }}>
+              <div className="w-12 h-12 rounded-xl flex-shrink-0 flex items-center justify-center bg-brand-glow">
+                <span className="material-symbols-outlined text-xl text-brand">
                   {point.icon}
                 </span>
               </div>

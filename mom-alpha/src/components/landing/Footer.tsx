@@ -1,6 +1,6 @@
 export function Footer() {
   return (
-    <footer className="py-12 px-6" style={{ background: "hsl(var(--surface-container-low))" }}>
+    <footer className="py-12 px-6 bg-surface-container-low">
       <div className="mom-container">
         <div className="flex flex-col md:flex-row justify-between items-center gap-8">
           {/* Brand */}

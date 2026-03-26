@@ -60,9 +60,9 @@ export function AgentChatClient({ agentType }: { agentType: AgentType }) {
   };
 
   return (
-    <div className="flex flex-col h-screen bg-background">
+    <div className="flex flex-col h-screen">
       {/* Top bar */}
-      <header className="fixed top-0 left-0 right-0 z-40 bg-background/80 backdrop-blur-xl border-b border-border-subtle/10">
+      <header className="fixed top-0 left-0 right-0 z-40 mom-glass-panel rounded-none border-b border-border-subtle/10">
         <div className="max-w-lg mx-auto px-4 py-3 flex items-center gap-3">
           <button
             onClick={() => router.back()}
@@ -136,7 +136,7 @@ export function AgentChatClient({ agentType }: { agentType: AgentType }) {
                 </div>
               ) : (
                 <div key={msg.id} className="flex gap-3 items-start">
-                  <div className="mom-agent-avatar bg-brand-glow/30 flex-shrink-0 mt-1">
+                  <div className="mom-agent-avatar mom-agent-avatar-sm bg-brand-glow/30 flex-shrink-0 mt-1">
                     <span className="material-symbols-outlined text-[16px] text-brand">
                       {agent?.icon ?? "smart_toy"}
                     </span>
@@ -151,7 +151,7 @@ export function AgentChatClient({ agentType }: { agentType: AgentType }) {
                           <button
                             key={qa.label}
                             onClick={() => handleQuickAction(qa)}
-                            className="bg-brand text-on-primary text-alphaai-xs font-medium px-4 py-2 rounded-full flex items-center gap-1.5 hover:opacity-90 transition-opacity"
+                            className="mom-chip bg-brand text-on-primary hover:opacity-90 transition-opacity"
                           >
                             {qa.label}
                           </button>
@@ -184,7 +184,7 @@ export function AgentChatClient({ agentType }: { agentType: AgentType }) {
       </main>
 
       {/* Input bar */}
-      <div className="fixed bottom-0 left-0 right-0 z-40 bg-background/90 backdrop-blur-2xl border-t border-border-subtle/10 px-4 py-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))]">
+      <div className="fixed bottom-0 left-0 right-0 z-40 mom-glass-panel rounded-none border-t border-border-subtle/10 px-4 py-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))]">
         <div className="max-w-lg mx-auto flex items-end gap-2">
           <div className="flex-1 relative">
             <textarea

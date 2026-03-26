@@ -90,8 +90,8 @@ export default function SettingsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-background">
-      <header className="fixed top-0 left-0 right-0 z-40 bg-background/80 backdrop-blur-xl border-b border-border-subtle/10">
+    <div className="min-h-screen">
+      <header className="fixed top-0 left-0 right-0 z-40 mom-glass-panel rounded-none border-b border-border-subtle/10">
         <div className="max-w-lg mx-auto px-4 py-3">
           <h1 className="font-headline text-alphaai-xl font-bold text-foreground">Settings</h1>
         </div>
@@ -180,11 +180,11 @@ export default function SettingsPage() {
             {user?.tier === "trial" && (
               <>
                 {/* Billing cycle toggle */}
-                <div className="flex gap-1 p-1 bg-surface rounded-xl mb-3">
+                <div className="flex gap-1 p-1 mom-card mb-3">
                   <button
                     onClick={() => setBillingCycle("monthly")}
                     className={`flex-1 py-2 rounded-lg text-alphaai-xs font-semibold transition-colors ${
-                      billingCycle === "monthly" ? "bg-brand text-white" : "text-muted-foreground hover:text-foreground"
+                      billingCycle === "monthly" ? "bg-brand text-on-primary" : "text-muted-foreground hover:text-foreground"
                     }`}
                   >
                     Monthly
@@ -192,7 +192,7 @@ export default function SettingsPage() {
                   <button
                     onClick={() => setBillingCycle("yearly")}
                     className={`flex-1 py-2 rounded-lg text-alphaai-xs font-semibold transition-colors ${
-                      billingCycle === "yearly" ? "bg-brand text-white" : "text-muted-foreground hover:text-foreground"
+                      billingCycle === "yearly" ? "bg-brand text-on-primary" : "text-muted-foreground hover:text-foreground"
                     }`}
                   >
                     Yearly{" "}
@@ -233,7 +233,7 @@ export default function SettingsPage() {
                     value={promoCode}
                     onChange={(e) => setPromoCode(e.target.value.trim().toUpperCase())}
                     placeholder="Beta invite code (optional)"
-                    className="w-full bg-surface border border-border-subtle/20 rounded-xl px-4 py-2 text-alphaai-xs text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-brand"
+                    className="mom-input text-alphaai-xs"
                     aria-label="Beta promotion code"
                   />
                 )}
@@ -320,7 +320,7 @@ export default function SettingsPage() {
                 </div>
 
                 {latestInvite?.invite_token && (
-                  <div className="rounded-xl border border-border-subtle/20 bg-surface p-3 space-y-2">
+                  <div className="mom-card p-3 space-y-2">
                     <p className="text-alphaai-3xs text-muted-foreground">Latest invite token</p>
                     <p className="text-alphaai-xs font-mono text-foreground break-all">
                       {latestInvite.invite_token}
@@ -335,7 +335,7 @@ export default function SettingsPage() {
                 )}
 
                 {members.length > 0 && (
-                  <div className="rounded-xl border border-border-subtle/20 divide-y divide-border-subtle/10">
+                  <div className="mom-card divide-y divide-border-subtle/10">
                     {members.map((member) => (
                       <div key={member.operator_id} className="p-3 flex items-center justify-between gap-3">
                         <div>
@@ -357,7 +357,7 @@ export default function SettingsPage() {
                 )}
 
                 {usage && (
-                  <div className="rounded-xl border border-border-subtle/20 bg-surface p-3">
+                  <div className="mom-card p-3">
                     <p className="text-alphaai-xs text-foreground">
                       Shared monthly usage: {usage.calls_used} / {usage.calls_limit} calls ({usage.usage_pct}%)
                     </p>

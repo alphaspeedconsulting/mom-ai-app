@@ -22,9 +22,9 @@ export function BottomNav() {
             <Link
               key={item.href}
               href={item.href}
-              className={`flex flex-col items-center gap-0.5 py-2 px-4 rounded-xl transition-colors ${
+              className={`flex flex-col items-center gap-0.5 py-2 px-4 rounded-xl transition-all ${
                 isActive
-                  ? "text-brand"
+                  ? "bg-brand-glow/40 text-brand"
                   : "text-muted-foreground hover:text-foreground"
               }`}
             >

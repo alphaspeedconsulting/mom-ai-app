@@ -108,14 +108,8 @@ function LoginInner() {
 
   if (showConsent) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center px-4">
-        {/* Ambient decorative circles */}
-        <div className="fixed inset-0 overflow-hidden pointer-events-none">
-          <div className="absolute -top-32 -right-32 w-64 h-64 bg-brand-glow/20 rounded-full blur-[120px]" />
-          <div className="absolute -bottom-32 -left-32 w-64 h-64 bg-tertiary-container/30 rounded-full blur-[120px]" />
-        </div>
-
-        <div className="mom-card p-8 w-full max-w-md relative z-10">
+      <div className="min-h-screen flex items-center justify-center px-4">
+        <div className="mom-glass-panel border border-white/30 p-8 w-full max-w-md">
           <div className="text-center mb-8">
             <span className="material-symbols-outlined text-[48px] text-brand mb-4 block">
               verified_user
@@ -189,15 +183,9 @@ function LoginInner() {
   }
 
   return (
-    <div className="min-h-screen bg-background flex items-center justify-center px-4">
-      {/* Ambient decorative circles */}
-      <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute -top-32 -right-32 w-64 h-64 bg-brand-glow/20 rounded-full blur-[120px]" />
-        <div className="absolute -bottom-32 -left-32 w-64 h-64 bg-tertiary-container/30 rounded-full blur-[120px]" />
-      </div>
-
-      <div className="w-full max-w-md relative z-10">
-        {/* Logo & tagline */}
+    <div className="min-h-screen flex items-center justify-center px-4">
+      <div className="w-full max-w-md">
+        {/* Logo & headline */}
         <div className="text-center mb-8">
           <div className="w-16 h-16 mom-gradient-hero rounded-2xl flex items-center justify-center mx-auto mb-4">
             <span className="material-symbols-outlined text-[32px] text-on-primary">
@@ -205,15 +193,17 @@ function LoginInner() {
             </span>
           </div>
           <h1 className="font-headline text-alphaai-3xl font-extrabold text-foreground">
-            Mom.alpha
+            {mode === "signup" ? "Join the Sanctuary" : "Welcome Back"}
           </h1>
           <p className="text-alphaai-sm text-muted-foreground mt-1">
-            Take a breath. We&apos;ll handle the rest.
+            {mode === "signup"
+              ? "Your household AI assistant starts here."
+              : "Take a breath. We\u2019ll handle the rest."}
           </p>
         </div>
 
-        {/* Auth card */}
-        <div className="mom-card p-6">
+        {/* Auth glass card */}
+        <div className="mom-glass-panel border border-white/30 p-6">
           {/* Google OAuth */}
           <div className="flex justify-center mb-4">
             <GoogleLogin

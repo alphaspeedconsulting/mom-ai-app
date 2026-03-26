@@ -5,8 +5,9 @@ const timelineEvents = [
     description: "Your morning briefing: today's schedule, pending tasks, and a self-care reminder. All before your first sip of coffee.",
     agent: "Calendar Whiz",
     icon: "wb_sunny",
-    color: "var(--secondary)",
-    bgColor: "var(--secondary-container)",
+    iconClass: "text-secondary",
+    bgClass: "bg-secondary-container",
+    dotClass: "bg-secondary",
   },
   {
     time: "8:15 AM",
@@ -14,8 +15,9 @@ const timelineEvents = [
     description: "\"Field trip to Science Museum — due Friday. Tap to sign.\" School Event Hub scanned your email while you made breakfast.",
     agent: "School Event Hub",
     icon: "school",
-    color: "var(--tertiary)",
-    bgColor: "var(--tertiary-container)",
+    iconClass: "text-tertiary",
+    bgClass: "bg-tertiary-container",
+    dotClass: "bg-tertiary",
   },
   {
     time: "12:30 PM",
@@ -23,8 +25,9 @@ const timelineEvents = [
     description: "Snap a photo of your grocery receipt. Budget Buddy categorizes everything instantly and spots a $4 overcharge.",
     agent: "Budget Buddy",
     icon: "receipt_long",
-    color: "var(--brand-dim)",
-    bgColor: "var(--surface-active)",
+    iconClass: "text-brand-dim",
+    bgClass: "bg-surface-active",
+    dotClass: "bg-brand-dim",
   },
   {
     time: "3:00 PM",
@@ -32,8 +35,9 @@ const timelineEvents = [
     description: "\"Soccer practice overlaps with Emma's dentist. Suggest moving dentist to Thursday?\" One tap to fix.",
     agent: "Calendar Whiz",
     icon: "event_busy",
-    color: "var(--brand)",
-    bgColor: "var(--brand-glow)",
+    iconClass: "text-brand",
+    bgClass: "bg-brand-glow",
+    dotClass: "bg-brand",
   },
   {
     time: "5:30 PM",
@@ -41,8 +45,9 @@ const timelineEvents = [
     description: "Grocery Guru planned tonight's meal around what's already in your pantry — and it's allergy-safe for everyone.",
     agent: "Grocery Guru",
     icon: "restaurant",
-    color: "var(--secondary)",
-    bgColor: "var(--secondary-container)",
+    iconClass: "text-secondary",
+    bgClass: "bg-secondary-container",
+    dotClass: "bg-secondary",
   },
   {
     time: "8:00 PM",
@@ -50,8 +55,9 @@ const timelineEvents = [
     description: "\"You've had a long day. How about 15 minutes of that podcast you love?\" Because you matter too.",
     agent: "Self-Care Reminder",
     icon: "spa",
-    color: "var(--brand)",
-    bgColor: "var(--brand-glow)",
+    iconClass: "text-brand",
+    bgClass: "bg-brand-glow",
+    dotClass: "bg-brand",
   },
 ];
 
@@ -70,10 +76,7 @@ export function DayTimeline() {
 
         <div className="relative max-w-3xl mx-auto">
           {/* Timeline line */}
-          <div
-            className="absolute left-8 md:left-1/2 top-0 bottom-0 w-px md:-translate-x-px"
-            style={{ background: "hsl(var(--border-subtle) / 0.3)" }}
-          />
+          <div className="absolute left-8 md:left-1/2 top-0 bottom-0 w-px md:-translate-x-px bg-border-subtle/30" />
 
           {timelineEvents.map((event, i) => (
             <div
@@ -83,8 +86,9 @@ export function DayTimeline() {
               }`}
             >
               {/* Time dot */}
-              <div className="absolute left-8 md:left-1/2 -translate-x-1/2 w-4 h-4 rounded-full z-10 mt-6"
-                style={{ background: `hsl(${event.color})`, boxShadow: `0 0 0 4px hsl(var(--background))` }}
+              <div
+                className={`absolute left-8 md:left-1/2 -translate-x-1/2 w-4 h-4 rounded-full z-10 mt-6 ${event.dotClass}`}
+                style={{ boxShadow: "0 0 0 4px hsl(var(--background))" }}
               />
 
               {/* Time label */}
@@ -96,11 +100,8 @@ export function DayTimeline() {
               <div className="flex-1 ml-16 md:ml-0 mom-card p-6">
                 <span className="md:hidden font-headline font-bold text-alphaai-sm text-brand">{event.time}</span>
                 <div className="flex items-center gap-3 mt-1 md:mt-0 mb-3">
-                  <div
-                    className="w-8 h-8 rounded-lg flex items-center justify-center"
-                    style={{ background: `hsl(${event.bgColor})` }}
-                  >
-                    <span className="material-symbols-outlined text-base" style={{ color: `hsl(${event.color})` }}>
+                  <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${event.bgClass}`}>
+                    <span className={`material-symbols-outlined text-base ${event.iconClass}`}>
                       {event.icon}
                     </span>
                   </div>

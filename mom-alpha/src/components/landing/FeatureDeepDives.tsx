@@ -75,7 +75,7 @@ const features = [
 
 export function FeatureDeepDives() {
   return (
-    <section id="features" className="mom-section" style={{ background: "hsl(var(--surface-container-low))" }}>
+    <section id="features" className="mom-section bg-surface-container-low">
       <div className="mom-container px-6">
         <div className="text-center mb-16">
           <h2 className="font-headline font-bold text-alphaai-3xl md:text-alphaai-display text-foreground mb-4">
@@ -106,8 +106,7 @@ export function FeatureDeepDives() {
                       {feature.previewRows.map((row) => (
                         <div
                           key={row.label}
-                          className="flex items-center justify-between rounded-lg px-3 py-2"
-                          style={{ background: "hsl(var(--surface-active))" }}
+                          className="flex items-center justify-between rounded-lg px-3 py-2 bg-surface-active"
                         >
                           <span className="text-alphaai-xs text-foreground">{row.label}</span>
                           <span className="text-alphaai-xs text-brand font-medium">{row.value}</span>

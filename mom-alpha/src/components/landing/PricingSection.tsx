@@ -41,7 +41,7 @@ const plans = [
 
 export function PricingSection() {
   return (
-    <section id="pricing" className="mom-section" style={{ background: "hsl(var(--surface-container-low))" }}>
+    <section id="pricing" className="mom-section bg-surface-container-low">
       <div className="mom-container px-6">
         <div className="text-center mb-16">
           <h2 className="font-headline font-bold text-alphaai-3xl md:text-alphaai-display text-foreground mb-4">
@@ -60,8 +60,7 @@ export function PricingSection() {
             >
               {plan.popular && (
                 <div
-                  className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full text-alphaai-xs font-semibold"
-                  style={{ background: "hsl(var(--brand))", color: "hsl(var(--on-primary))" }}
+                  className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full text-alphaai-xs font-semibold bg-brand text-on-primary"
                 >
                   Most Popular
                 </div>
