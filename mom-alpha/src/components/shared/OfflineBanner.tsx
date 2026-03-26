@@ -1,28 +1,32 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useSyncExternalStore } from "react";
+
+function subscribeOnlineStatus(onStoreChange: () => void) {
+  window.addEventListener("online", onStoreChange);
+  window.addEventListener("offline", onStoreChange);
+  return () => {
+    window.removeEventListener("online", onStoreChange);
+    window.removeEventListener("offline", onStoreChange);
+  };
+}
+
+function getOfflineSnapshot() {
+  return !navigator.onLine;
+}
+
+function getServerOfflineSnapshot() {
+  return false;
+}
 
 export function OfflineBanner() {
-  const [isOffline, setIsOffline] = useState(false);
-  const [isMounted, setIsMounted] = useState(false);
+  const isOffline = useSyncExternalStore(
+    subscribeOnlineStatus,
+    getOfflineSnapshot,
+    getServerOfflineSnapshot,
+  );
 
-  useEffect(() => {
-    setIsMounted(true);
-    setIsOffline(!window.navigator.onLine);
-
-    const handleOnline = () => setIsOffline(false);
-    const handleOffline = () => setIsOffline(true);
-
-    window.addEventListener("online", handleOnline);
-    window.addEventListener("offline", handleOffline);
-
-    return () => {
-      window.removeEventListener("online", handleOnline);
-      window.removeEventListener("offline", handleOffline);
-    };
-  }, []);
-
-  if (!isMounted || !isOffline) return null;
+  if (!isOffline) return null;
 
   return (
     <div className="fixed top-0 left-0 right-0 z-[100] bg-secondary-container text-secondary px-4 py-2 text-center text-alphaai-sm font-medium">

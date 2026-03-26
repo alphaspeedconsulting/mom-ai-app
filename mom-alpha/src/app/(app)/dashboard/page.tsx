@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useSyncExternalStore } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useAgentsStore } from "@/stores/agents-store";
@@ -18,28 +18,32 @@ const SUGGESTED_AGENTS: AgentType[] = [
   "school_event_hub",
 ];
 
+function useIsClient() {
+  return useSyncExternalStore(
+    () => () => {},
+    () => true,
+    () => false,
+  );
+}
+
 export default function DashboardPage() {
   const router = useRouter();
   const { agents, isLoading, error, fetchAgents, toggleAgent } = useAgentsStore();
   const user = useAuthStore((s) => s.user);
   const token = useAuthStore((s) => s.token);
   const logout = useAuthStore((s) => s.logout);
-  const [isMounted, setIsMounted] = useState(false);
+  const isClient = useIsClient();
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState<(typeof CATEGORIES)[number]>("All");
 
   useEffect(() => {
-    setIsMounted(true);
-  }, []);
-
-  useEffect(() => {
-    if (!isMounted) return;
+    if (!isClient) return;
     if (!token) {
       router.replace("/login?mode=signup");
       return;
     }
     fetchAgents();
-  }, [isMounted, token, fetchAgents, router]);
+  }, [isClient, token, fetchAgents, router]);
 
   useEffect(() => {
     if (!error) return;
@@ -56,7 +60,7 @@ export default function DashboardPage() {
     }
   }, [error, logout, router]);
 
-  if (!isMounted || !token) {
+  if (!isClient || !token) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <CardSkeleton />

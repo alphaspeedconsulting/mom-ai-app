@@ -10,17 +10,17 @@
 
 ## Section 1: Executive Summary
 
-**Mom.alpha** is a mobile-first AI assistant platform that deploys 9+ specialized AI agents to manage the everyday mental load of busy mothers — from grocery planning and school events to family health tracking and budgeting. The platform's core thesis is that household management is a multi-domain orchestration problem best solved by purpose-built AI agents that share context, coordinate proactively, and surface only what matters.
+**Mom.alpha** is a mobile-first AI assistant platform that deploys 9+ specialized AI agents to manage the everyday mental load of busy mothers — from grocery planning and school events to family health tracking and budgeting. The platform's core thesis is that household management is a multi-domain orchestration problem best solved by purpose-built AI agents that share context, coordinate proactively, and surface only what matters. Mom.alpha is the mom-facing consumer surface of a broader shared-household platform that also supports a sibling `Dad.AI` brand for fathers, with both products reading and writing to the same household graph.
 
 **Core Value Proposition**: "Take a breath. We'll handle the rest."
 
 **Target Launch**: MVP with 4 core agents (Calendar Whiz, Grocery Guru, School Event Hub, Budget Buddy) + marketplace shell. Full 8-agent ecosystem in v1.1. (Pediatric Assistant removed from scope — no medical/health data handling.)
 
-**Business Model**: Freemium with 7-day premium trial. Premium tier unlocks advanced agent capabilities, unlimited agent activations, and family member sync.
+**Business Model**: Paid consumer household subscription with a 7-day premium trial. A household subscription unlocks advanced agent capabilities, shared family state, and parent-specific experiences across the mom-facing `Mom.alpha` frontend and the sibling dad-facing `Dad.AI` frontend.
 
-**Distribution Strategy**: Mom.alpha launches directly from **AlphaSpeedAi.com** — leveraging the existing AlphaSpeed AI platform's established traffic, brand authority, and user base to drive rapid adoption. The app lives at `mom.alphaspeedai.com` as a flagship consumer product within the AlphaSpeed ecosystem, benefiting from cross-promotion across the AlphaSpeed product suite, SEO authority, and the platform's existing marketing channels.
+**Distribution Strategy**: Mom.alpha launches directly from **AlphaSpeedAi.com** as the mom-facing entry point into AlphaSpeed AI's shared-household consumer platform. The app lives at `mom.alphaspeedai.com`, with partner invites and household linking designed to let a second parent join the same family through either Mom.alpha or `Dad.AI` without fragmenting shared household state.
 
-**Key Differentiator**: Unlike generic AI assistants (Siri, Alexa, Google Assistant), Mom.alpha provides domain-specialized agents with persistent family context, cross-agent coordination, and a design language ("Lullaby & Logic") purpose-built for reducing cognitive load rather than adding it.
+**Key Differentiator**: Unlike generic AI assistants (Siri, Alexa, Google Assistant), Mom.alpha provides domain-specialized agents with persistent family context, cross-agent coordination, and a design language ("Lullaby & Logic") purpose-built for reducing cognitive load rather than adding it. The differentiated platform advantage is a shared household graph that stays consistent across sibling parent brands, enabling mom-specific and dad-specific product experiences without duplicating data or splitting family workflows.
 
 ---
 

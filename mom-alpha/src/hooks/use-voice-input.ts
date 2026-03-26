@@ -2,6 +2,34 @@
 
 import { useCallback, useRef, useState } from "react";
 
+/** Minimal Web Speech API surface (vendor-prefixed constructors vary by browser). */
+interface SpeechRecognitionLike extends EventTarget {
+  continuous: boolean;
+  interimResults: boolean;
+  lang: string;
+  onresult: ((event: SpeechRecognitionResultEventLike) => void) | null;
+  onend: (() => void) | null;
+  onerror: (() => void) | null;
+  start(): void;
+  stop(): void;
+}
+
+interface SpeechRecognitionResultEventLike {
+  resultIndex: number;
+  results: {
+    length: number;
+    [index: number]: {
+      isFinal: boolean;
+      0: { transcript: string };
+    };
+  };
+}
+
+interface WindowWithSpeech extends Window {
+  SpeechRecognition?: new () => SpeechRecognitionLike;
+  webkitSpeechRecognition?: new () => SpeechRecognitionLike;
+}
+
 /**
  * Voice input hook using Web Speech API (browser-native STT — free, no API cost).
  * Family Pro feature.
@@ -10,26 +38,24 @@ export function useVoiceInput() {
   const [isListening, setIsListening] = useState(false);
   const [transcript, setTranscript] = useState("");
   const [isSupported, setIsSupported] = useState(true);
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const recognitionRef = useRef<any>(null);
+  const recognitionRef = useRef<SpeechRecognitionLike | null>(null);
 
   const startListening = useCallback(() => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const SpeechRecognitionAPI =
-      (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+    const w = window as unknown as WindowWithSpeech;
+    const SpeechRecognitionCtor =
+      w.SpeechRecognition ?? w.webkitSpeechRecognition;
 
-    if (!SpeechRecognitionAPI) {
+    if (!SpeechRecognitionCtor) {
       setIsSupported(false);
       return;
     }
 
-    const recognition = new SpeechRecognitionAPI();
+    const recognition = new SpeechRecognitionCtor();
     recognition.continuous = false;
     recognition.interimResults = true;
     recognition.lang = "en-US";
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    recognition.onresult = (event: any) => {
+    recognition.onresult = (event: SpeechRecognitionResultEventLike) => {
       let finalTranscript = "";
       for (let i = event.resultIndex; i < event.results.length; i++) {
         const result = event.results[i];
@@ -74,4 +100,3 @@ export function useVoiceInput() {
     clearTranscript,
   };
 }
-

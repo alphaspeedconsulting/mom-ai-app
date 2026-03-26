@@ -1,7 +1,7 @@
 "use client";
 
 import { create } from "zustand";
-import type { BudgetResponse } from "@/types/api-contracts";
+import type { BudgetResponse, CheckoutTrialRequest } from "@/types/api-contracts";
 import * as api from "@/lib/api-client";
 
 interface SubscriptionState {
@@ -9,7 +9,7 @@ interface SubscriptionState {
   isLoading: boolean;
 
   fetchBudget: (householdId: string) => Promise<void>;
-  startCheckout: (tier: "family" | "family_pro", billingCycle?: "monthly" | "yearly") => Promise<void>;
+  startCheckout: (tier: "family" | "family_pro", billingCycle?: "monthly" | "yearly", promotionCode?: string) => Promise<void>;
   openPortal: () => Promise<void>;
 }
 
@@ -27,13 +27,16 @@ export const useSubscriptionStore = create<SubscriptionState>()((set) => ({
     }
   },
 
-  startCheckout: async (tier, billingCycle = "monthly") => {
+  startCheckout: async (tier, billingCycle = "monthly", promotionCode) => {
     const baseUrl = window.location.origin;
-    const data = await api.stripe.createCheckout({
+    const body: CheckoutTrialRequest = {
       tier,
+      billing_cycle: billingCycle,
       success_url: `${baseUrl}/settings?checkout=success`,
       cancel_url: `${baseUrl}/settings?checkout=cancelled`,
-    });
+    };
+    if (promotionCode) body.promotion_code = promotionCode;
+    const data = await api.stripe.createCheckout(body);
     window.location.href = data.checkout_url;
   },
 

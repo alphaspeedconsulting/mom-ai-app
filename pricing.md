@@ -95,7 +95,7 @@ Because ~60% of the backend already exists, the build effort is significantly re
 
 ### Pricing Model: Paid-Only with LLM Router (No Free Tier)
 
-Mom.alpha sits at the intersection of "family organizer" ($5-10/mo) and "AI-powered assistant" ($10-20/mo). No free tier — every user pays from Day 1. This eliminates the free-user LLM cost burden and ensures every household is margin-positive.
+Mom.alpha sits at the intersection of "family organizer" ($5-10/mo) and "AI-powered assistant" ($10-20/mo). No free tier — every household pays from Day 1. This eliminates the free-user LLM cost burden and ensures every household is margin-positive. Pricing should be treated as a **shared household subscription**, not a single-parent seat, so the same subscription can power both the mom-facing `Mom.alpha` experience and the sibling dad-facing `Dad.AI` experience without duplicating billing or fragmenting household state.
 
 **Why no free tier:**
 - LLM costs mean free users are a direct cost center, not just infrastructure overhead
@@ -138,6 +138,7 @@ User message → Agent Backend → LLM Router
 | All 8 agents | Full ecosystem |
 | **1,000 agent calls/month** | ~33 calls/day — covers typical household usage |
 | Family calendar with AI (conflict detection, suggestions) | Full read/write sync |
+| Shared household access for 2 parent profiles | Mom.alpha and Dad.AI can both attach to the same household when invited |
 | Up to 4 family members | Covers most families |
 | Daily Edit morning summary | Personalized |
 | Quick actions (sign slips, pay fees) | In-app actions |
@@ -158,11 +159,12 @@ User message → Agent Backend → LLM Router
 | Everything in Family tier | — |
 | **2,000 agent calls/month** | ~66 calls/day — power user headroom |
 | Up to 6 family members | Extended family, nanny, co-parent |
+| Dual-brand parent experience | Shared household across Mom.alpha and Dad.AI with parent-specific dashboards |
 | Plaid bank integration (Budget Buddy) | Auto-import transactions |
 | Tutor booking + payments | Direct in-app booking |
 | Voice input for agent chat | Hands-free interaction |
 | Advanced analytics (spending trends, schedule insights) | Data dashboards |
-| Multiple household support | Shared access for co-parents |
+| Multiple household support | Shared access for co-parents or multi-home families |
 | Priority model routing | Complex calls use GPT-4o more often |
 | Over-budget behavior | Graceful downgrade to Gemini Flash only (no cutoff) |
 

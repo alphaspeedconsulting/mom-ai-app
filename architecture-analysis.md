@@ -166,7 +166,7 @@ Each option scored on 6 dimensions (0-10 scale), weighted by workflow requiremen
 
 ---
 
-#### Option 3: Cowork Plugin + Render-Only MCP Backend + Next.js PWA (HYBRID)
+#### Option 3: Cowork Plugin + Shared Household API + Render-Only MCP Backend + Next.js PWA (HYBRID)
 
 | Dimension | Score | Rationale |
 |---|---|---|
@@ -180,14 +180,15 @@ Each option scored on 6 dimensions (0-10 scale), weighted by workflow requiremen
 **Weighted Score: 8.20/10**
 
 **Stack Details:**
-- **Frontend**: Next.js PWA + Tailwind CSS (mobile-first web app, installable) + Cowork Plugin (desktop companion)
+- **Frontend**: Brand-specific Next.js PWAs + Tailwind CSS (mobile-first, installable) for Mom.alpha and Dad.AI, plus Cowork Plugin as an optional desktop companion
 - **Backend**: All Render-hosted — no Supabase dependency
   - **Render Postgres** (existing `agentvault-db`, PostgreSQL 16, basic-1gb @ $19/mo)
   - **Render `agentvault-license-server`** (FastAPI, starter @ $7/mo) — auth, licensing, Stripe, WebSocket real-time layer
-  - **Render `agentvault-mcp`** (MCP HTTP/SSE, starter @ $7/mo) — agent orchestration
+  - **Shared Household API/Application Layer** — product-facing API that exposes stable household endpoints to Mom.alpha and Dad.AI while orchestrating downstream MCP tools
+  - **Render `agentvault-mcp`** (MCP HTTP/SSE, starter @ $7/mo) — shared tool and agent orchestration layer
 - **Real-time Sync**: WebSocket layer added to existing FastAPI license server (`fastapi-socketio` or bare `websockets`)
 - **File Storage**: Cloudflare R2 (S3-compatible, 10GB free, no egress fees)
-- **Agent Layer**: MCP skills (one per Mom.alpha agent) + existing AI Product Agents pipeline
+- **Agent Layer**: Shared household MCP skills plus brand-specific agent bundles (Mom.alpha and Dad.AI) exposed behind the product API
 - **LLM**: Claude (native via Cowork) + GPT-4o via MCP tool calls
 - **Auth**: Google/Apple OAuth added to existing license server (JWT flow already built)
 - **Monetization**: AgentVault license/tier system (already built — Basic/Advanced/Custom)
@@ -209,7 +210,8 @@ Each option scored on 6 dimensions (0-10 scale), weighted by workflow requiremen
 - **Gmail connector** already handles email scanning (School Event Hub email parsing = existing capability)
 - **License infrastructure** already production-ready (Stripe + tier gating + JWT caching)
 - **Governance layer** (NIST AI RMF + evidence gates) gives Mom.alpha a trust & safety story competitors lack
-- **Dual surface** — Cowork desktop for power users, React Native for on-the-go; same MCP backend
+- **Dual-brand leverage** — Mom.alpha and Dad.AI can ship distinct parent-facing experiences while sharing the same household graph and backend tooling
+- **Stable product contract** — frontend apps call a household API instead of coupling directly to MCP transport details
 - **30+ canonical workflows** in toolkit; several map directly to Mom.alpha agents (family scheduling, email intelligence, research)
 - **Fastest time-to-market** of all options — ~60% of backend already exists
 - **Single vendor for hosting** — everything on Render, one bill, one deploy pipeline
@@ -219,7 +221,7 @@ Each option scored on 6 dimensions (0-10 scale), weighted by workflow requiremen
 - **WebSocket scaling on Render** — Render starter plan supports persistent connections, but at 100K+ households may need to upgrade to $25/mo plan or add a dedicated WebSocket service
 - **PWA limitations on iOS** — Safari PWA has no background sync; Web Push requires iOS 16.4+
 - **No App Store discovery** — acquisition via AlphaSpeedAi.com traffic, SEO, and cross-promotion instead of App Store search
-- **Two client codebases** — Cowork plugin + Next.js PWA to maintain (but shared backend)
+- **Multiple client surfaces** — Mom.alpha PWA, Dad.AI PWA, and optional Cowork companion must stay consistent against the same household model
 - **Claude dependency** — Cowork is Anthropic's platform; less control than self-hosted LangGraph
 - **No managed auth UI** — must build OAuth flows manually (vs Supabase Auth's drop-in components)
 
@@ -231,8 +233,9 @@ Each option scored on 6 dimensions (0-10 scale), weighted by workflow requiremen
 | WebSocket real-time layer | ~3 days | Add `fastapi-socketio` to license server; broadcast family events on data changes |
 | Cloudflare R2 integration | ~1 day | S3-compatible SDK; receipt uploads, document storage |
 | Family data schema (Postgres) | ~2 days | `families`, `members`, `tasks`, `events`, `notifications` tables + RLS-style app-level checks |
-| Mobile API routes | ~3 days | REST endpoints wrapping existing MCP tool calls for PWA consumption |
-| **Total new backend work** | **~11 days** | Everything else reuses existing infrastructure |
+| Shared household API routes | ~3 days | REST endpoints wrapping existing MCP tool calls for Mom.alpha and Dad.AI PWA consumption |
+| Brand/persona access layer | ~2 days | Parent-specific views, notification preferences, and sibling-brand household linking |
+| **Total new backend work** | **~13 days** | Everything else reuses existing infrastructure |
 
 **Key Reusable Components from Existing Toolkit:**
 
@@ -425,20 +428,21 @@ Start with Option 3. At $33/mo infrastructure and ~60% backend reuse, this is th
 
 | Layer | Source | Rationale |
 |---|---|---|
-| **Mobile Frontend** | New (Next.js PWA + Tailwind CSS) | "Lullaby & Logic" design exports are already HTML+Tailwind — direct conversion, no NativeWind overhead |
+| **Mobile Frontend** | Extend (shared Next.js PWA shell + brand layers) | Mom.alpha remains the mom-facing surface while Dad.AI reuses the same household shell with a dad-specific brand, onboarding flow, and dashboard |
 | **Database** | **Reuse** (Render Postgres `agentvault-db`) | Already provisioned; add family tables |
 | **Auth** | **Extend** (Add Google/Apple OAuth to license server) | JWT flow already built; ~2 days to add OAuth providers |
-| **Real-time Sync** | **Extend** (WebSocket on existing FastAPI) | ~3 days; `fastapi-socketio` on license server |
+| **Real-time Sync** | **Extend** (WebSocket on existing FastAPI) | ~3 days; `fastapi-socketio` on license server keeps both parent brands household-consistent |
 | **File Storage** | New (Cloudflare R2) | S3-compatible, free tier, ~1 day integration |
 | **Calendar Sync** | **Reuse** (Google Calendar MCP + Family Optimizer MCP) | Already built and deployed |
 | **Email Scanning** | **Reuse** (Gmail Connector + Learning Filter MCP) | School Event Hub email parsing = Gmail MCP + school-specific rules |
-| **Agent Orchestration** | **Reuse** (MCP skills via `agentvault-mcp`) | One skill per Mom.alpha agent; existing AI Product Agents pipeline |
+| **Product API** | **Extend** (shared household API/application layer) | Stable frontend contract for Mom.alpha and Dad.AI over shared MCP tools |
+| **Agent Orchestration** | **Reuse** (MCP skills via `agentvault-mcp`) | Shared household skills plus brand-specific agent bundles; existing AI Product Agents pipeline |
 | **License/Premium Gating** | **Reuse** (AgentVault tier system) | Already handles Stripe + JWT + tier-based tool access |
 | **Governance (Payments, Signing)** | **Reuse** (Evidence gates + approval flow) | Permission slip signing, payment approvals already have governance patterns |
-| **Desktop Companion** | **Reuse** (Cowork Plugin) | Power users get full Mom.alpha via Cowork plugin — free distribution channel |
+| **Desktop Companion** | **Reuse** (Cowork Plugin) | Optional power-user surface over the same shared household backend |
 | **Observability** | **Reuse** (LangSmith + Langfuse already configured) | Already integrated with AI Product Agents |
 
-**New backend work: ~11 days.** Estimated reuse: ~60% of backend already exists.
+**New backend work: ~13 days.** Estimated reuse: ~60% of backend already exists, with incremental work to support sibling-brand parent experiences over one household graph.
 
 **Phase B — Scale (Month 6+): Add LangGraph if needed**
 

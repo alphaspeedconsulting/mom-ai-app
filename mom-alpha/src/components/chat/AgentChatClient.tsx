@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
+import React, { startTransition, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useChatStore } from "@/stores/chat-store";
 import { useAgentsStore } from "@/stores/agents-store";
@@ -22,10 +22,11 @@ export function AgentChatClient({ agentType }: { agentType: AgentType }) {
 
   // Auto-fill input when voice transcript arrives
   useEffect(() => {
-    if (transcript) {
+    if (!transcript) return;
+    startTransition(() => {
       setInput(transcript);
       clearTranscript();
-    }
+    });
   }, [transcript, clearTranscript]);
 
   const agent = agents.find((a) => a.agent_type === agentType);

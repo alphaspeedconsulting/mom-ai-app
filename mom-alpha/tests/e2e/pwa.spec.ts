@@ -14,7 +14,7 @@ test.describe("PWA Requirements", () => {
     expect(manifest.icons[1].sizes).toBe("512x512");
   });
 
-  test("service worker is registered", async ({ page }) => {
+  test("service worker is registered and contains precache", async ({ page }) => {
     await page.goto("/");
 
     // Check that the SW file is accessible
@@ -22,6 +22,23 @@ test.describe("PWA Requirements", () => {
     expect(swResponse?.status()).toBe(200);
     const swContent = await swResponse?.text();
     expect(swContent).toContain("precacheAndRoute");
+  });
+
+  test("service worker imports push notification handler", async ({ page }) => {
+    // sw.js must importScripts('/sw-push.js') so push and cache run in one SW registration
+    const swResponse = await page.goto("/sw.js");
+    expect(swResponse?.status()).toBe(200);
+    const swContent = await swResponse?.text();
+    expect(swContent).toContain("sw-push.js");
+  });
+
+  test("push notification handler file is accessible", async ({ page }) => {
+    const swPushResponse = await page.goto("/sw-push.js");
+    expect(swPushResponse?.status()).toBe(200);
+    const swPushContent = await swPushResponse?.text();
+    expect(swPushContent).toContain("addEventListener");
+    expect(swPushContent).toContain("push");
+    expect(swPushContent).toContain("notificationclick");
   });
 
   test("robots.txt is served", async ({ page }) => {
@@ -50,6 +67,30 @@ test.describe("PWA Requirements", () => {
     await page.goto("/");
     const themeColor = await page.locator('meta[name="theme-color"]').getAttribute("content");
     expect(themeColor).toBeTruthy();
+  });
+});
+
+test.describe("Subscription Checkout", () => {
+  test("settings page shows billing cycle toggle for trial users", async ({ page }) => {
+    // Mock trial user tier via localStorage or cookie (adjust to app auth mechanism)
+    await page.goto("/settings");
+    // Billing cycle toggle buttons should be present
+    const monthlyBtn = page.locator("button", { hasText: "Monthly" });
+    const yearlyBtn = page.locator("button", { hasText: "Yearly" });
+    await expect(monthlyBtn).toBeVisible({ timeout: 5000 });
+    await expect(yearlyBtn).toBeVisible({ timeout: 5000 });
+  });
+
+  test("checkout success query param shows success feedback", async ({ page }) => {
+    await page.goto("/settings?checkout=success");
+    const feedback = page.locator("text=Subscription activated");
+    await expect(feedback).toBeVisible({ timeout: 5000 });
+  });
+
+  test("checkout cancelled query param shows cancel feedback", async ({ page }) => {
+    await page.goto("/settings?checkout=cancelled");
+    const feedback = page.locator("text=Checkout cancelled");
+    await expect(feedback).toBeVisible({ timeout: 5000 });
   });
 });
 

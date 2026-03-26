@@ -1,17 +1,16 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 import * as api from "@/lib/api-client";
 
 export function usePushNotifications() {
-  const [permission, setPermission] = useState<NotificationPermission>("default");
-  const [isSubscribed, setIsSubscribed] = useState(false);
-
-  useEffect(() => {
-    if (typeof window !== "undefined" && "Notification" in window) {
-      setPermission(Notification.permission);
+  const [permission, setPermission] = useState<NotificationPermission>(() => {
+    if (typeof window === "undefined" || !("Notification" in window)) {
+      return "default";
     }
-  }, []);
+    return Notification.permission;
+  });
+  const [isSubscribed, setIsSubscribed] = useState(false);
 
   const subscribe = useCallback(async () => {
     if (!("serviceWorker" in navigator) || !("PushManager" in window)) {

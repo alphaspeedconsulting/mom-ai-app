@@ -1,0 +1,83 @@
+# Cowork Plugin Kit — Cursor Rules
+# AlphaAI Basic Cowork Toolkit & platform files
+
+## ⚠️ COMPLIANCE FIRST
+
+Before generating code or answering architectural questions, follow project-specific standards in this file. These override global preferences.
+
+---
+
+## 1. PROJECT LAYOUT
+
+- **alphaai-basic-cowork-toolkit/** — Cowork plugin: skills (docx, xlsx, pptx, pdf, doc-coauthoring), MCP config (`.mcp.json`), connectors (Gmail, Family Optimizer, Google Calendar).
+- **platform files/** — Server, SDK, example MCP server, installer.
+- **.cursor/** — Rules, commands, prompts (AI Product Agents sub-agents, slash commands).
+- **.claude/** — Claude agents, skills, subagents, commands.
+
+When adding features, place them in the correct area (plugin vs platform).
+
+---
+
+## 2. ANTI-SHORTCUT RULES
+
+- **No placeholders:** No `# TODO`, `# Implementation here`, `pass`-only blocks, or "similar to above."
+- **Full error handling:** Implement complete try/except; log and re-raise or return structured errors. No swallowed exceptions.
+- **Edge cases:** Handle None, empty strings, empty lists, and boundary conditions.
+- Partial implementations are **rejected**.
+
+---
+
+## 3. PYTHON (platform files & skill scripts)
+
+### Error handling
+- Wrap I/O in try/except with specific exception types.
+- Log with context (e.g., workflow_id, component). Never log secrets or PII.
+- Prefer structured logging (e.g., structlog) where available.
+
+### Validation
+- Use Pydantic for inputs where applicable; use `extra='forbid'` on models.
+- Validate all external input; use parameterized queries; keep secrets in env or a secret manager.
+
+### Async
+- Use async/await for I/O (HTTP, DB, file) in platform code; avoid blocking the event loop.
+
+### Style
+- Type hints and docstrings on public functions (summary, args, returns, raises).
+- Python 3.10+ style (`list[str]`, etc.).
+
+---
+
+## 4. PLUGIN & MCP CONFIGURATION
+
+- **Secrets:** Never hardcode API keys, tokens, or server URLs. Use **environment variables** referenced in `.mcp.json` (e.g., `FAMILY_OPTIMIZER_MCP_URL`, `GMAIL_MCP_TOKEN`).
+- **Skills:** Each skill lives in `alphaai-basic-cowork-toolkit/skills/<name>/` with a `SKILL.md`; follow existing skill layout.
+- **MCP:** Document required env vars in SETUP.md and README; keep `.mcp.json` pointing at env vars, not literal values.
+
+---
+
+## 5. CURSOR COMMANDS & RULES
+
+- **Slash commands** live in `.cursor/commands/`. Use them for consistent workflows (e.g., `/architecture-context`, `/code-review`, `/run-tests`, `/production-fix`).
+- **AI Product Agents (MCP):** For PRDs, architecture analysis, pitches, or full product specs, use the sub-agents per `.cursor/rules/ai-product-agents-subagents.mdc` (Product, Architecture, Orchestrator, Sales, Quality, UI/UX).
+- **Adding commands:** Add a `.md` file in `.cursor/commands/` (kebab-case); restart Cursor to load.
+
+---
+
+## 6. PRE-SUBMISSION CHECKLIST
+
+Before submitting code:
+
+- [ ] No placeholders or deferred logic; full implementation.
+- [ ] I/O wrapped in try/except; errors logged or returned in a structured way.
+- [ ] No hardcoded secrets; config via env vars.
+- [ ] Type hints and docstrings on public APIs.
+- [ ] New behavior fits plugin vs platform layout and existing patterns.
+
+---
+
+## 7. GLOBAL CONTEXT REMINDER
+
+If no `.cursorrules` (or this file) is in context, the AI should state:  
+**"No .cursorrules detected. Operating on default settings. Confirm before writing code."**
+
+For this repo, this file is the source of project-specific rules.
