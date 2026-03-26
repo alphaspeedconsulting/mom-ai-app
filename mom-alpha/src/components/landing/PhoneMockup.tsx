@@ -2,44 +2,225 @@
 
 import { useState, useEffect } from "react";
 
-const screens = [
+const NAV = [
+  { key: "home", icon: "home", label: "Home" },
+  { key: "tasks", icon: "task_alt", label: "Tasks" },
+  { key: "calendar", icon: "calendar_month", label: "Calendar" },
+  { key: "profile", icon: "person", label: "Profile" },
+] as const;
+
+type TabKey = (typeof NAV)[number]["key"];
+
+type Screen = {
+  name: string;
+  activeTab: TabKey;
+};
+
+const screens: Screen[] = [
   {
     name: "Family Calendar",
-    tab: "Cal",
-    cards: [
-      { title: "School Pickup", meta: "Today 3:30 PM", bgClass: "bg-tertiary-container" },
-      { title: "Piano Lesson", meta: "Emma at 4:00 PM", bgClass: "bg-brand-glow" },
-      { title: "Dentist Reminder", meta: "Tomorrow 9:00 AM", bgClass: "bg-secondary-container" },
-    ],
+    activeTab: "calendar",
   },
   {
     name: "Agent Chat",
-    tab: "Home",
-    cards: [
-      { title: "Added milk to grocery list", meta: "Done in 50ms", bgClass: "bg-brand-glow" },
-      { title: "Planned 5 healthy dinners", meta: "Budget: $120 this week", bgClass: "bg-secondary-container" },
-      { title: "Set pickup reminder", meta: "15 min before dismissal", bgClass: "bg-tertiary-container" },
-    ],
+    activeTab: "home",
   },
   {
-    name: "Budget Tracker",
-    tab: "Tasks",
-    cards: [
-      { title: "Groceries", meta: "$94 / $120 weekly", bgClass: "bg-secondary-container" },
-      { title: "Utilities", meta: "On track this month", bgClass: "bg-tertiary-container" },
-      { title: "Potential savings", meta: "$38 from duplicates", bgClass: "bg-brand-glow" },
-    ],
+    name: "Budget Buddy",
+    activeTab: "home",
   },
   {
-    name: "School Hub",
-    tab: "Me",
-    cards: [
-      { title: "Field Trip Form", meta: "Due Friday", bgClass: "bg-brand-glow" },
-      { title: "Class Photo Payment", meta: "Reminder set", bgClass: "bg-secondary-container" },
-      { title: "Soccer Practice", meta: "Added to family calendar", bgClass: "bg-tertiary-container" },
-    ],
+    name: "School Event Hub",
+    activeTab: "tasks",
   },
 ];
+
+function CalendarMock() {
+  const days = ["S", "M", "T", "W", "T", "F", "S"];
+  /** March 2026 starts on Sunday — 31 days, no leading padding. */
+  const cells = Array.from({ length: 31 }, (_, i) => i + 1);
+  return (
+    <div className="mt-14 w-full space-y-2.5">
+      <div className="flex gap-1 overflow-hidden mom-no-scrollbar">
+        {[
+          { label: "All", on: true },
+          { label: "Shared", on: false },
+          { label: "Mom", on: false, dot: "hsl(155, 37%, 30%)" },
+        ].map((c) => (
+          <span
+            key={c.label}
+            className={`shrink-0 rounded-full px-2 py-0.5 text-[8px] font-medium ${
+              c.on ? "bg-brand text-on-primary" : "bg-surface-container text-muted-foreground"
+            }`}
+          >
+            {c.dot && (
+              <span
+                className="mr-0.5 inline-block h-1 w-1 rounded-full align-middle"
+                style={{ backgroundColor: c.dot }}
+              />
+            )}
+            {c.label}
+          </span>
+        ))}
+      </div>
+      <div className="flex items-center justify-between px-0.5">
+        <button type="button" className="flex h-5 w-5 items-center justify-center rounded-full bg-surface-container">
+          <span className="material-symbols-outlined text-[12px] text-foreground">chevron_left</span>
+        </button>
+        <p className="font-headline text-[10px] font-semibold text-foreground">March 2026</p>
+        <button type="button" className="flex h-5 w-5 items-center justify-center rounded-full bg-surface-container">
+          <span className="material-symbols-outlined text-[12px] text-foreground">chevron_right</span>
+        </button>
+      </div>
+      <div className="grid grid-cols-7 gap-1">
+        {days.map((d) => (
+          <div key={d} className="text-center text-[7px] font-medium text-muted-foreground">
+            {d}
+          </div>
+        ))}
+        {cells.map((day) => {
+          const sel = day === 26;
+          const has = [3, 17, 26].includes(day);
+          return (
+            <button
+              key={day}
+              type="button"
+              className={`flex aspect-square flex-col items-center justify-center gap-0.5 rounded-lg text-[8px] transition-colors ${
+                sel
+                  ? "bg-brand/10 font-bold text-brand ring-2 ring-brand"
+                  : "bg-surface-container-low/80 text-foreground"
+              }`}
+            >
+              <span>{day}</span>
+              {has && (
+                <span className="flex gap-0.5">
+                  <span className="h-1 w-1 rounded-full bg-secondary" />
+                  {day === 17 && <span className="h-1 w-1 rounded-full bg-tertiary" />}
+                </span>
+              )}
+            </button>
+          );
+        })}
+      </div>
+      <p className="font-headline text-[9px] font-semibold text-foreground">Wednesday, March 26</p>
+      <div className="space-y-1.5">
+        <div
+          className="mom-card flex gap-2 border-l-4 p-2 pl-2.5"
+          style={{ borderLeftColor: "hsl(var(--secondary))" }}
+        >
+          <div className="min-w-0 flex-1">
+            <p className="truncate font-headline text-[9px] font-semibold text-foreground">School Pickup</p>
+            <p className="text-[7px] text-muted-foreground">3:30 PM — 4:00 PM · Emma</p>
+          </div>
+        </div>
+        <div
+          className="mom-card flex gap-2 border-l-4 p-2 pl-2.5"
+          style={{ borderLeftColor: "hsl(var(--tertiary))" }}
+        >
+          <div className="min-w-0 flex-1">
+            <p className="truncate font-headline text-[9px] font-semibold text-foreground">Piano Lesson</p>
+            <p className="text-[7px] text-muted-foreground">4:00 PM — 5:00 PM</p>
+          </div>
+          <span className="mom-chip self-start px-1.5 py-0 text-[6px]">Google</span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function BudgetMock() {
+  const cats = [
+    { icon: "shopping_basket", label: "Groceries", amt: "$842", tint: "bg-brand-glow/35 text-foreground" },
+    { icon: "bolt", label: "Utilities", amt: "$186", tint: "bg-secondary-container/60 text-foreground" },
+    { icon: "child_care", label: "Kids", amt: "$1,250", tint: "bg-tertiary-container/60 text-foreground" },
+    { icon: "movie", label: "Fun", amt: "$64", tint: "bg-surface-container text-foreground" },
+  ];
+  return (
+    <div className="mt-14 w-full space-y-2.5">
+      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-brand to-brand-glow p-3 text-on-primary shadow-lg">
+        <div className="relative z-10">
+          <p className="mb-0.5 text-[7px] font-bold uppercase tracking-widest opacity-90">Household Health</p>
+          <p className="font-headline text-lg font-bold leading-tight">$2,847.12</p>
+          <div className="mt-0.5 flex items-center gap-0.5 opacity-90">
+            <span className="material-symbols-outlined text-[12px]">trending_flat</span>
+            <span className="text-[8px]">On track this month</span>
+          </div>
+        </div>
+        <span className="material-symbols-outlined absolute -bottom-3 -right-2 text-[4rem] opacity-[0.12]">
+          account_balance_wallet
+        </span>
+      </div>
+      <button
+        type="button"
+        className="mom-card flex w-full items-center gap-2 p-2 text-left transition-colors hover:bg-surface-container-low"
+      >
+        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-brand-glow/30">
+          <span className="material-symbols-outlined text-[16px] text-brand">receipt_long</span>
+        </div>
+        <div className="min-w-0 flex-1">
+          <p className="font-headline text-[9px] font-semibold text-foreground">Scan Receipt</p>
+          <p className="text-[7px] text-muted-foreground">Auto-categorize expenses</p>
+        </div>
+      </button>
+      <p className="font-headline text-[9px] font-semibold text-foreground">Spending Breakdown</p>
+      <div className="grid grid-cols-2 gap-1.5">
+        {cats.map((c) => (
+          <div key={c.label} className={`mom-card p-2 ${c.tint}`}>
+            <span className="material-symbols-outlined mb-0.5 text-[14px] text-brand">{c.icon}</span>
+            <p className="text-[7px] font-medium capitalize text-muted-foreground">{c.label}</p>
+            <p className="font-headline text-[11px] font-bold text-foreground">{c.amt}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function ChatMock() {
+  const rows = [
+    { icon: "check_circle", title: "Added milk to grocery list", meta: "Grocery Guru · now" },
+    { icon: "restaurant", title: "Planned 5 healthy dinners", meta: "Budget: $120 this week" },
+    { icon: "notifications_active", title: "Pickup reminder set", meta: "15 min before dismissal" },
+  ];
+  return (
+    <div className="mt-14 w-full space-y-1.5">
+      {rows.map((r) => (
+        <div key={r.title} className="mom-card flex gap-2 p-2.5">
+          <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-xl bg-surface-container-low">
+            <span className="material-symbols-outlined text-[16px] text-brand">{r.icon}</span>
+          </div>
+          <div className="min-w-0">
+            <p className="font-headline text-[9px] font-semibold text-foreground leading-snug">{r.title}</p>
+            <p className="text-[7px] text-muted-foreground">{r.meta}</p>
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function SchoolHubMock() {
+  const rows = [
+    { icon: "assignment", title: "Field trip form", meta: "Due Friday · School Event Hub", accent: "hsl(var(--secondary))" },
+    { icon: "payments", title: "Class photo payment", meta: "Reminder set", accent: "hsl(var(--brand))" },
+    { icon: "sports_soccer", title: "Soccer practice", meta: "Synced to Family Calendar", accent: "hsl(var(--tertiary))" },
+  ];
+  return (
+    <div className="mt-14 w-full space-y-1.5">
+      {rows.map((r) => (
+        <div key={r.title} className="mom-card flex gap-2 border-l-4 p-2.5" style={{ borderLeftColor: r.accent }}>
+          <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-xl bg-surface-container-low">
+            <span className="material-symbols-outlined text-[16px] text-muted-foreground">{r.icon}</span>
+          </div>
+          <div className="min-w-0">
+            <p className="font-headline text-[9px] font-semibold text-foreground">{r.title}</p>
+            <p className="text-[7px] text-muted-foreground">{r.meta}</p>
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
 
 export function PhoneMockup() {
   const [activeScreen, setActiveScreen] = useState(0);
@@ -53,88 +234,67 @@ export function PhoneMockup() {
 
   return (
     <div className="relative w-[280px] md:w-[320px]">
-      {/* Phone frame */}
-      <div className="relative rounded-[2.5rem] p-3 mom-editorial-shadow bg-inverse-surface">
-        {/* Notch */}
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-28 h-6 rounded-b-2xl bg-inverse-surface" />
+      <div className="relative rounded-[2.5rem] bg-inverse-surface p-3 mom-editorial-shadow">
+        <div className="absolute left-1/2 top-0 h-6 w-28 -translate-x-1/2 rounded-b-2xl bg-inverse-surface" />
 
-        {/* Screen */}
-        <div className="relative rounded-[2rem] overflow-hidden aspect-[9/19.5] bg-background">
-          {/* Screen content */}
+        <div className="relative aspect-[9/19.5] overflow-hidden rounded-[2rem] bg-background">
           {screens.map((screen, i) => (
             <div
               key={screen.name}
-              className="absolute inset-0 flex flex-col items-center justify-center p-6 transition-opacity duration-700"
+              className="absolute inset-0 flex flex-col p-4 pt-10 transition-opacity duration-700"
               style={{ opacity: i === activeScreen ? 1 : 0 }}
+              aria-hidden={i !== activeScreen}
             >
-              {/* Status bar mock */}
-              <div className="absolute top-0 left-0 right-0 flex items-center justify-between px-6 pt-8 pb-2">
+              <div className="absolute left-0 right-0 top-0 flex items-center justify-between px-5 pt-7">
                 <span className="text-[10px] font-medium text-foreground">9:41</span>
-                <div className="flex gap-1">
-                  <div className="w-4 h-2 rounded-sm bg-foreground" />
+                <div className="h-2 w-4 rounded-sm bg-foreground/90" />
+              </div>
+
+              <div className="absolute left-0 right-0 top-14 px-4">
+                <div className="mb-3 flex items-center gap-2">
+                  <div className="h-6 w-6 shrink-0 rounded-full bg-gradient-to-br from-brand to-brand-glow" />
+                  <span className="text-[10px] font-bold text-foreground">Alpha.Mom</span>
                 </div>
+                <h3 className="font-headline text-[11px] font-bold leading-tight text-foreground">{screen.name}</h3>
               </div>
 
-              {/* App header */}
-              <div className="absolute top-14 left-0 right-0 px-5">
-                <div className="flex items-center gap-2 mb-4">
-                  <div className="w-6 h-6 rounded-full mom-gradient-hero" />
-                  <span className="text-xs font-bold text-foreground">
-                    Alpha.Mom
-                  </span>
+              {screen.name === "Family Calendar" && <CalendarMock />}
+              {screen.name === "Budget Buddy" && <BudgetMock />}
+              {screen.name === "Agent Chat" && <ChatMock />}
+              {screen.name === "School Event Hub" && <SchoolHubMock />}
+
+              <nav className="mom-bottom-nav absolute bottom-0 left-0 right-0">
+                <div className="mx-auto flex max-w-lg items-center justify-around px-1 pb-2 pt-1.5">
+                  {NAV.map((item) => {
+                    const isActive = screen.activeTab === item.key;
+                    return (
+                      <div
+                        key={item.key}
+                        className={`flex flex-col items-center gap-0.5 rounded-xl px-2 py-1 transition-colors ${
+                          isActive ? "bg-brand-glow/40 text-brand" : "text-muted-foreground"
+                        }`}
+                      >
+                        <span
+                          className="material-symbols-outlined text-[18px]"
+                          style={{ fontVariationSettings: isActive ? "'FILL' 1" : "'FILL' 0" }}
+                        >
+                          {item.icon}
+                        </span>
+                        <span className="text-[7px] font-medium">{item.label}</span>
+                      </div>
+                    );
+                  })}
                 </div>
-                <h3 className="text-sm font-bold text-foreground">
-                  {screen.name}
-                </h3>
-              </div>
-
-              {/* Representative screen cards */}
-              <div className="mt-16 w-full space-y-3">
-                {screen.cards.map((card, j) => (
-                  <div
-                    key={card.title}
-                    className={`rounded-xl p-4 border border-border-subtle ${card.bgClass}`}
-                    style={{ opacity: 1 - j * 0.08 }}
-                  >
-                    <p className="text-alphaai-sm font-semibold text-foreground leading-tight">
-                      {card.title}
-                    </p>
-                    <p className="text-alphaai-xs text-muted-foreground mt-1">
-                      {card.meta}
-                    </p>
-                  </div>
-                ))}
-              </div>
-
-              {/* Bottom nav mock */}
-              <div className="absolute bottom-4 left-4 right-4 flex justify-around py-2 rounded-full bg-surface-elevated">
-                {["Home", "Tasks", "Cal", "Me"].map((tab) => (
-                  <div key={tab} className="flex flex-col items-center gap-0.5">
-                    <div
-                      className={`w-4 h-4 rounded ${
-                        tab === screen.tab ? "bg-brand/80" : "bg-muted-foreground/30"
-                      }`}
-                    />
-                    <span
-                      className={`text-[8px] ${
-                        tab === screen.tab ? "text-foreground" : "text-muted-foreground"
-                      }`}
-                    >
-                      {tab}
-                    </span>
-                  </div>
-                ))}
-              </div>
+              </nav>
             </div>
           ))}
 
-          {/* Screen indicators */}
-          <div className="absolute bottom-16 left-1/2 -translate-x-1/2 flex gap-1.5">
+          <div className="absolute bottom-14 left-1/2 flex -translate-x-1/2 gap-1.5">
             {screens.map((_, i) => (
               <div
                 key={i}
-                className={`w-1.5 h-1.5 rounded-full transition-all duration-300 ${
-                  i === activeScreen ? "bg-brand scale-125" : "bg-border-subtle"
+                className={`h-1.5 w-1.5 rounded-full transition-all duration-300 ${
+                  i === activeScreen ? "scale-125 bg-brand" : "bg-border-subtle"
                 }`}
               />
             ))}
@@ -142,8 +302,7 @@ export function PhoneMockup() {
         </div>
       </div>
 
-      {/* Glow effect behind phone */}
-      <div className="absolute -inset-8 rounded-full blur-3xl -z-10 opacity-20 bg-brand-glow" />
+      <div className="absolute -inset-8 -z-10 rounded-full bg-brand-glow opacity-20 blur-3xl" />
     </div>
   );
 }
