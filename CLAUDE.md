@@ -13,15 +13,33 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - **Stack**: Next.js 16 PWA (TypeScript, Tailwind CSS 4, Zustand 5, static export), FastAPI backend (Render + Postgres)
 - **Design system**: "Lullaby & Logic" — existing HTML+Tailwind exports in `stitch_screenshot_of_https_mom.alphaspeedai.com/`
 
-## Repository Boundary
+## Architecture — Four-Repo Model
 
-| Code | Repo |
-|---|---|
-| Next.js PWA (`mom-alpha/`), public planning docs, design assets | **This repo** (`mom-ai-app`) — public |
-| FastAPI backend, agent skills, LLM router, PII masker, DB migrations | **Cowork Basic Plugin Kit** (`cowork_plugin/platform files/mom_alpha/`) — private |
-| Shared API types (source of truth) | `mom-alpha/src/types/api-contracts.ts` (this repo) |
+This repo is the **Mom.AI Next.js PWA frontend only**. The backend and all business logic live elsewhere.
 
-**Rule:** Do not put proprietary agent behavior, MCP skills, or backend source code in this repo.
+| Repo | What it is |
+|------|-----------|
+| `cowork_plugin/platform files/family_platform/` | Shared Python package — ALL business logic lives here |
+| `cowork_plugin/platform files/mom_alpha/` | FastAPI backend host — thin wrappers + brand config only |
+| `Mom.Ai App/mom-ai-app/mom-alpha/` | **This repo** — Mom.AI Next.js PWA |
+| `Dad.Ai App/dad-ai-app/dad-alpha/` | Dad.AI Next.js PWA — sibling app, same backend |
+
+## Rules for This Repo
+
+**DO:**
+- Build UI components, pages, Zustand stores, hooks
+- Call the backend via `src/lib/api-client.ts`
+- Inject `parent_brand: "mom"` on all auth calls (already in api-client.ts — do not remove)
+- Keep `src/types/api-contracts.ts` in sync with `dad-alpha/src/types/api-contracts.ts`
+
+**DO NOT:**
+- Write business logic, DB queries, or AI pipeline code here — it belongs in `family_platform/`
+- Add backend API endpoints here — add them to `family_platform/` then `mom_alpha/`
+- Let `api-client.ts` or `api-contracts.ts` drift out of sync with dad-alpha's versions
+
+**When a new backend endpoint is added:**
+1. Add the TypeScript type to BOTH `mom-alpha/src/types/api-contracts.ts` AND `dad-alpha/src/types/api-contracts.ts`
+2. Add the client method to BOTH `mom-alpha/src/lib/api-client.ts` AND `dad-alpha/src/lib/api-client.ts`
 
 ## Cross-Repo Development Setup
 
@@ -40,9 +58,6 @@ cd mom-alpha
 npm install
 npm run dev                   # starts on http://localhost:3000
 ```
-
-### API contract changes:
-When adding or changing a backend endpoint, update `mom-alpha/src/types/api-contracts.ts` in this repo to match.
 
 ## Key Planning Documents
 
