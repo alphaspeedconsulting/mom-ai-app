@@ -6,7 +6,7 @@ export function LandingNav() {
   const [menuOpen, setMenuOpen] = useState(false);
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 mom-glass-panel">
+    <nav className="fixed top-0 left-0 right-0 z-50 border-b border-border-subtle/10 bg-background">
       <div className="mom-container flex items-center justify-between px-6 py-4">
         <a href="#" className="flex items-center gap-2">
           <div className="w-8 h-8 rounded-full mom-gradient-hero flex items-center justify-center">
@@ -50,7 +50,7 @@ export function LandingNav() {
 
       {/* Mobile menu */}
       {menuOpen && (
-        <div className="md:hidden border-t border-border-subtle/15 bg-background/95 backdrop-blur-lg px-6 py-4 flex flex-col gap-4">
+        <div className="md:hidden flex flex-col gap-4 border-t border-border-subtle/15 bg-background px-6 py-4">
           <a href="#agents" onClick={() => setMenuOpen(false)} className="text-alphaai-base text-foreground py-2">
             Agents
           </a>

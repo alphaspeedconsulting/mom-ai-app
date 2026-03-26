@@ -12,10 +12,14 @@ import type {
   AuthEmailRequest,
   AuthGoogleRequest,
   AuthResponse,
+  AutomationRoutine,
+  AutomationRoutineCreateRequest,
   BudgetResponse,
+  CalendarConflict,
   CalendarEventCreateRequest,
   CalendarEventUpdateRequest,
   CalendarEventsResponse,
+  Checklist,
   ChatRequest,
   ChatResponse,
   CheckoutTrialRequest,
@@ -25,7 +29,10 @@ import type {
   ConsentStatusResponse,
   Expense,
   ExpenseSummary,
+  GoogleCalendarConnectionStatus,
   GroceryList,
+  HomeProject,
+  HomeProjectCreateRequest,
   Household,
   HouseholdCreateRequest,
   HouseholdInviteRequest,
@@ -43,6 +50,13 @@ import type {
   SleepHistoryResponse,
   SleepLogRequest,
   TaskListResponse,
+  TripPlan,
+  TripPlanCreateRequest,
+  Vehicle,
+  VehicleCreateRequest,
+  VehicleServiceItem,
+  VehicleServiceItemCreateRequest,
+  WeeklyPlan,
   WellnessStreak,
 } from "@/types/api-contracts";
 
@@ -116,13 +130,19 @@ async function request<T>(
 
 export const auth = {
   loginGoogle: (body: AuthGoogleRequest) =>
-    request<AuthResponse>("/api/auth/google", { method: "POST", body: JSON.stringify(body) }),
+    request<AuthResponse>("/api/auth/google", {
+      method: "POST",
+      body: JSON.stringify({ ...body, parent_brand: "mom" }),
+    }),
 
   loginEmail: (body: AuthEmailRequest) =>
     request<AuthResponse>("/api/auth/login", { method: "POST", body: JSON.stringify(body) }),
 
   signup: (body: AuthEmailRequest & { name: string }) =>
-    request<AuthResponse>("/api/auth/signup", { method: "POST", body: JSON.stringify(body) }),
+    request<AuthResponse>("/api/auth/signup", {
+      method: "POST",
+      body: JSON.stringify({ ...body, parent_brand: "mom" }),
+    }),
 };
 
 // ---------------------------------------------------------------------------
@@ -174,6 +194,9 @@ export const calendar = {
 
   syncGoogle: () =>
     request<{ synced: number }>("/api/calendar/sync/google", { method: "POST" }),
+
+  conflicts: (householdId: string) =>
+    request<CalendarConflict[]>(`/api/household/${householdId}/calendar-align`),
 };
 
 // ---------------------------------------------------------------------------
@@ -317,8 +340,19 @@ export const household = {
   syncDigest: (householdId: string) =>
     request<SyncDigestResponse>(`/api/household/${householdId}/sync-digest`),
 
+  weeklyPlan: (householdId: string) =>
+    request<WeeklyPlan>(`/api/household/${householdId}/weekly-plan`),
+
   usageDashboard: (householdId: string) =>
     request<HouseholdUsageDashboard>(`/api/household/${householdId}/usage`),
+
+  generateChecklist: (householdId: string, activityType: string) =>
+    request<Checklist>(`/api/household/${householdId}/checklist`, {
+      method: "POST", body: JSON.stringify({ activity_type: activityType }),
+    }),
+
+  listChecklists: (householdId: string) =>
+    request<Checklist[]>(`/api/household/${householdId}/checklists`),
 };
 
 // ---------------------------------------------------------------------------
@@ -390,6 +424,89 @@ export const selfCare = {
       `/api/self-care/${householdId}/${reminderId}/snooze`,
       { method: "POST", body: JSON.stringify({ minutes }) }
     ),
+};
+
+// ---------------------------------------------------------------------------
+// Household Ops — vehicles, home projects, trips, routines (Family Pro)
+// ---------------------------------------------------------------------------
+
+export const householdOps = {
+  // Vehicles
+  listVehicles: (householdId: string) =>
+    request<Vehicle[]>(`/api/household/${householdId}/vehicles`),
+  createVehicle: (householdId: string, body: VehicleCreateRequest) =>
+    request<Vehicle>(`/api/household/${householdId}/vehicles`, {
+      method: "POST", body: JSON.stringify(body),
+    }),
+  updateVehicle: (householdId: string, vehicleId: string, body: Partial<VehicleCreateRequest>) =>
+    request<Vehicle>(`/api/household/${householdId}/vehicles/${vehicleId}`, {
+      method: "PUT", body: JSON.stringify(body),
+    }),
+  deleteVehicle: (householdId: string, vehicleId: string) =>
+    request<void>(`/api/household/${householdId}/vehicles/${vehicleId}`, { method: "DELETE" }),
+  listServiceItems: (householdId: string, vehicleId: string) =>
+    request<VehicleServiceItem[]>(`/api/household/${householdId}/vehicles/${vehicleId}/service`),
+  createServiceItem: (householdId: string, vehicleId: string, body: VehicleServiceItemCreateRequest) =>
+    request<VehicleServiceItem>(`/api/household/${householdId}/vehicles/${vehicleId}/service`, {
+      method: "POST", body: JSON.stringify(body),
+    }),
+
+  // Home projects
+  listProjects: (householdId: string) =>
+    request<HomeProject[]>(`/api/household/${householdId}/projects`),
+  createProject: (householdId: string, body: HomeProjectCreateRequest) =>
+    request<HomeProject>(`/api/household/${householdId}/projects`, {
+      method: "POST", body: JSON.stringify(body),
+    }),
+  updateProject: (householdId: string, projectId: string, body: Partial<HomeProjectCreateRequest>) =>
+    request<HomeProject>(`/api/household/${householdId}/projects/${projectId}`, {
+      method: "PUT", body: JSON.stringify(body),
+    }),
+  deleteProject: (householdId: string, projectId: string) =>
+    request<void>(`/api/household/${householdId}/projects/${projectId}`, { method: "DELETE" }),
+
+  // Trips
+  listTrips: (householdId: string) =>
+    request<TripPlan[]>(`/api/household/${householdId}/trips`),
+  createTrip: (householdId: string, body: TripPlanCreateRequest) =>
+    request<TripPlan>(`/api/household/${householdId}/trips`, {
+      method: "POST", body: JSON.stringify(body),
+    }),
+  updateTrip: (householdId: string, tripId: string, body: Partial<TripPlanCreateRequest>) =>
+    request<TripPlan>(`/api/household/${householdId}/trips/${tripId}`, {
+      method: "PUT", body: JSON.stringify(body),
+    }),
+  deleteTrip: (householdId: string, tripId: string) =>
+    request<void>(`/api/household/${householdId}/trips/${tripId}`, { method: "DELETE" }),
+
+  // Routines
+  listRoutines: (householdId: string) =>
+    request<AutomationRoutine[]>(`/api/household/${householdId}/routines`),
+  createRoutine: (householdId: string, body: AutomationRoutineCreateRequest) =>
+    request<AutomationRoutine>(`/api/household/${householdId}/routines`, {
+      method: "POST", body: JSON.stringify(body),
+    }),
+  updateRoutine: (householdId: string, routineId: string, body: Partial<AutomationRoutineCreateRequest>) =>
+    request<AutomationRoutine>(`/api/household/${householdId}/routines/${routineId}`, {
+      method: "PUT", body: JSON.stringify(body),
+    }),
+  deleteRoutine: (householdId: string, routineId: string) =>
+    request<void>(`/api/household/${householdId}/routines/${routineId}`, { method: "DELETE" }),
+};
+
+// ---------------------------------------------------------------------------
+// Google Calendar OAuth
+// ---------------------------------------------------------------------------
+
+export const googleCalendar = {
+  connectionStatus: () =>
+    request<GoogleCalendarConnectionStatus>("/api/integrations/google-calendar/status"),
+  connect: (redirectUri: string) =>
+    request<{ auth_url: string }>("/api/integrations/google-calendar/connect", {
+      method: "POST", body: JSON.stringify({ redirect_uri: redirectUri }),
+    }),
+  disconnect: () =>
+    request<void>("/api/integrations/google-calendar/disconnect", { method: "POST" }),
 };
 
 // ---------------------------------------------------------------------------

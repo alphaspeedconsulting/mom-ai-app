@@ -42,7 +42,7 @@ export default function NotificationsPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      <header className="fixed top-0 left-0 right-0 z-40 bg-background/80 backdrop-blur-xl border-b border-border-subtle/10">
+      <header className="fixed top-0 left-0 right-0 z-40 bg-background border-b border-border-subtle/10">
         <div className="max-w-lg mx-auto px-4 py-3">
           <h1 className="font-headline text-alphaai-xl font-bold text-foreground">
             Notifications

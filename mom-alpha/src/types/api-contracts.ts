@@ -322,8 +322,10 @@ export interface HouseholdMembersResponse {
 
 export interface SyncDigestItem {
   id: string;
-  category: "calendar" | "tasks" | "expenses" | "school" | "general";
+  category: "calendar" | "tasks" | "expenses" | "school" | "general" | "household_ops";
   summary: string;
+  source?: "household_ops";
+  ops_type?: "garage" | "home" | "trip" | "routine";
   created_at: string;
 }
 
@@ -543,6 +545,204 @@ export interface CheckoutTrialRequest {
 export interface CheckoutTrialResponse {
   checkout_url: string; // Stripe Checkout hosted page URL
   session_id: string;
+}
+
+// =============================================================================
+// Checklists API
+// =============================================================================
+
+export interface ChecklistItem {
+  id: string;
+  text: string;
+  checked: boolean;
+}
+
+export interface Checklist {
+  id: string;
+  household_id: string;
+  title: string;
+  activity_type: string;
+  items: ChecklistItem[];
+  created_at: string;
+  updated_at: string;
+}
+
+// =============================================================================
+// Weekly Plan API
+// =============================================================================
+
+export interface WeeklyPlanDay {
+  date: string;
+  events: Array<{ time: string; title: string; who: string }>;
+}
+
+export interface WeeklyPlan {
+  household_id: string;
+  week_start: string;
+  days: WeeklyPlanDay[];
+  generated_at: string;
+}
+
+// =============================================================================
+// Calendar Conflicts API
+// =============================================================================
+
+export interface CalendarConflict {
+  id: string;
+  event_a: { title: string; time: string; parent: string };
+  event_b: { title: string; time: string; parent: string };
+  date: string;
+  severity: "overlap" | "tight" | "logistics";
+}
+
+// =============================================================================
+// Household Ops — Vehicles
+// =============================================================================
+
+export interface Vehicle {
+  id: string;
+  household_id: string;
+  nickname: string;
+  make: string | null;
+  model: string | null;
+  year: number | null;
+  vin: string | null;
+  current_mileage: number | null;
+  notes: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface VehicleCreateRequest {
+  nickname: string;
+  make?: string;
+  model?: string;
+  year?: number;
+  vin?: string;
+  current_mileage?: number;
+  notes?: string;
+}
+
+export interface VehicleServiceItem {
+  id: string;
+  vehicle_id: string;
+  service_type: string;
+  last_performed_at: string | null;
+  last_performed_mileage: number | null;
+  next_due_at: string | null;
+  next_due_mileage: number | null;
+  notes: string | null;
+  created_at: string;
+}
+
+export interface VehicleServiceItemCreateRequest {
+  service_type: string;
+  last_performed_at?: string;
+  last_performed_mileage?: number;
+  next_due_at?: string;
+  next_due_mileage?: number;
+  notes?: string;
+}
+
+// =============================================================================
+// Household Ops — Home Projects
+// =============================================================================
+
+export type HomeProjectStatus = "planned" | "in_progress" | "completed" | "on_hold";
+export type HomeProjectArea = "interior" | "exterior" | "yard" | "other";
+
+export interface HomeProject {
+  id: string;
+  household_id: string;
+  title: string;
+  description: string | null;
+  status: HomeProjectStatus;
+  estimated_cost: number | null;
+  area: HomeProjectArea;
+  checklist_id: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface HomeProjectCreateRequest {
+  title: string;
+  description?: string;
+  status?: HomeProjectStatus;
+  estimated_cost?: number;
+  area?: HomeProjectArea;
+}
+
+// =============================================================================
+// Household Ops — Trips
+// =============================================================================
+
+export type TripStatus = "planning" | "booked" | "completed" | "cancelled";
+
+export interface TripPlan {
+  id: string;
+  household_id: string;
+  destination: string;
+  start_date: string | null;
+  end_date: string | null;
+  estimated_budget: number | null;
+  packing_checklist_id: string | null;
+  notes: string | null;
+  status: TripStatus;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface TripPlanCreateRequest {
+  destination: string;
+  start_date?: string;
+  end_date?: string;
+  estimated_budget?: number;
+  notes?: string;
+}
+
+// =============================================================================
+// Household Ops — Automation Routines
+// =============================================================================
+
+export type RoutineTriggerType = "time" | "checklist" | "reminder";
+
+export interface RoutineStep {
+  id: string;
+  label: string;
+  trigger_type: RoutineTriggerType;
+  trigger_value: string | null;
+  order: number;
+}
+
+export interface AutomationRoutine {
+  id: string;
+  household_id: string;
+  name: string;
+  steps: RoutineStep[];
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface AutomationRoutineCreateRequest {
+  name: string;
+  steps?: Array<{
+    label: string;
+    trigger_type: RoutineTriggerType;
+    trigger_value?: string;
+    order: number;
+  }>;
+}
+
+// =============================================================================
+// Google Calendar Integration
+// =============================================================================
+
+export interface GoogleCalendarConnectionStatus {
+  connected: boolean;
+  email: string | null;
+  scopes: string[];
+  connected_at: string | null;
 }
 
 // =============================================================================

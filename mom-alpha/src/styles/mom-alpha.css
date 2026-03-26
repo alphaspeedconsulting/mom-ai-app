@@ -139,11 +139,9 @@
    Component Extensions — previously undefined, now formalized
    ========================================================================== */
 
-/* Bottom navigation — frosted glass, rounded top corners, upward shadow */
+/* Bottom navigation — solid bar so scroll content does not show through */
 .mom-bottom-nav {
-  background: hsl(var(--background) / 0.9);
-  backdrop-filter: blur(40px);
-  -webkit-backdrop-filter: blur(40px);
+  background: hsl(var(--background));
   border-radius: 2.5rem 2.5rem 0 0;
   box-shadow: 0 -8px 24px hsl(var(--shadow-tint));
 }
