@@ -32,6 +32,8 @@ jobs:
       - name: Build
         working-directory: mom-alpha
         run: npm run build
+        env:
+          NEXT_PUBLIC_API_URL: https://household-alpha-api.onrender.com
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
