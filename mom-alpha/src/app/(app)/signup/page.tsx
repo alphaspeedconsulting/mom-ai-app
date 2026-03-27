@@ -1,31 +1,35 @@
 "use client";
 
+import { Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import { AuthForm } from "@/components/auth/AuthForm";
 
-function LoginInner() {
+function SignupInner() {
   const searchParams = useSearchParams();
-  const initialMode = searchParams.get("mode") === "signup" ? "signup" : "login";
+  const promoFromUrl = searchParams.get("promo")?.trim().toUpperCase() ?? "";
   const initialPromo =
-    typeof window !== "undefined"
+    promoFromUrl ||
+    (typeof window !== "undefined"
       ? (localStorage.getItem("mom-alpha-promo-code") ?? "")
-      : "";
+      : "");
 
   return (
     <AuthForm
-      initialMode={initialMode as "login" | "signup"}
+      initialMode="signup"
       initialPromo={initialPromo}
-      showModeToggle={true}
+      showModeToggle={false}
     />
   );
 }
 
-export default function LoginPage() {
+export default function SignupPage() {
   const clientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID ?? "";
   return (
     <GoogleOAuthProvider clientId={clientId}>
-      <LoginInner />
+      <Suspense fallback={<div className="min-h-screen bg-background" />}>
+        <SignupInner />
+      </Suspense>
     </GoogleOAuthProvider>
   );
 }
