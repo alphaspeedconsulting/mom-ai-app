@@ -4,10 +4,12 @@ import { ErrorBoundary } from "@/components/shared/ErrorBoundary";
 import { InstallBanner } from "@/components/shared/InstallBanner";
 import { SyncStatus } from "@/components/shared/SyncStatus";
 import { AmbientBackground } from "@/components/shared/AmbientBackground";
+import { ServiceWorkerRegistration } from "@/components/shared/ServiceWorkerRegistration";
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
   return (
     <ErrorBoundary>
+      <ServiceWorkerRegistration />
       <AmbientBackground variant="subtle" />
       <InstallBanner />
       <OfflineBanner />
