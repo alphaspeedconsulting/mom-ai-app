@@ -4,25 +4,18 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-**Mom.alpha** is a mobile-first AI assistant platform that deploys 8 specialized AI agents to manage household tasks for busy mothers. The product is in **pre-development/planning phase** — no application code exists yet. The repo contains planning documents and design assets.
-
-## Project Status
-
-- **Phase**: Active development — frontend PWA live in `mom-alpha/`, backend live in Cowork repo
-- **Architecture decision**: Option 3 — Cowork Plugin + Render-Only MCP Backend + PWA (Next.js)
-- **Stack**: Next.js 16 PWA (TypeScript, Tailwind CSS 4, Zustand 5, static export), FastAPI backend (Render + Postgres)
-- **Design system**: "Lullaby & Logic" — existing HTML+Tailwind exports in `stitch_screenshot_of_https_mom.alphaspeedai.com/`
+**Mom.alpha** is a mobile-first AI assistant PWA that deploys 8 specialized AI agents to manage household tasks. The frontend lives in `mom-alpha/` (Next.js 16, TypeScript, Tailwind CSS 4, Zustand 5, static export). All business logic lives in a separate Cowork backend (FastAPI + Postgres on Render).
 
 ## Architecture — Four-Repo Model
 
-This repo is the **Mom.AI Next.js PWA frontend only**. The backend and all business logic live elsewhere.
+This repo is the **Mom.AI Next.js PWA frontend only**.
 
 | Repo | What it is |
 |------|-----------|
-| `cowork_plugin/platform files/family_platform/` | Shared Python package — ALL business logic lives here |
-| `cowork_plugin/platform files/mom_alpha/` | FastAPI backend host — thin wrappers + brand config only |
+| `cowork_plugin/platform files/family_platform/` | Shared Python package — ALL business logic |
+| `cowork_plugin/platform files/mom_alpha/` | FastAPI backend — thin wrappers + brand config |
 | `Mom.Ai App/mom-ai-app/mom-alpha/` | **This repo** — Mom.AI Next.js PWA |
-| `Dad.Ai App/dad-ai-app/dad-alpha/` | Dad.AI Next.js PWA — sibling app, same backend |
+| `Dad.Ai App/dad-ai-app/dad-alpha/` | Dad.AI PWA — sibling app, same backend |
 
 ## Rules for This Repo
 
@@ -33,119 +26,85 @@ This repo is the **Mom.AI Next.js PWA frontend only**. The backend and all busin
 - Keep `src/types/api-contracts.ts` in sync with `dad-alpha/src/types/api-contracts.ts`
 
 **DO NOT:**
-- Write business logic, DB queries, or AI pipeline code here — it belongs in `family_platform/`
+- Write business logic, DB queries, or AI pipeline code — it belongs in `family_platform/`
 - Add backend API endpoints here — add them to `family_platform/` then `mom_alpha/`
+- Hardcode any color or font-size values in TSX — use CSS variable tokens only (Layer 4 rule)
 - Let `api-client.ts` or `api-contracts.ts` drift out of sync with dad-alpha's versions
 
-**When a new backend endpoint is added:**
-1. Add the TypeScript type to BOTH `mom-alpha/src/types/api-contracts.ts` AND `dad-alpha/src/types/api-contracts.ts`
-2. Add the client method to BOTH `mom-alpha/src/lib/api-client.ts` AND `dad-alpha/src/lib/api-client.ts`
+**When a new backend endpoint is added**, update BOTH `mom-alpha/src/types/api-contracts.ts` AND `dad-alpha/src/types/api-contracts.ts`, and both `api-client.ts` files.
 
-## Cross-Repo Development Setup
+## Development Commands
 
-### Start the backend (Cowork repo):
 ```bash
+# Frontend (this repo)
+cd mom-alpha
+npm install
+npm run dev          # http://localhost:3000
+npm run build        # static export → mom-alpha/out/
+npm run lint         # ESLint check
+
+# Backend (Cowork repo)
 cd "/Users/miguelfranco/Cowork Basic Plugin Kit/cowork_plugin/platform files/mom_alpha"
 cp .env.example .env          # fill in values
 python scripts/migrate.py     # bootstrap DB (run once)
-./scripts/dev.sh              # starts on http://localhost:8000
+./scripts/dev.sh              # http://localhost:8000
 ```
 
-### Start the frontend (this repo):
-```bash
-cd mom-alpha
-# .env.local already configured for localhost:8000
-npm install
-npm run dev                   # starts on http://localhost:3000
-```
+No unit test framework is configured. E2E tests use Playwright (`tests/e2e/`).
 
-## Key Planning Documents
+## Key Files
+
+| Path | Purpose |
+|------|---------|
+| `src/lib/api-client.ts` | Typed fetch wrapper — all backend calls go here |
+| `src/types/api-contracts.ts` | TypeScript types shared with dad-alpha |
+| `src/styles/index.css` | Layer 1: all CSS custom properties (only file with hardcoded values) |
+| `src/styles/mom-alpha.css` | Layer 3: shared component classes (`.mom-glass-panel`, `.mom-card`) |
+
+## Design System: CSS Zen Garden (4 Layers)
+
+| Layer | File | Rule |
+|---|---|---|
+| 1 | `src/styles/index.css` | Only file with hardcoded colors/sizes — edit here to retheme |
+| 2 | `globals.css` `@theme` block | Maps CSS vars → Tailwind utilities (`bg-brand`, `text-alphaai-sm`) |
+| 3 | `src/styles/mom-alpha.css` | Shared component classes using CSS vars |
+| 4 | Component TSX | Structure only — zero hardcoded colors or font sizes |
+
+**Key tokens**: `--brand` (teal #32695a), `--secondary` (amber), `--tertiary` (lavender)
+**Fonts**: Plus Jakarta Sans (headlines via `--font-headline`), Be Vietnam Pro (body via `--font-body`)
+**Typography**: Use `text-alphaai-*` scale only (3xs → display-lg)
+
+Quality gates before every frontend PR:
+- `/ui-consistency-review` — 11-point CSS Zen Garden compliance audit
+
+## State Management
+
+Zustand stores with `persist` middleware (localStorage). Key stores:
+
+| Store | Key Data |
+|-------|---------|
+| `auth-store.ts` | JWT token, user profile, consent |
+| `household-store.ts` | Family unit, members, co-parent invite, usage |
+| `subscription-store.ts` | Trial/family/pro tier |
+| `calendar-store.ts`, `chat-store.ts`, `tasks-store.ts` | Feature-specific state |
+
+## 8 AI Agents
+
+Calendar Whiz, Grocery Guru, Budget Buddy, School Event Hub, Tutor Finder, Health Hub, Sleep Tracker, Self-Care Reminder. Each has a route at `/agents/<agent-name>/` and a chat interface at `/chat/[agent]`.
+
+## Design Assets
+
+`stitch_screenshot_of_https_mom.alphaspeedai.com/` contains pre-built UI designs with `code.html` (extractable Tailwind markup) and `screen.png` (visual reference) for every screen. Extract components directly from these files when building new UI.
+
+## Deployment
+
+GitHub Actions (`.github/workflows/deploy-pages.yml`) deploys to GitHub Pages on push to `main`. Builds `mom-alpha/`, exports to `mom-alpha/out/`.
+
+## Planning Documents
 
 | File | Purpose |
 |---|---|
-| `prd.md` | Product requirements — personas, user stories, 8 agent definitions, MVP scope |
-| `architecture-analysis.md` | Architecture options scoring, tech stack decisions, integration analysis |
-| `development-plan.md` | Implementation phases, task breakdown, database schema, reuse analysis |
-| `execution-strategy.md` | Session plan, parallelization, quality gates, phase dependency graph |
-| `pricing.md` | Tier structure ($7.99/$14.99), LLM cost routing model, revenue projections |
-
-## Architecture Highlights
-
-- **8 AI agents**: Calendar Whiz, Grocery Guru, Budget Buddy, School Event Hub, Tutor Finder, Health Hub, Sleep Tracker, Self-Care Reminder
-- **Multi-agent orchestration**: Agents share family context via shared DB tables + event bus
-- **LLM Router**: Routes requests to Gemini Flash (60%), GPT-4o mini (25%), or GPT-4o (15%) based on complexity
-- **Intent Classifier**: Deterministic operations bypass LLM entirely (direct DB ops)
-- **~60% backend reuse** from existing Cowork MCP infrastructure (AgentVault license server, MCP HTTP/SSE transport, Google Calendar MCP, Gmail Connector)
-- **Multi-tenant isolation**: All data isolated by `household_id` (app-level RLS)
-
-## Design Assets — `stitch_screenshot_of_https_mom.alphaspeedai.com/`
-
-Pre-built UI designs with **ready-to-use HTML+Tailwind code** and reference screenshots. Each screen has a `code.html` (extractable Tailwind components) and `screen.png` (visual reference).
-
-**Canonical folder name in this repo:** `stitch_screenshot_of_https_mom.alphaspeedai.com/`. If a local Stitch export still uses the legacy path `stitch_screenshot_of_https_mom.ai/`, rename or symlink it when vendoring assets so docs and imports stay aligned.
-
-| Subdirectory | Screen |
-|---|---|
-| `login_sign_up/` | Login & signup flow |
-| `onboarding/` | Family onboarding wizard |
-| `home_marketplace/` | Home dashboard + agent marketplace |
-| `family_calendar/` | Calendar view with conflict detection |
-| `agent_chat/` + `refined_agent_chat/` | Agent chat interface (original + refined) |
-| `tasks_dashboard/` + `refined_tasks_dashboard/` | Task tracking (original + refined) |
-| `budget_buddy_agent/` | Budget Buddy agent screen |
-| `school_event_hub/` | School Event Hub agent screen |
-| `tutor_finder_agent/` | Tutor Finder agent screen |
-| `family_health_hub_agent/` | Health Hub agent screen |
-| `notification_center/` | Notification center |
-| `user_profile/` | User profile & settings |
-| `app_settings/` | App settings |
-| `lullaby_logic/` | Design system spec (`DESIGN.md`) |
-
-Also includes:
-- `mom.alphaspeedai.com_design_plan.html` — Full design plan document
-- `development_handover_document.html` — Development handover reference
-
-When building components, **extract directly from the `code.html` files** — they contain production-ready Tailwind markup matching the "Lullaby & Logic" design system.
-
-## When Development Starts
-
-The development plan specifies:
-```bash
-npx create-next-app@latest mom-ai --typescript --tailwind --app
-```
-With: Zustand (state), SWR or React Query (data fetching), next-pwa (Service Worker)
-
-### Design System: CSS Zen Garden Architecture (Theme-Swappable)
-
-The "Lullaby & Logic" theme uses the AlphaAI CSS Zen Garden 4-layer architecture:
-
-| Layer | File | Purpose |
-|---|---|---|
-| Layer 1 | `src/styles/index.css` | CSS custom properties (`:root` vars) — **only file with hardcoded colors** |
-| Layer 2 | `tailwind.config.ts` | Maps CSS vars to utilities (`bg-brand`, `text-alphaai-sm`) |
-| Layer 3 | `src/styles/mom-alpha.css` | Shared component classes (`.mom-glass-panel`, `.mom-card`, `.mom-chip`) |
-| Layer 4 | Component TSX files | Structure only — **zero hardcoded colors or font sizes** |
-
-**Key tokens**: `--brand` (teal #32695a), `--background`, `--surface`, `--foreground`, `--shadow-tint`
-**Fonts**: Plus Jakarta Sans (headlines), Be Vietnam Pro (body)
-**Typography**: Use `text-alphaai-*` tokens only (3xs through xl)
-**To retheme**: Change only Layer 1 CSS variables — zero component files touched
-
-**Quality gates** (run before every frontend PR):
-- `/ui-consistency-review` — 11-point CSS Zen Garden compliance audit
-- `/alphaai-design-system` — Page blueprints and component patterns
-- `/alphaai-frontend-design` — Creative design within token constraints
-
-### Backend Services (on Render)
-- `agentvault-license-server` — FastAPI: OAuth, JWT, family API routes, call budget tracking
-- `agentvault-mcp` — MCP HTTP/SSE server: agent skills, intent classifier, LLM router
-- `agentvault-db` — Render Postgres ($19/mo)
-
-## MCP Sub-Agent Integration
-
-This project uses AI Product Agents via MCP as sub-agents (see `.cursor/rules/ai-product-agents-subagents.mdc`):
-- **Product Agent** → `generate_prd`
-- **Architecture Agent** → `analyze_architecture`, `review_architecture`, etc.
-- **Orchestrator Agent** → PRD + architecture in one flow (use same `workflow_name`)
-- **Sales Agent** → `generate_pitch`
-- **UI/UX Agent** → `analyze_ui_ux`
+| `prd.md` | Personas, user stories, 8 agent definitions, MVP scope |
+| `architecture-analysis.md` | Architecture decisions, tech stack rationale |
+| `development-plan.md` | Implementation phases, DB schema |
+| `pricing.md` | Tier structure ($7.99/$14.99), LLM cost routing model |
