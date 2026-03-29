@@ -59,12 +59,44 @@ export default function SettingsPage() {
   const [inviteEmail, setInviteEmail] = useState("");
   const [copyState, setCopyState] = useState<"idle" | "copied">("idle");
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
+  const [gcalConnected, setGcalConnected] = useState<boolean | null>(null);
+  const [gcalEmail, setGcalEmail] = useState<string | null>(null);
+  const [gcalLoading, setGcalLoading] = useState(false);
 
   useEffect(() => {
     if (!user?.household_id) return;
     fetchMembers(user.household_id);
     fetchUsage(user.household_id);
   }, [user?.household_id, fetchMembers, fetchUsage]);
+
+  useEffect(() => {
+    api.googleCalendar.connectionStatus()
+      .then((s) => { setGcalConnected(s.connected); setGcalEmail(s.email); })
+      .catch(() => setGcalConnected(false));
+  }, []);
+
+  const handleGcalConnect = async () => {
+    setGcalLoading(true);
+    try {
+      const { auth_url } = await api.googleCalendar.connect();
+      window.location.href = auth_url;
+    } catch {
+      setGcalLoading(false);
+    }
+  };
+
+  const handleGcalDisconnect = async () => {
+    setGcalLoading(true);
+    try {
+      await api.googleCalendar.disconnect();
+      setGcalConnected(false);
+      setGcalEmail(null);
+    } catch {
+      // leave state as-is
+    } finally {
+      setGcalLoading(false);
+    }
+  };
 
   const handleUpgrade = async (tier: "family" | "family_pro") => {
     setIsCheckingOut(true);
@@ -412,8 +444,31 @@ export default function SettingsPage() {
           <div className="mom-card divide-y divide-border-subtle/10">
             <div className="p-4 flex items-center gap-3">
               <span className="material-symbols-outlined text-[20px] text-brand">calendar_month</span>
-              <span className="text-alphaai-sm text-foreground flex-1">Google Calendar</span>
-              <span className="mom-chip text-alphaai-3xs">Connected</span>
+              <div className="flex-1 min-w-0">
+                <span className="text-alphaai-sm text-foreground">Google Calendar</span>
+                {gcalEmail && (
+                  <p className="text-alphaai-3xs text-muted-foreground truncate">{gcalEmail}</p>
+                )}
+              </div>
+              {gcalConnected === null ? (
+                <span className="text-alphaai-3xs text-muted-foreground">Checking…</span>
+              ) : gcalConnected ? (
+                <button
+                  onClick={handleGcalDisconnect}
+                  disabled={gcalLoading}
+                  className="text-alphaai-xs font-semibold text-error disabled:opacity-40"
+                >
+                  {gcalLoading ? "…" : "Disconnect"}
+                </button>
+              ) : (
+                <button
+                  onClick={handleGcalConnect}
+                  disabled={gcalLoading}
+                  className="text-alphaai-xs font-semibold text-brand disabled:opacity-40"
+                >
+                  {gcalLoading ? "…" : "Connect"}
+                </button>
+              )}
             </div>
             <div className="p-4 flex items-center gap-3">
               <span className="material-symbols-outlined text-[20px] text-muted-foreground">mail</span>
