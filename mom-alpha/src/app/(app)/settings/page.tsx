@@ -62,6 +62,10 @@ export default function SettingsPage() {
   const [gcalConnected, setGcalConnected] = useState<boolean | null>(null);
   const [gcalEmail, setGcalEmail] = useState<string | null>(null);
   const [gcalLoading, setGcalLoading] = useState(false);
+  const [gcalCalendars, setGcalCalendars] = useState<import("@/types/api-contracts").GoogleCalendarItem[]>([]);
+  const [gcalSelected, setGcalSelected] = useState<Set<string>>(new Set());
+  const [gcalSaving, setGcalSaving] = useState(false);
+  const [gcalExpanded, setGcalExpanded] = useState(false);
 
   useEffect(() => {
     if (!user?.household_id) return;
@@ -71,7 +75,18 @@ export default function SettingsPage() {
 
   useEffect(() => {
     api.googleCalendar.connectionStatus()
-      .then((s) => { setGcalConnected(s.connected); setGcalEmail(s.email); })
+      .then((s) => {
+        setGcalConnected(s.connected);
+        setGcalEmail(s.email);
+        if (s.connected) {
+          api.googleCalendar.listCalendars()
+            .then((r) => {
+              setGcalCalendars(r.calendars);
+              setGcalSelected(new Set(r.calendars.filter((c) => c.selected).map((c) => c.id)));
+            })
+            .catch(() => {});
+        }
+      })
       .catch(() => setGcalConnected(false));
   }, []);
 
@@ -91,10 +106,32 @@ export default function SettingsPage() {
       await api.googleCalendar.disconnect();
       setGcalConnected(false);
       setGcalEmail(null);
+      setGcalCalendars([]);
+      setGcalSelected(new Set());
+      setGcalExpanded(false);
     } catch {
       // leave state as-is
     } finally {
       setGcalLoading(false);
+    }
+  };
+
+  const handleGcalToggle = (id: string) => {
+    setGcalSelected((prev) => {
+      const next = new Set(prev);
+      next.has(id) ? next.delete(id) : next.add(id);
+      return next;
+    });
+  };
+
+  const handleGcalSave = async () => {
+    setGcalSaving(true);
+    try {
+      await api.googleCalendar.selectCalendars(Array.from(gcalSelected));
+    } catch {
+      // surface silently for now
+    } finally {
+      setGcalSaving(false);
     }
   };
 
@@ -442,32 +479,81 @@ export default function SettingsPage() {
             Connected Accounts
           </h3>
           <div className="mom-card divide-y divide-border-subtle/10">
-            <div className="p-4 flex items-center gap-3">
-              <span className="material-symbols-outlined text-[20px] text-brand">calendar_month</span>
-              <div className="flex-1 min-w-0">
-                <span className="text-alphaai-sm text-foreground">Google Calendar</span>
-                {gcalEmail && (
-                  <p className="text-alphaai-3xs text-muted-foreground truncate">{gcalEmail}</p>
+            <div>
+              {/* Header row */}
+              <div className="p-4 flex items-center gap-3">
+                <span className="material-symbols-outlined text-[20px] text-brand">calendar_month</span>
+                <div className="flex-1 min-w-0">
+                  <span className="text-alphaai-sm text-foreground">Google Calendar</span>
+                  {gcalEmail && (
+                    <p className="text-alphaai-3xs text-muted-foreground truncate">{gcalEmail}</p>
+                  )}
+                </div>
+                {gcalConnected === null ? (
+                  <span className="text-alphaai-3xs text-muted-foreground">Checking…</span>
+                ) : gcalConnected ? (
+                  <div className="flex items-center gap-3">
+                    {gcalCalendars.length > 0 && (
+                      <button
+                        onClick={() => setGcalExpanded((v) => !v)}
+                        className="text-alphaai-xs font-semibold text-brand"
+                      >
+                        {gcalExpanded ? "Done" : "Manage"}
+                      </button>
+                    )}
+                    <button
+                      onClick={handleGcalDisconnect}
+                      disabled={gcalLoading}
+                      className="text-alphaai-xs font-semibold text-error disabled:opacity-40"
+                    >
+                      {gcalLoading ? "…" : "Disconnect"}
+                    </button>
+                  </div>
+                ) : (
+                  <button
+                    onClick={handleGcalConnect}
+                    disabled={gcalLoading}
+                    className="text-alphaai-xs font-semibold text-brand disabled:opacity-40"
+                  >
+                    {gcalLoading ? "…" : "Connect"}
+                  </button>
                 )}
               </div>
-              {gcalConnected === null ? (
-                <span className="text-alphaai-3xs text-muted-foreground">Checking…</span>
-              ) : gcalConnected ? (
-                <button
-                  onClick={handleGcalDisconnect}
-                  disabled={gcalLoading}
-                  className="text-alphaai-xs font-semibold text-error disabled:opacity-40"
-                >
-                  {gcalLoading ? "…" : "Disconnect"}
-                </button>
-              ) : (
-                <button
-                  onClick={handleGcalConnect}
-                  disabled={gcalLoading}
-                  className="text-alphaai-xs font-semibold text-brand disabled:opacity-40"
-                >
-                  {gcalLoading ? "…" : "Connect"}
-                </button>
+
+              {/* Calendar selector — shown when expanded */}
+              {gcalConnected && gcalExpanded && gcalCalendars.length > 0 && (
+                <div className="border-t border-border-subtle/10 px-4 pb-4 pt-3 space-y-2">
+                  <p className="text-alphaai-3xs text-muted-foreground uppercase tracking-wide font-semibold mb-3">
+                    Select calendars to sync
+                  </p>
+                  {gcalCalendars.map((cal) => (
+                    <label key={cal.id} className="flex items-center gap-3 cursor-pointer py-1">
+                      <input
+                        type="checkbox"
+                        checked={gcalSelected.has(cal.id)}
+                        onChange={() => handleGcalToggle(cal.id)}
+                        className="w-4 h-4 rounded accent-brand flex-shrink-0"
+                      />
+                      <div
+                        className="w-3 h-3 rounded-full flex-shrink-0"
+                        style={{ backgroundColor: cal.background_color ?? "hsl(var(--brand))" }}
+                      />
+                      <span className="text-alphaai-sm text-foreground flex-1 truncate">
+                        {cal.summary}
+                        {cal.primary && (
+                          <span className="ml-1 text-alphaai-3xs text-muted-foreground">(primary)</span>
+                        )}
+                      </span>
+                    </label>
+                  ))}
+                  <button
+                    onClick={handleGcalSave}
+                    disabled={gcalSaving}
+                    className="mom-btn-primary w-full mt-3 text-alphaai-sm py-2 disabled:opacity-40"
+                  >
+                    {gcalSaving ? "Saving…" : "Save"}
+                  </button>
+                </div>
               )}
             </div>
             <div className="p-4 flex items-center gap-3">

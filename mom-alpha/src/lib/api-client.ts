@@ -30,6 +30,7 @@ import type {
   Expense,
   ExpenseSummary,
   GoogleCalendarConnectionStatus,
+  GoogleCalendarListResponse,
   GroceryList,
   HomeProject,
   HomeProjectCreateRequest,
@@ -507,6 +508,12 @@ export const googleCalendar = {
     }),
   disconnect: () =>
     request<void>("/api/integrations/google-calendar/disconnect", { method: "POST" }),
+  listCalendars: () =>
+    request<GoogleCalendarListResponse>("/api/integrations/google-calendar/calendars"),
+  selectCalendars: (calendar_ids: string[]) =>
+    request<void>("/api/integrations/google-calendar/calendars/select", {
+      method: "POST", body: JSON.stringify({ calendar_ids }),
+    }),
 };
 
 // ---------------------------------------------------------------------------

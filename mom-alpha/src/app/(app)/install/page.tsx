@@ -16,12 +16,10 @@ function detectPlatform(): Platform {
 export default function InstallPage() {
   const user = useAuthStore((s) => s.user);
   const { isInstallable, isInstalled, promptInstall } = useInstallPrompt();
-  const [platform, setPlatform] = useState<Platform>("detecting");
+  const [platform] = useState<Platform>(() =>
+    typeof window === "undefined" ? "detecting" : detectPlatform()
+  );
   const [installing, setInstalling] = useState(false);
-
-  useEffect(() => {
-    setPlatform(detectPlatform());
-  }, []);
 
   const getNext = useCallback(() => {
     if (typeof window === "undefined") return "/dashboard";
@@ -121,7 +119,7 @@ export default function InstallPage() {
                 <span className="material-symbols-outlined text-[20px] text-brand">smartphone</span>
               </div>
               <p className="text-alphaai-sm text-foreground">
-                Open <span className="font-semibold text-brand">mom.alphaspeedai.com</span> on your phone's browser to install the app on your home screen.
+                Open <span className="font-semibold text-brand">mom.alphaspeedai.com</span> on your phone&apos;s browser to install the app on your home screen.
               </p>
             </div>
           </div>

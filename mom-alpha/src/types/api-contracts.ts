@@ -745,6 +745,24 @@ export interface GoogleCalendarConnectionStatus {
   connected_at: string | null;
 }
 
+export interface GoogleCalendarItem {
+  id: string;
+  summary: string;          // calendar name
+  description?: string | null;
+  background_color?: string | null;
+  foreground_color?: string | null;
+  primary: boolean;
+  selected: boolean;        // currently synced by Alpha.Mom
+}
+
+export interface GoogleCalendarListResponse {
+  calendars: GoogleCalendarItem[];
+}
+
+export interface GoogleCalendarSelectRequest {
+  calendar_ids: string[];   // IDs to sync; omitted calendars are unselected
+}
+
 // =============================================================================
 // LLM Cost Monitoring (Admin)
 // =============================================================================
