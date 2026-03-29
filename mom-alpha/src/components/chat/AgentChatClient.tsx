@@ -73,7 +73,7 @@ export function AgentChatClient({ agentType }: { agentType: AgentType }) {
               arrow_back
             </span>
           </button>
-          {agent && (
+          {agent ? (
             <>
               <div className="mom-agent-avatar bg-brand-glow/30">
                 <span className="material-symbols-outlined text-[18px] text-brand">
@@ -87,6 +87,15 @@ export function AgentChatClient({ agentType }: { agentType: AgentType }) {
                 <p className="text-alphaai-3xs text-muted-foreground">
                   {isTyping ? "Thinking..." : "Online"}
                 </p>
+              </div>
+            </>
+          ) : (
+            /* Skeleton shown while agents store is loading (BUG-013) */
+            <>
+              <div className="w-9 h-9 rounded-full bg-surface-container animate-pulse" />
+              <div className="flex-1 min-w-0 space-y-1">
+                <div className="h-4 w-28 bg-surface-container rounded animate-pulse" />
+                <div className="h-3 w-12 bg-surface-container rounded animate-pulse" />
               </div>
             </>
           )}
@@ -228,25 +237,106 @@ export function AgentChatClient({ agentType }: { agentType: AgentType }) {
   );
 }
 
+/**
+ * Lightweight markdown renderer.
+ *
+ * Handles: ### headings (h3–h5), **bold**, *italic*, `inline code`,
+ *          unordered bullets (- / * / •), ordered lists (1.), blank-line
+ *          paragraph breaks, and <br> line-breaks within paragraphs.
+ *
+ * Downsizes headings (h3→h5) so they fit inside chat bubbles without
+ * dominating the layout.
+ */
 function renderMarkdown(content: string): React.ReactNode {
   const lines = content.split("\n");
-  return lines.map((line, i) => {
+  const nodes: React.ReactNode[] = [];
+
+  lines.forEach((line, i) => {
+    // Blank line → paragraph break (extra spacing)
+    if (line.trim() === "") {
+      nodes.push(<div key={`gap-${i}`} className="h-2" />);
+      return;
+    }
+
+    // Headings: # ## ###
+    const headingMatch = line.match(/^(#{1,3})\s+(.+)$/);
+    if (headingMatch) {
+      const level = headingMatch[1].length;
+      // Downsize: # → h5, ## → h5, ### → h5 (fits chat bubble)
+      const cls =
+        level === 1
+          ? "font-semibold text-alphaai-base mt-2 mb-1"
+          : level === 2
+          ? "font-semibold text-alphaai-sm mt-2 mb-1"
+          : "font-semibold text-alphaai-xs mt-1 mb-0.5";
+      nodes.push(
+        <div key={i} className={cls}>
+          {renderInline(headingMatch[2])}
+        </div>
+      );
+      return;
+    }
+
+    // Unordered list: lines starting with - * •
+    if (/^[\-\*•]\s+/.test(line)) {
+      nodes.push(
+        <div key={i} className="flex gap-1.5 items-start">
+          <span className="mt-0.5 shrink-0 text-muted-foreground">•</span>
+          <span>{renderInline(line.replace(/^[\-\*•]\s+/, ""))}</span>
+        </div>
+      );
+      return;
+    }
+
+    // Ordered list: lines starting with 1. 2. etc.
+    const olMatch = line.match(/^(\d+)\.\s+(.+)$/);
+    if (olMatch) {
+      nodes.push(
+        <div key={i} className="flex gap-1.5 items-start">
+          <span className="mt-0.5 shrink-0 text-muted-foreground text-alphaai-xs">
+            {olMatch[1]}.
+          </span>
+          <span>{renderInline(olMatch[2])}</span>
+        </div>
+      );
+      return;
+    }
+
+    // Normal text line with <br> between consecutive non-blank lines
     const isLast = i === lines.length - 1;
-    // Split on **bold** spans
-    const parts = line.split(/(\*\*[^*]+\*\*)/g);
-    const rendered = parts.map((part, j) =>
-      part.startsWith("**") && part.endsWith("**") ? (
-        <strong key={j}>{part.slice(2, -2)}</strong>
-      ) : (
-        part
-      )
-    );
-    return (
+    nodes.push(
       <span key={i}>
-        {rendered}
+        {renderInline(line)}
         {!isLast && <br />}
       </span>
     );
+  });
+
+  return <>{nodes}</>;
+}
+
+/** Render inline markdown: **bold**, *italic*, `code` */
+function renderInline(text: string): React.ReactNode {
+  // Split on **bold**, *italic*, `code` spans (in that priority order)
+  const parts = text.split(/(\*\*[^*]+\*\*|\*[^*]+\*|`[^`]+`)/g);
+  return parts.map((part, j) => {
+    if (part.startsWith("**") && part.endsWith("**")) {
+      return <strong key={j}>{part.slice(2, -2)}</strong>;
+    }
+    if (part.startsWith("*") && part.endsWith("*") && part.length > 2) {
+      return <em key={j}>{part.slice(1, -1)}</em>;
+    }
+    if (part.startsWith("`") && part.endsWith("`") && part.length > 2) {
+      return (
+        <code
+          key={j}
+          className="bg-surface-container text-alphaai-xs px-1 py-0.5 rounded font-mono"
+        >
+          {part.slice(1, -1)}
+        </code>
+      );
+    }
+    return part;
   });
 }
 

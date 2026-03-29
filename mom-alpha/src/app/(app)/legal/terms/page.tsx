@@ -1,18 +1,19 @@
 "use client";
 
-import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 export default function TermsOfServicePage() {
+  const router = useRouter();
   return (
     <div className="min-h-screen bg-background">
       <header className="fixed top-0 left-0 right-0 z-40 bg-background border-b border-border-subtle/10">
         <div className="max-w-lg mx-auto px-4 py-3 flex items-center gap-3">
-          <Link
-            href="/settings"
+          <button
+            onClick={() => window.history.length > 1 ? router.back() : router.push("/settings")}
             className="w-9 h-9 rounded-full bg-surface-container flex items-center justify-center"
           >
             <span className="material-symbols-outlined text-[20px] text-foreground">arrow_back</span>
-          </Link>
+          </button>
           <h1 className="font-headline text-alphaai-lg font-bold text-foreground">Terms of Service</h1>
         </div>
       </header>

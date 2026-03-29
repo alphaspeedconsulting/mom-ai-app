@@ -61,12 +61,12 @@ export default function ProfilePage() {
         <section className="mom-card p-5 flex items-center gap-4">
           <div className="w-16 h-16 mom-gradient-hero rounded-full flex items-center justify-center">
             <span className="text-on-primary font-headline font-bold text-alphaai-xl">
-              {user?.name?.charAt(0) ?? "M"}
+              {(user?.name && user.name !== "User") ? user.name.charAt(0).toUpperCase() : (user?.email?.charAt(0).toUpperCase() ?? "?")}
             </span>
           </div>
           <div className="flex-1 min-w-0">
             <h2 className="font-headline text-alphaai-lg font-bold text-foreground truncate">
-              {user?.name ?? "User"}
+              {(user?.name && user.name !== "User") ? user.name : (user?.email?.split("@")[0] ?? "My Account")}
             </h2>
             <p className="text-alphaai-xs text-muted-foreground truncate">
               {user?.email}
@@ -88,19 +88,31 @@ export default function ProfilePage() {
             <h3 className="font-headline text-alphaai-md font-semibold text-foreground">
               AI Call Budget
             </h3>
-            <span className="text-alphaai-xs text-muted-foreground">
-              {budget?.used ?? 0} / {budget?.limit ?? 0}
-            </span>
+            {budget && budget.limit > 0 && (
+              <span className="text-alphaai-xs text-muted-foreground">
+                {budget.used} / {budget.limit}
+              </span>
+            )}
           </div>
-          <div className="mom-progress-track">
-            <div
-              className="mom-progress-fill"
-              style={{ width: `${Math.min(budgetPct, 100)}%` }}
-            />
-          </div>
-          <p className="text-alphaai-xs text-muted-foreground mt-2">
-            {budget?.remaining ?? 0} calls remaining this month
-          </p>
+          {budget && budget.limit > 0 ? (
+            <>
+              <div className="mom-progress-track">
+                <div
+                  className="mom-progress-fill"
+                  style={{ width: `${Math.min(budgetPct, 100)}%` }}
+                />
+              </div>
+              <p className="text-alphaai-xs text-muted-foreground mt-2">
+                {budget.remaining} calls remaining this month
+              </p>
+            </>
+          ) : (
+            <p className="text-alphaai-xs text-muted-foreground">
+              {user?.tier === "trial"
+                ? "AI calls are included during your free trial."
+                : "Usage data will appear once your plan is active."}
+            </p>
+          )}
           {budget?.is_over_budget && (
             <div className="mom-banner mt-3 bg-error/10">
               <span className="material-symbols-outlined text-[20px] text-error">warning</span>
@@ -150,7 +162,13 @@ export default function ProfilePage() {
               ))}
             </div>
           ) : (
-            <p className="text-alphaai-sm text-muted-foreground">No family members added yet.</p>
+            <div className="mom-card p-5 text-center">
+              <span className="material-symbols-outlined text-[32px] text-muted-foreground mb-2 block">group_add</span>
+              <p className="text-alphaai-sm text-muted-foreground mb-3">No family members added yet.</p>
+              <Link href="/onboarding/household" className="text-alphaai-sm text-brand font-medium underline underline-offset-2">
+                Set up your household
+              </Link>
+            </div>
           )}
         </section>
 

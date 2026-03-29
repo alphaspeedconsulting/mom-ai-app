@@ -13,7 +13,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
       <AmbientBackground variant="subtle" />
       <InstallBanner />
       <OfflineBanner />
-      <div className="min-h-screen bg-background pb-20">
+      <div className="mom-page-content min-h-screen bg-background pb-24">
         {children}
       </div>
       <SyncStatus />

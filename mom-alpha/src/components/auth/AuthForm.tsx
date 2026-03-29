@@ -145,9 +145,9 @@ export function AuthForm({ initialMode, initialPromo, showModeToggle }: AuthForm
               />
               <span className="text-alphaai-sm text-foreground">
                 I agree to the{" "}
-                <Link href="/legal/terms" className="text-brand font-medium underline underline-offset-2">
+                <a href="/legal/terms" target="_blank" rel="noopener noreferrer" className="text-brand font-medium underline underline-offset-2">
                   Terms of Service
-                </Link>
+                </a>
               </span>
             </label>
 
@@ -160,9 +160,9 @@ export function AuthForm({ initialMode, initialPromo, showModeToggle }: AuthForm
               />
               <span className="text-alphaai-sm text-foreground">
                 I agree to the{" "}
-                <Link href="/legal/privacy" className="text-brand font-medium underline underline-offset-2">
+                <a href="/legal/privacy" target="_blank" rel="noopener noreferrer" className="text-brand font-medium underline underline-offset-2">
                   Privacy Policy
-                </Link>
+                </a>
               </span>
             </label>
 
@@ -175,9 +175,9 @@ export function AuthForm({ initialMode, initialPromo, showModeToggle }: AuthForm
               />
               <span className="text-alphaai-sm text-foreground">
                 I acknowledge the{" "}
-                <Link href="/legal/ai-disclosure" className="text-brand font-medium underline underline-offset-2">
+                <a href="/legal/ai-disclosure" target="_blank" rel="noopener noreferrer" className="text-brand font-medium underline underline-offset-2">
                   AI Disclosure
-                </Link>{" "}
+                </a>{" "}
                 — AI suggestions are not professional advice
               </span>
             </label>

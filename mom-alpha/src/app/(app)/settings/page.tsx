@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { useAuthStore } from "@/stores/auth-store";
 import { useSubscriptionStore } from "@/stores/subscription-store";
 import { useHouseholdStore } from "@/stores/household-store";
@@ -22,8 +23,14 @@ const BRAND_LABELS = {
 } as const;
 
 export default function SettingsPage() {
+  const router = useRouter();
   const user = useAuthStore((s) => s.user);
   const logout = useAuthStore((s) => s.logout);
+
+  const handleLogout = () => {
+    logout();
+    router.replace("/login");
+  };
   const { openPortal, startCheckout } = useSubscriptionStore();
   const {
     members,
@@ -452,7 +459,7 @@ export default function SettingsPage() {
                   Cancel
                 </button>
                 <button
-                  onClick={logout}
+                  onClick={handleLogout}
                   className="flex-1 mom-btn-primary text-alphaai-xs py-2 bg-error border-error hover:bg-error/90"
                 >
                   Sign Out

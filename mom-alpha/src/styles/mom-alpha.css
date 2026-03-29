@@ -285,8 +285,10 @@
   z-index: 0;
 }
 
-/* Ensure page content renders above ambient layer */
-.mom-ambient-root ~ * {
+/* Ensure the main page content wrapper renders above the ambient layer.
+   Scoped to .mom-page-content only — the old `~ *` selector was catching
+   BottomNav and overriding its `position: fixed` with `position: relative`. */
+.mom-page-content {
   position: relative;
   z-index: 1;
 }
