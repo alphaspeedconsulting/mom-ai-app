@@ -51,6 +51,7 @@ export default function SettingsPage() {
   });
   const [inviteEmail, setInviteEmail] = useState("");
   const [copyState, setCopyState] = useState<"idle" | "copied">("idle");
+  const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
 
   useEffect(() => {
     if (!user?.household_id) return;
@@ -438,13 +439,35 @@ export default function SettingsPage() {
 
         {/* Danger zone */}
         <section className="space-y-2">
-          <button
-            onClick={logout}
-            className="w-full mom-card p-4 flex items-center gap-3 hover:bg-error/5 transition-colors"
-          >
-            <span className="material-symbols-outlined text-[20px] text-error">logout</span>
-            <span className="text-alphaai-sm font-medium text-error">Sign Out</span>
-          </button>
+          {showLogoutConfirm ? (
+            <div className="mom-card p-4 space-y-3">
+              <p className="text-alphaai-sm font-medium text-foreground">
+                Are you sure you want to sign out?
+              </p>
+              <div className="flex gap-2">
+                <button
+                  onClick={() => setShowLogoutConfirm(false)}
+                  className="flex-1 mom-btn-outline text-alphaai-xs py-2"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={logout}
+                  className="flex-1 mom-btn-primary text-alphaai-xs py-2 bg-error border-error hover:bg-error/90"
+                >
+                  Sign Out
+                </button>
+              </div>
+            </div>
+          ) : (
+            <button
+              onClick={() => setShowLogoutConfirm(true)}
+              className="w-full mom-card p-4 flex items-center gap-3 hover:bg-error/5 transition-colors"
+            >
+              <span className="material-symbols-outlined text-[20px] text-error">logout</span>
+              <span className="text-alphaai-sm font-medium text-error">Sign Out</span>
+            </button>
+          )}
         </section>
       </main>
     </div>

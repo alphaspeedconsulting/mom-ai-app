@@ -93,9 +93,10 @@ export default function DashboardPage() {
           </div>
           <Link
             href="/notifications"
+            aria-label="Open notifications"
             className="w-10 h-10 rounded-full bg-surface-container flex items-center justify-center relative"
           >
-            <span className="material-symbols-outlined text-[20px] text-foreground">
+            <span className="material-symbols-outlined text-[20px] text-foreground" aria-hidden="true">
               notifications
             </span>
             <span className="absolute top-1 right-1 w-2.5 h-2.5 bg-error rounded-full border-2 border-background" />
@@ -120,10 +121,12 @@ export default function DashboardPage() {
 
         {/* Search */}
         <div className="relative">
-          <span className="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-[20px] text-muted-foreground">
+          <label htmlFor="agent-search" className="sr-only">Search agents</label>
+          <span className="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-[20px] text-muted-foreground" aria-hidden="true">
             search
           </span>
           <input
+            id="agent-search"
             type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}

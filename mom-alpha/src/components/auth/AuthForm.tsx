@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import Link from "next/link";
+import { useFocusTrap } from "@/hooks/use-focus-trap";
 import { GoogleLogin } from "@react-oauth/google";
 import type { CredentialResponse } from "@react-oauth/google";
 import { useAuthStore } from "@/stores/auth-store";
@@ -47,6 +48,9 @@ export function AuthForm({ initialMode, initialPromo, showModeToggle }: AuthForm
 
   const login = useAuthStore((s) => s.login);
   const allConsented = consent.terms && consent.privacy && consent.ai_disclosure;
+
+  const consentModalRef = useRef<HTMLDivElement>(null);
+  useFocusTrap(consentModalRef, showConsent);
 
   const handleGoogleSuccess = async (credentialResponse: CredentialResponse) => {
     if (!credentialResponse.credential) return;
@@ -111,12 +115,19 @@ export function AuthForm({ initialMode, initialPromo, showModeToggle }: AuthForm
   if (showConsent) {
     return (
       <div className="min-h-screen flex items-center justify-center px-4">
-        <div className="mom-glass-panel border border-white/30 p-8 w-full max-w-md">
+        <div
+          ref={consentModalRef}
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="consent-title"
+          tabIndex={-1}
+          className="mom-glass-panel border border-white/30 p-8 w-full max-w-md outline-none"
+        >
           <div className="text-center mb-8">
             <span className="material-symbols-outlined text-[48px] text-brand mb-4 block">
               verified_user
             </span>
-            <h1 className="font-headline text-alphaai-2xl font-bold text-foreground mb-2">
+            <h1 id="consent-title" className="font-headline text-alphaai-2xl font-bold text-foreground mb-2">
               Almost there!
             </h1>
             <p className="text-alphaai-sm text-muted-foreground">
@@ -194,7 +205,7 @@ export function AuthForm({ initialMode, initialPromo, showModeToggle }: AuthForm
             </span>
           </div>
           <h1 className="font-headline text-alphaai-3xl font-extrabold text-foreground">
-            {mode === "signup" ? "Join the Sanctuary" : "Welcome Back"}
+            {mode === "signup" ? "Join Alpha.Mom" : "Welcome Back"}
           </h1>
           <p className="text-alphaai-sm text-muted-foreground mt-1">
             {mode === "signup"
@@ -223,16 +234,22 @@ export function AuthForm({ initialMode, initialPromo, showModeToggle }: AuthForm
 
           <form onSubmit={handleEmailSubmit} className="space-y-3">
             {mode === "signup" && (
-              <input
-                type="text"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                placeholder="Full name"
-                required
-                className="mom-input"
-              />
+              <>
+                <label htmlFor="auth-name" className="sr-only">Full name</label>
+                <input
+                  id="auth-name"
+                  type="text"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  placeholder="Full name"
+                  required
+                  className="mom-input"
+                />
+              </>
             )}
+            <label htmlFor="auth-email" className="sr-only">Email address</label>
             <input
+              id="auth-email"
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
@@ -241,7 +258,9 @@ export function AuthForm({ initialMode, initialPromo, showModeToggle }: AuthForm
               className="mom-input"
             />
             <div className="relative">
+              <label htmlFor="auth-password" className="sr-only">Password</label>
               <input
+                id="auth-password"
                 type={showPassword ? "text" : "password"}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
@@ -253,6 +272,7 @@ export function AuthForm({ initialMode, initialPromo, showModeToggle }: AuthForm
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
+                aria-label={showPassword ? "Hide password" : "Show password"}
                 className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground"
               >
                 <span className="material-symbols-outlined text-[20px]">

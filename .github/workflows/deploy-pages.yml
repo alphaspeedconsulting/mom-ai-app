@@ -38,6 +38,12 @@ jobs:
       - name: Build static export
         run: npm run build
         working-directory: mom-alpha
+        env:
+          NEXT_PUBLIC_API_URL: https://household-alpha-api.onrender.com
+          NEXT_PUBLIC_GOOGLE_CLIENT_ID: ${{ secrets.NEXT_PUBLIC_GOOGLE_CLIENT_ID }}
+          NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: ${{ secrets.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY }}
+          NEXT_PUBLIC_VAPID_PUBLIC_KEY: ${{ secrets.NEXT_PUBLIC_VAPID_PUBLIC_KEY }}
+          NEXT_PUBLIC_BETA_MODE: "false"
 
       - name: Disable Jekyll (allow _next and dotfiles)
         run: touch out/.nojekyll

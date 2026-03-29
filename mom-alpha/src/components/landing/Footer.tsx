@@ -20,6 +20,7 @@ export function Footer() {
                 src="/bannerlogo.png"
                 alt="AlphaSpeed AI"
                 className="h-4 w-auto opacity-60"
+                loading="lazy"
               />
             </div>
           </div>

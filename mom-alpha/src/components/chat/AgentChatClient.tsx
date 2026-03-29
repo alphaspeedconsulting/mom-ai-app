@@ -66,9 +66,10 @@ export function AgentChatClient({ agentType }: { agentType: AgentType }) {
         <div className="max-w-lg mx-auto px-4 py-3 flex items-center gap-3">
           <button
             onClick={() => router.back()}
+            aria-label="Go back"
             className="w-9 h-9 rounded-full bg-surface-container flex items-center justify-center"
           >
-            <span className="material-symbols-outlined text-[20px] text-foreground">
+            <span className="material-symbols-outlined text-[20px] text-foreground" aria-hidden="true">
               arrow_back
             </span>
           </button>
@@ -89,8 +90,8 @@ export function AgentChatClient({ agentType }: { agentType: AgentType }) {
               </div>
             </>
           )}
-          <button className="w-9 h-9 rounded-full bg-surface-container flex items-center justify-center">
-            <span className="material-symbols-outlined text-[20px] text-foreground">
+          <button aria-label="More options" className="w-9 h-9 rounded-full bg-surface-container flex items-center justify-center">
+            <span className="material-symbols-outlined text-[20px] text-foreground" aria-hidden="true">
               more_vert
             </span>
           </button>

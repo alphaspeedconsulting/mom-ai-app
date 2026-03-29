@@ -5,6 +5,7 @@ Thumbs.db
 # Local AI editor config (never commit — may contain paths and permissions)
 .claude/
 .cursor/
+.cursorrules
 
 # Environment and secrets
 .env
