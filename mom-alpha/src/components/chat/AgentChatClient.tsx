@@ -11,7 +11,7 @@ import type { AgentType, QuickAction } from "@/types/api-contracts";
 export function AgentChatClient({ agentType }: { agentType: AgentType }) {
   const router = useRouter();
 
-  const { messages, isTyping, sendMessage } = useChatStore();
+  const { messages, isTyping, sendMessage, loadHistory } = useChatStore();
   const { agents, fetchAgents } = useAgentsStore();
   const householdId = useAuthStore((s) => s.user?.household_id);
   const tier = useAuthStore((s) => s.user?.tier);
@@ -31,6 +31,11 @@ export function AgentChatClient({ agentType }: { agentType: AgentType }) {
 
   const agent = agents.find((a) => a.agent_type === agentType);
   const chatMessages = messages[agentType] || [];
+
+  // Restore persisted chat history from IndexedDB
+  useEffect(() => {
+    loadHistory(agentType);
+  }, [agentType, loadHistory]);
 
   useEffect(() => {
     if (agents.length === 0) fetchAgents();

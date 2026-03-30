@@ -13,10 +13,11 @@
 import type { AgentType } from "@/types/api-contracts";
 
 const DB_NAME = "mom-alpha-memory";
-const DB_VERSION = 1;
+const DB_VERSION = 2;
 
 const MEMORY_STORE = "memory_items";
 const CHAT_HISTORY_STORE = "chat_history";
+const INBOX_STORE = "inbox";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -38,6 +39,22 @@ export interface MemoryItem {
   source_agent?: AgentType;    // Which agent created this (if auto-extracted)
   pinned: boolean;             // User-pinned items surface first
   created_at: string;          // ISO datetime
+  updated_at: string;
+}
+
+// ---------------------------------------------------------------------------
+// Inbox Tasks — Quick capture → delegate to agent → track completion
+// ---------------------------------------------------------------------------
+
+export type InboxStatus = "captured" | "delegated" | "in_progress" | "done" | "dismissed";
+
+export interface InboxItem {
+  id: string;
+  content: string;                   // What needs to be done
+  assigned_agent?: AgentType;        // Which agent is handling it
+  status: InboxStatus;
+  agent_response?: string;           // What the agent reported back
+  created_at: string;
   updated_at: string;
 }
 
@@ -72,6 +89,13 @@ function openDB(): Promise<IDBDatabase> {
         const store = db.createObjectStore(CHAT_HISTORY_STORE, { keyPath: "id" });
         store.createIndex("agent_type", "agent_type", { unique: false });
         store.createIndex("timestamp", "timestamp", { unique: false });
+      }
+
+      if (!db.objectStoreNames.contains(INBOX_STORE)) {
+        const store = db.createObjectStore(INBOX_STORE, { keyPath: "id" });
+        store.createIndex("status", "status", { unique: false });
+        store.createIndex("assigned_agent", "assigned_agent", { unique: false });
+        store.createIndex("updated_at", "updated_at", { unique: false });
       }
     };
 
@@ -283,4 +307,102 @@ export async function clearAllChatHistory(): Promise<void> {
     tx.oncomplete = () => resolve();
     tx.onerror = () => reject(tx.error);
   });
+}
+
+// ---------------------------------------------------------------------------
+// Inbox — Quick capture → Delegate → Track
+// ---------------------------------------------------------------------------
+
+export async function addInboxItem(
+  content: string,
+  assignedAgent?: AgentType
+): Promise<InboxItem> {
+  const db = await openDB();
+  const now = new Date().toISOString();
+  const item: InboxItem = {
+    id: `inbox_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`,
+    content,
+    assigned_agent: assignedAgent,
+    status: assignedAgent ? "delegated" : "captured",
+    created_at: now,
+    updated_at: now,
+  };
+
+  const tx = db.transaction(INBOX_STORE, "readwrite");
+  tx.objectStore(INBOX_STORE).put(item);
+
+  return new Promise((resolve, reject) => {
+    tx.oncomplete = () => resolve(item);
+    tx.onerror = () => reject(tx.error);
+  });
+}
+
+export async function updateInboxItem(
+  id: string,
+  patch: Partial<Pick<InboxItem, "status" | "assigned_agent" | "agent_response" | "content">>
+): Promise<void> {
+  const db = await openDB();
+  const tx = db.transaction(INBOX_STORE, "readwrite");
+  const store = tx.objectStore(INBOX_STORE);
+  const req = store.get(id);
+
+  return new Promise((resolve, reject) => {
+    req.onsuccess = () => {
+      if (!req.result) {
+        reject(new Error(`Inbox item ${id} not found`));
+        return;
+      }
+      store.put({
+        ...req.result,
+        ...patch,
+        updated_at: new Date().toISOString(),
+      });
+      tx.oncomplete = () => resolve();
+      tx.onerror = () => reject(tx.error);
+    };
+    req.onerror = () => reject(req.error);
+  });
+}
+
+export async function deleteInboxItem(id: string): Promise<void> {
+  const db = await openDB();
+  const tx = db.transaction(INBOX_STORE, "readwrite");
+  tx.objectStore(INBOX_STORE).delete(id);
+
+  return new Promise((resolve, reject) => {
+    tx.oncomplete = () => resolve();
+    tx.onerror = () => reject(tx.error);
+  });
+}
+
+export async function getAllInboxItems(): Promise<InboxItem[]> {
+  const db = await openDB();
+  const tx = db.transaction(INBOX_STORE, "readonly");
+  const req = tx.objectStore(INBOX_STORE).getAll();
+
+  return new Promise((resolve, reject) => {
+    req.onsuccess = () => {
+      const items = (req.result as InboxItem[]) ?? [];
+      // Active items first (captured, delegated, in_progress), then done/dismissed
+      items.sort((a, b) => {
+        const statusOrder: Record<InboxStatus, number> = {
+          captured: 0,
+          delegated: 1,
+          in_progress: 2,
+          done: 3,
+          dismissed: 4,
+        };
+        const diff = statusOrder[a.status] - statusOrder[b.status];
+        if (diff !== 0) return diff;
+        return b.updated_at.localeCompare(a.updated_at);
+      });
+      resolve(items);
+    };
+    req.onerror = () => reject(req.error);
+  });
+}
+
+export async function getActiveInboxCount(): Promise<number> {
+  const items = await getAllInboxItems();
+  return items.filter((i) => i.status !== "done" && i.status !== "dismissed").length;
 }

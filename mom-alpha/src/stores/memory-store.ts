@@ -2,50 +2,55 @@
 
 import { create } from "zustand";
 import type { AgentType } from "@/types/api-contracts";
-import type { MemoryCategory, MemoryItem } from "@/lib/memory-store";
+import type { MemoryCategory, MemoryItem, InboxItem } from "@/lib/memory-store";
 import * as memoryDB from "@/lib/memory-store";
 
 interface MemoryState {
   items: MemoryItem[];
+  inbox: InboxItem[];
   isLoaded: boolean;
 
-  /** Load all memories from IndexedDB into state */
+  /** Load all memories + inbox from IndexedDB into state */
   hydrate: () => Promise<void>;
 
-  /** Add a new memory item */
+  // --- Memory CRUD ---
   add: (
     item: Omit<MemoryItem, "id" | "created_at" | "updated_at">
   ) => Promise<MemoryItem>;
-
-  /** Update an existing memory */
   update: (
     id: string,
     patch: Partial<Pick<MemoryItem, "content" | "category" | "tags" | "pinned">>
   ) => Promise<void>;
-
-  /** Delete a memory */
   remove: (id: string) => Promise<void>;
-
-  /** Search memories by text */
   search: (query: string) => Promise<MemoryItem[]>;
-
-  /** Get context relevant to a specific agent */
   getAgentContext: (agentType: AgentType) => Promise<MemoryItem[]>;
-
-  /** Get memories by category */
   getByCategory: (category: MemoryCategory) => Promise<MemoryItem[]>;
+
+  // --- Inbox CRUD ---
+  addInbox: (content: string, assignedAgent?: AgentType) => Promise<InboxItem>;
+  updateInbox: (
+    id: string,
+    patch: Partial<Pick<InboxItem, "status" | "assigned_agent" | "agent_response" | "content">>
+  ) => Promise<void>;
+  removeInbox: (id: string) => Promise<void>;
+  refreshInbox: () => Promise<void>;
 }
 
 export const useMemoryStore = create<MemoryState>()((set, get) => ({
   items: [],
+  inbox: [],
   isLoaded: false,
 
   hydrate: async () => {
     if (get().isLoaded) return;
-    const items = await memoryDB.getAllMemories();
-    set({ items, isLoaded: true });
+    const [items, inbox] = await Promise.all([
+      memoryDB.getAllMemories(),
+      memoryDB.getAllInboxItems(),
+    ]);
+    set({ items, inbox, isLoaded: true });
   },
 
+  // --- Memory ---
   add: async (item) => {
     const record = await memoryDB.addMemory(item);
     set((state) => ({ items: [record, ...state.items] }));
@@ -69,8 +74,34 @@ export const useMemoryStore = create<MemoryState>()((set, get) => ({
   },
 
   search: (query) => memoryDB.searchMemories(query),
-
   getAgentContext: (agentType) => memoryDB.getAgentContext(agentType),
-
   getByCategory: (category) => memoryDB.getMemoriesByCategory(category),
+
+  // --- Inbox ---
+  addInbox: async (content, assignedAgent) => {
+    const item = await memoryDB.addInboxItem(content, assignedAgent);
+    set((state) => ({ inbox: [item, ...state.inbox] }));
+    return item;
+  },
+
+  updateInbox: async (id, patch) => {
+    await memoryDB.updateInboxItem(id, patch);
+    set((state) => ({
+      inbox: state.inbox.map((item) =>
+        item.id === id
+          ? { ...item, ...patch, updated_at: new Date().toISOString() }
+          : item
+      ),
+    }));
+  },
+
+  removeInbox: async (id) => {
+    await memoryDB.deleteInboxItem(id);
+    set((state) => ({ inbox: state.inbox.filter((item) => item.id !== id) }));
+  },
+
+  refreshInbox: async () => {
+    const inbox = await memoryDB.getAllInboxItems();
+    set({ inbox });
+  },
 }));

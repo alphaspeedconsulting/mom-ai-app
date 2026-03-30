@@ -7,7 +7,9 @@ import {
   saveChatMessage,
   getChatHistory,
   clearChatHistory as clearPersistedChat,
+  getAgentContext,
 } from "@/lib/memory-store";
+import { processAgentResponse } from "@/lib/memory-extract";
 
 interface ChatMessage {
   id: string;
@@ -80,10 +82,21 @@ export const useChatStore = create<ChatState>()((set, get) => ({
     });
 
     try {
+      // Fetch on-device memory context relevant to this agent
+      const memories = await getAgentContext(agentType);
+      const memoryContext = memories.length > 0
+        ? memories.slice(0, 20).map((m) => ({
+            category: m.category,
+            content: m.content,
+            pinned: m.pinned,
+          }))
+        : undefined;
+
       const response = await api.chat.send({
         household_id: householdId,
         agent_type: agentType,
         message,
+        memory_context: memoryContext,
       });
 
       const agentMsg: ChatMessage = {
@@ -111,6 +124,9 @@ export const useChatStore = create<ChatState>()((set, get) => ({
         content: agentMsg.content,
         timestamp: agentMsg.timestamp,
       });
+
+      // Auto-extract insights from the agent response into local memory
+      processAgentResponse(agentType, response.content, response.memory_hints);
     } catch (e) {
       const errorMsg: ChatMessage = {
         id: `msg_${Date.now()}_error`,

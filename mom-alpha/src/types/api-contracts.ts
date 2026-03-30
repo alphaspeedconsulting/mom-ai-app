@@ -124,6 +124,15 @@ export interface ChatRequest {
   agent_type: AgentType;
   message: string;
   media_urls?: string[];
+  /** On-device memory context injected from local memory store */
+  memory_context?: MemoryContextItem[];
+}
+
+/** Lightweight memory item sent alongside chat messages for agent context */
+export interface MemoryContextItem {
+  category: string;
+  content: string;
+  pinned: boolean;
 }
 
 export interface ChatResponse {
@@ -135,6 +144,8 @@ export interface ChatResponse {
   tokens_used: number | null;
   quick_actions?: QuickAction[];
   task_id?: string; // if a background task was created
+  /** Optional memory hints extracted by backend for local storage */
+  memory_hints?: Array<{ category: string; content: string }>;
 }
 
 export interface QuickAction {
