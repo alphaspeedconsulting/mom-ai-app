@@ -766,6 +766,7 @@ The landing page has **zero dependencies** on the app backend, database, or agen
 
 5. **Testing**
    - Unit tests: intent classifier (500 messages), LLM router, call budget, deterministic handlers
+   - **Agent intent tests**: see `docs/cowork-agent-testing-guide-2026-03-29.md` for per-agent intent routing matrix, expected reply patterns, quick actions, and cross-agent boundary tests
    - Integration tests: OAuth → JWT → API, Stripe webhook → tier → budget, chat → intent → response
    - E2E tests (Playwright): full user journey across all 13 pages
    - Accessibility: Lighthouse WCAG 2.1 AA audit on all pages (target: ≥90)
@@ -803,6 +804,17 @@ The landing page has **zero dependencies** on the app backend, database, or agen
 - **Production deploy config**: `.github/workflows/ci.yml` updated with `frontend` job (lint + typecheck + build) and `backend` job (Python 3.11 + pytest); `backend/render.yaml` Render Blueprint (web service + Postgres, env vars, health check, auto-deploy); deploy.yml for GitHub Pages already configured from Phase 0
 - **Build verification**: `npm run build` succeeds — 22 routes (19 app pages + sitemap + not-found + global-error); TypeScript compiles cleanly
 - **Backend tests**: 170 pre-existing + 4 security middleware + 30 Phase 7 = 204 tests passing (0 failures)
+
+**Post-launch agent quality issues identified (2026-03-28 assessment — see `docs/agent-quality-assessment-2026-03-28.md`):**
+- **P1 — BUG-005**: Tier gating not enforced at `/api/chat` — trial users can access Sleep Tracker, Health Hub, Tutor Finder
+- **P1 — BUG-006**: `POST /api/calendar` returns 503 — DB write operations failing for event creation
+- **P2 — BUG-009**: Calendar Whiz always routes to static CRUD handler, never reaches LLM for planning or event creation
+- **P2 — BUG-010**: Budget Buddy always returns static $0.00, never routes to LLM for spending analysis
+- **P2 — BUG-011**: Grocery Guru "add items" returns empty list instead of adding items
+- **P2 — BUG-012**: Tutor Finder misclassifies all requests as `filter_search`, returns generic prompt
+- **Root cause**: Intent classifier is agent-blind — it classifies globally without considering `agent_type`, causing cross-domain handler misfires
+- **Fix target**: `family_platform/ai/intent_classifier.py` (add `agent_type` param), `family_platform/ai/prompts/` (add per-agent system prompts), `family_platform/chat/router.py` (add tier check)
+- **Full acceptance criteria and test matrix**: `docs/cowork-agent-testing-guide-2026-03-29.md`
 
 ---
 

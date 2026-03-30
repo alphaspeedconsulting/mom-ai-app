@@ -970,11 +970,22 @@ Three Claude Code skills enforce CSS Zen Garden compliance:
 - [ ] Deterministic operations (add to list, set reminder, view calendar) respond in < 200ms with zero LLM calls
 - [ ] Intelligent operations (meal planning, receipt OCR, email parsing) route to LLM and respond within 2 seconds (P95)
 - [ ] Intent classifier correctly routes ≥ 90% of messages to the right tier (deterministic vs intelligent)
+- [ ] **Intent classifier receives `agent_type` as input** — a grocery message sent to Budget Buddy must not fire the `list_crud` handler
+- [ ] **Agent boundary enforcement**: each agent redirects out-of-domain queries to the correct agent by name; the wrong handler never fires for a cross-domain message
+- [ ] **Static CRUD handlers only return canned data when genuinely empty** — when data is empty, the LLM acknowledges it conversationally ("No events yet — want to add one?"), never a hardcoded string
+- [ ] **Calendar Whiz** routes planning, event creation, and conflict detection requests to the LLM (not static handler)
+- [ ] **Budget Buddy** routes spending analysis requests to the LLM with real expense data (not static $0.00)
+- [ ] **Grocery Guru** "add items" intent actually adds items via the list API and confirms; does not return empty list
+- [ ] **Tutor Finder** `filter_search` intent returns tutor matches and a formatted response; does not return "What would you like to search for?" without context
+- [ ] **Self-Care Reminder** does not answer out-of-domain queries (no recipes, no budget advice); redirects to correct agent
+- [ ] All agents include agent-specific XML-structured system prompts with: persona, scope boundary, output format, and 2+ few-shot examples
 - [ ] Agent typing indicator shows only during LLM calls (deterministic ops are instant)
-- [ ] Quick action chips appear contextually after agent responses
+- [ ] Quick action chips appear contextually after agent responses using standardized `action` strings
 - [ ] Rich media (images, documents) renders inline in chat
 - [ ] Voice input (speech-to-text) transcribes and sends correctly
 - [ ] LLM call count increments only for intelligent operations, not deterministic ones
+- [ ] **Tier gating enforced at `/api/chat`**: trial users receive a 402 response with upgrade CTA when accessing Sleep Tracker, Health Hub, or Tutor Finder
+- [ ] Full agent behavior specification: see `docs/cowork-agent-testing-guide-2026-03-29.md`
 
 ### AC-4: Family Calendar
 - [ ] Monthly and weekly views render correctly with toggle
