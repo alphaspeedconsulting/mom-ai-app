@@ -52,6 +52,10 @@ export interface InboxItem {
   id: string;
   content: string;                   // What needs to be done
   assigned_agent?: AgentType;        // Which agent is handling it
+  assigned_to?: string;              // operator_id — assigned co-parent
+  assigned_to_name?: string;         // Display name of assignee
+  created_by_name?: string;          // Who created this task
+  shared_id?: string;                // Backend ID when synced to shared inbox
   status: InboxStatus;
   agent_response?: string;           // What the agent reported back
   created_at: string;
@@ -339,7 +343,7 @@ export async function addInboxItem(
 
 export async function updateInboxItem(
   id: string,
-  patch: Partial<Pick<InboxItem, "status" | "assigned_agent" | "agent_response" | "content">>
+  patch: Partial<Pick<InboxItem, "status" | "assigned_agent" | "agent_response" | "content" | "assigned_to" | "assigned_to_name" | "created_by_name" | "shared_id">>
 ): Promise<void> {
   const db = await openDB();
   const tx = db.transaction(INBOX_STORE, "readwrite");

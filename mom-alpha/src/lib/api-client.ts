@@ -47,6 +47,10 @@ import type {
   SelfCareCreateRequest,
   SelfCareListResponse,
   SelfCareReminder,
+  SharedInboxCreateRequest,
+  SharedInboxItem,
+  SharedInboxListResponse,
+  SharedInboxUpdateRequest,
   SyncDigestResponse,
   SleepHistoryResponse,
   SleepLogRequest,
@@ -534,4 +538,28 @@ export const analytics = {
 export const admin = {
   llmCosts: (period?: string) =>
     request<LLMCostReport>(`/api/admin/llm-costs${period ? `?period=${period}` : ""}`),
+};
+
+// ---------------------------------------------------------------------------
+// Shared Inbox — Co-parent task sharing
+// ---------------------------------------------------------------------------
+
+export const sharedInbox = {
+  list: (householdId: string) =>
+    request<SharedInboxListResponse>(`/api/household/${householdId}/inbox`),
+
+  create: (householdId: string, body: SharedInboxCreateRequest) =>
+    request<SharedInboxItem>(`/api/household/${householdId}/inbox`, {
+      method: "POST",
+      body: JSON.stringify(body),
+    }),
+
+  update: (householdId: string, itemId: string, body: SharedInboxUpdateRequest) =>
+    request<SharedInboxItem>(`/api/household/${householdId}/inbox/${itemId}`, {
+      method: "PUT",
+      body: JSON.stringify(body),
+    }),
+
+  delete: (householdId: string, itemId: string) =>
+    request<void>(`/api/household/${householdId}/inbox/${itemId}`, { method: "DELETE" }),
 };

@@ -30,7 +30,7 @@ interface MemoryState {
   addInbox: (content: string, assignedAgent?: AgentType) => Promise<InboxItem>;
   updateInbox: (
     id: string,
-    patch: Partial<Pick<InboxItem, "status" | "assigned_agent" | "agent_response" | "content">>
+    patch: Partial<Pick<InboxItem, "status" | "assigned_agent" | "agent_response" | "content" | "assigned_to" | "assigned_to_name" | "created_by_name" | "shared_id">>
   ) => Promise<void>;
   removeInbox: (id: string) => Promise<void>;
   refreshInbox: () => Promise<void>;

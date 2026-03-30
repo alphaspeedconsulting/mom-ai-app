@@ -8,6 +8,7 @@ import { useAuthStore } from "@/stores/auth-store";
 import type { AgentCard, AgentType } from "@/types/api-contracts";
 import { CardSkeleton } from "@/components/shared/Skeleton";
 import { EmptyState } from "@/components/shared/EmptyState";
+import { DailyBrief } from "@/components/dashboard/DailyBrief";
 
 const CATEGORIES = ["All", "Household", "Education", "Wellness"] as const;
 
@@ -105,19 +106,8 @@ export default function DashboardPage() {
       </header>
 
       <main className="max-w-lg mx-auto px-4 pt-24 pb-24 space-y-6">
-        {/* Editorial gradient hero card */}
-        <div className="mom-gradient-hero rounded-2xl p-6 text-on-primary overflow-hidden relative">
-          <div className="absolute -top-8 -right-8 w-40 h-40 bg-white/10 rounded-full blur-2xl pointer-events-none" />
-          <p className="text-alphaai-xs uppercase tracking-widest opacity-70 mb-1 font-medium">
-            Your Digital Sanctuary
-          </p>
-          <h2 className="font-headline text-alphaai-2xl font-extrabold leading-tight mb-1">
-            Good {getGreeting()},
-          </h2>
-          <p className="text-alphaai-base opacity-80">
-            {user?.name ?? "there"} — your agents are ready.
-          </p>
-        </div>
+        {/* Daily Brief — morning ritual trigger */}
+        <DailyBrief />
 
         {/* Search */}
         <div className="relative">
@@ -284,9 +274,3 @@ function AgentListCard({
   );
 }
 
-function getGreeting(): string {
-  const hour = new Date().getHours();
-  if (hour < 12) return "morning";
-  if (hour < 17) return "afternoon";
-  return "evening";
-}

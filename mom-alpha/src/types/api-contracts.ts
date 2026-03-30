@@ -789,3 +789,43 @@ export interface LLMCostReport {
   };
   alert: boolean; // true if spend > 2x rolling average
 }
+
+// =============================================================================
+// Shared Inbox API — Co-parent task sharing
+// =============================================================================
+
+export type SharedInboxStatus = "captured" | "delegated" | "in_progress" | "done" | "dismissed";
+
+export interface SharedInboxItem {
+  id: string;
+  household_id: string;
+  content: string;
+  assigned_agent?: AgentType;
+  assigned_to?: string;            // operator_id of assigned parent
+  created_by: string;              // operator_id of creator
+  created_by_name: string;         // display name
+  status: SharedInboxStatus;
+  agent_response?: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface SharedInboxCreateRequest {
+  content: string;
+  assigned_agent?: AgentType;
+  assigned_to?: string;            // operator_id — assign to co-parent
+}
+
+export interface SharedInboxUpdateRequest {
+  status?: SharedInboxStatus;
+  assigned_agent?: AgentType;
+  assigned_to?: string;
+  content?: string;
+  agent_response?: string;
+}
+
+export interface SharedInboxListResponse {
+  items: SharedInboxItem[];
+  active_count: number;
+  completed_count: number;
+}
