@@ -10,10 +10,12 @@ import { Footer } from "@/components/landing/Footer";
 import { StickyMobileCTA } from "@/components/landing/StickyMobileCTA";
 import { LandingNav } from "@/components/landing/LandingNav";
 import { StructuredData } from "@/components/landing/StructuredData";
+import { AuthRedirect } from "@/components/landing/AuthRedirect";
 
 export default function LandingPage() {
   return (
     <>
+      <AuthRedirect />
       <StructuredData />
       <LandingNav />
       <main>

@@ -6,7 +6,7 @@ import { useFocusTrap } from "@/hooks/use-focus-trap";
 import { GoogleLogin } from "@react-oauth/google";
 import type { CredentialResponse } from "@react-oauth/google";
 import { useAuthStore } from "@/stores/auth-store";
-import { auth, ApiError } from "@/lib/api-client";
+import { auth, consent as consentApi, ApiError } from "@/lib/api-client";
 import type { AuthResponse } from "@/types/api-contracts";
 
 type AuthMode = "login" | "signup";
@@ -52,14 +52,43 @@ export function AuthForm({ initialMode, initialPromo, showModeToggle }: AuthForm
   const consentModalRef = useRef<HTMLDivElement>(null);
   useFocusTrap(consentModalRef, showConsent);
 
+  /** After auth succeeds, either show consent dialog or go straight to dashboard */
+  const handleAuthSuccess = (response: AuthResponse) => {
+    setAuthPending(response);
+    // Only show consent dialog if the user hasn't accepted current policy versions
+    if (!response.user.consent_current) {
+      setShowConsent(true);
+    } else {
+      // Already consented — log in immediately
+      completeLogin(response);
+    }
+  };
+
+  /** Finish login: store token, redirect appropriately */
+  const completeLogin = (response: AuthResponse) => {
+    login(response.access_token, response.user);
+    if (inviteCode.trim()) {
+      localStorage.setItem("mom-alpha-promo-code", inviteCode.trim().toUpperCase());
+    }
+    if (mode === "signup") {
+      const next = response.user.household_id ? "/dashboard" : "/onboarding/household";
+      window.location.href = `/install?next=${encodeURIComponent(next)}`;
+      return;
+    }
+    if (!response.user.household_id) {
+      window.location.href = "/onboarding/household";
+      return;
+    }
+    window.location.href = "/dashboard";
+  };
+
   const handleGoogleSuccess = async (credentialResponse: CredentialResponse) => {
     if (!credentialResponse.credential) return;
     setSubmitError(null);
     setIsSubmitting(true);
     try {
       const response = await auth.loginGoogle({ id_token: credentialResponse.credential });
-      setAuthPending(response);
-      setShowConsent(true);
+      handleAuthSuccess(response);
     } catch (error) {
       if (error instanceof ApiError) {
         setSubmitError(error.detail);
@@ -85,8 +114,7 @@ export function AuthForm({ initialMode, initialPromo, showModeToggle }: AuthForm
               ...(inviteCode.trim() ? { promotion_code: inviteCode.trim().toUpperCase() } : {}),
             })
           : await auth.loginEmail({ email, password });
-      setAuthPending(response);
-      setShowConsent(true);
+      handleAuthSuccess(response);
     } catch (error) {
       if (error instanceof ApiError) {
         setSubmitError(error.detail);
@@ -98,23 +126,24 @@ export function AuthForm({ initialMode, initialPromo, showModeToggle }: AuthForm
     }
   };
 
-  const handleConsentSubmit = () => {
-    if (authPending) {
-      login(authPending.access_token, authPending.user);
-      if (inviteCode.trim()) {
-        localStorage.setItem("mom-alpha-promo-code", inviteCode.trim().toUpperCase());
-      }
-      if (mode === "signup") {
-        const next = authPending.user.household_id ? "/dashboard" : "/onboarding/household";
-        window.location.href = `/install?next=${encodeURIComponent(next)}`;
-        return;
-      }
-      if (!authPending.user.household_id) {
-        window.location.href = "/onboarding/household";
-        return;
-      }
-    }
-    window.location.href = "/dashboard";
+  const handleConsentSubmit = async () => {
+    if (!authPending) return;
+
+    // Record consent acceptance with the backend (fire-and-forget — don't block login)
+    // Temporarily set the auth token so the API call is authenticated
+    login(authPending.access_token, { ...authPending.user, consent_current: true });
+
+    consentApi.accept({
+      consents: [
+        { document_type: "terms_of_service", document_version: "1.0.0", document_hash: "" },
+        { document_type: "privacy_policy", document_version: "1.0.0", document_hash: "" },
+        { document_type: "ai_disclosure", document_version: "1.0.0", document_hash: "" },
+      ],
+    }).catch(() => {
+      // Non-blocking — consent is recorded locally even if API fails
+    });
+
+    completeLogin({ ...authPending, user: { ...authPending.user, consent_current: true } });
   };
 
   if (showConsent) {
@@ -193,7 +222,7 @@ export function AuthForm({ initialMode, initialPromo, showModeToggle }: AuthForm
             disabled={!allConsented}
             className="mom-btn-primary w-full disabled:opacity-40 disabled:cursor-not-allowed"
           >
-            Continue — Start 7-Day Free Trial
+            {mode === "signup" ? "Continue — Start 7-Day Free Trial" : "Continue"}
           </button>
         </div>
       </div>
