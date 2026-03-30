@@ -78,7 +78,12 @@ export function AuthForm({ initialMode, initialPromo, showModeToggle }: AuthForm
     try {
       const response =
         mode === "signup"
-          ? await auth.signup({ email, password, name: name.trim() || "Mom" })
+          ? await auth.signup({
+              email,
+              password,
+              name: name.trim() || "Mom",
+              ...(inviteCode.trim() ? { promotion_code: inviteCode.trim().toUpperCase() } : {}),
+            })
           : await auth.loginEmail({ email, password });
       setAuthPending(response);
       setShowConsent(true);

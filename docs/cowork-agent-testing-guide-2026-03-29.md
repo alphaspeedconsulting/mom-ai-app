@@ -1,9 +1,11 @@
 # Co-Work Agent Testing Guide — Alpha.Mom
 
-**Date:** 2026-03-29
-**Version:** 1.0
+**Date:** 2026-03-30 (memory, Second Brain, viral growth & Stripe promo signup)
+**Version:** 1.2
 **Audience:** Cowork backend developers testing the family_platform AI layer
 **Environment:** `household-alpha-api.onrender.com` (production) or `localhost:8000` (local)
+
+**Related spec (backend work list):** `mom-alpha/BACKEND-CHANGES.md` — implement and test against that document in the Cowork repo (`family_platform/`, `mom_alpha/`).
 
 ---
 
@@ -12,6 +14,106 @@
 This guide defines the expected behavior for all 8 Mom.alpha agents — covering intent classification, LLM routing decisions, required system prompt constraints, expected reply patterns, quick actions, and cross-agent boundary enforcement. Use it as the acceptance criteria for every backend agent change.
 
 The frontend sends a single `POST /api/chat` request and renders whatever comes back. It does not know or care about the agent's internal routing — it just displays `content` and renders `quick_actions` as chips. All correctness lives in the backend.
+
+**Second Brain (2026-03):** The PWA now ships a local-first memory layer, daily brief, quick capture, shared inbox UI, and injects optional `memory_context` on every chat. The backend must accept that payload without error, fold it into prompts when present, and may return `memory_hints` for higher-quality on-device memory. Shared inbox sync requires new household inbox APIs — see `BACKEND-CHANGES.md` and [Second Brain: what Co-Work must test now](#second-brain-what-co-work-must-test-now).
+
+**Viral growth & Stripe promos (2026-03):** The PWA includes a referral loop (`/referral`, dashboard banner), share links, weekly win sharing, and `POST /api/analytics/viral-event` tracking. Signup accepts an optional Stripe **promotion code** (`promotion_code` on `POST /api/auth/signup`), deep-linked via `/signup?promo=CODE` and persisted in `localStorage` (`mom-alpha-promo-code`) for checkout. Settings validates codes via Stripe and passes `promotion_code` into `POST /api/stripe/checkout`. See [Growth, referrals, and Stripe promo codes](#growth-referrals-and-stripe-promo-codes).
+
+---
+
+## Second Brain: what Co-Work must test now
+
+Use this as the **current** acceptance layer on top of the per-agent sections below. The frontend types are canonical: `mom-alpha/src/types/api-contracts.ts` (`ChatRequest`, `ChatResponse`, `MemoryContextItem`).
+
+### A. `POST /api/chat` — memory fields
+
+| Area | What to verify |
+|------|----------------|
+| **Request tolerance** | Backend accepts requests with or without `memory_context`. Missing field = same behavior as before. Extra unknown fields should follow existing API policy (`extra` handling). |
+| **`memory_context` shape** | Each item: `category` (string), `content` (string), `pinned` (boolean). Frontend caps ~20 items; backend should truncate or prioritize if more arrive. |
+| **Prompt injection** | When `memory_context` is non-empty, facts appear in the model context (pinned first), and agent replies reflect them when relevant (e.g. allergy, routine). |
+| **No server persistence of device memory** | Memory context is ephemeral per request — do not require DB writes for `memory_context` itself. |
+| **`memory_hints` response** | Optional array of `{ "category", "content" }`. When implemented, hints should be distinct facts worth saving, not full message echo. Frontend merges hints with local regex extraction. |
+| **Regression** | All existing agent tests still pass when `memory_context` is omitted. |
+
+**Manual / integration ideas:** Send the same prompt with empty vs populated `memory_context` (e.g. pinned `"Jake is allergic to peanuts"`) and confirm the answer changes appropriately for Grocery Guru / Health Hub.
+
+### B. Shared household inbox — APIs (when implemented)
+
+Until `BACKEND-CHANGES.md` is implemented, the inbox is local-only in the PWA. After deploy, test:
+
+| Endpoint | Verify |
+|----------|--------|
+| `GET /api/household/{household_id}/inbox` | Authz for household members; shape matches spec; ordering (active first); stale completed items filtered per spec. |
+| `POST /api/household/{household_id}/inbox` | `created_by` from JWT; optional `assigned_agent`, `assigned_to`. |
+| `PUT /api/household/{household_id}/inbox/{item_id}` | Status transitions, `agent_response` updates. |
+| `DELETE .../inbox/{item_id}` | 204; both parents can delete per spec. |
+| **Co-parent** | Two operators in one household see the same items after sync. |
+
+### C. `GET /api/household/{household_id}/members`
+
+Frontend uses this for delegate pickers (inbox, capture). Confirm response includes `operator_id`, `name`, `email`, `role`, `parent_brand`, `membership_status` as in `BACKEND-CHANGES.md`.
+
+### D. Priority order for Co-Work QA
+
+1. **P0:** Chat accepts `memory_context` without 4xx/5xx; prompt uses it when present.  
+2. **P1:** `memory_hints` emitted where extraction is implemented; valid JSON shape.  
+3. **P1:** Inbox CRUD + cross-user visibility (after migration + routes ship).  
+4. **P2:** Push / notifications when `assigned_to` is set (if in scope).
+
+---
+
+## Growth, referrals, and Stripe promo codes
+
+Canonical types: `mom-alpha/src/types/api-contracts.ts` — `AuthSignupRequest`, `PromotionValidateResponse`, `CheckoutTrialRequest`, `ReferralInfo`, `ReferralRedeemRequest`, `ViralEvent`, share link types.
+
+### A. Signup + promo (email path)
+
+| Area | What to verify |
+|------|----------------|
+| **`POST /api/auth/signup`** | Request body may include optional `promotion_code` (string). Omitted = unchanged behavior. Present = backend associates Stripe promotion / referral logic per product rules. |
+| **Case normalization** | Frontend uppercases promo for signup and storage; backend should accept consistent matching (document whether codes are case-sensitive). |
+| **Deep link** | `/signup?promo=LAUNCH2026` pre-fills the signup promo field (`signup/page.tsx`). |
+| **`localStorage`** | After consent on signup with a code, client stores `mom-alpha-promo-code` for reuse on Settings → checkout (`AuthForm` + `settings/page.tsx`). |
+
+**Note:** Google OAuth signup on the client does not currently send `promotion_code` in the same way as email signup — if parity is required, track as a product gap.
+
+### B. Stripe validation + checkout
+
+| Endpoint | What to verify |
+|----------|----------------|
+| `GET /api/stripe/validate-promotion-code?code=` | Returns `PromotionValidateResponse`: `valid`, `percent_off` / `amount_off`, `duration`, `name`. Invalid codes: `valid: false` without 5xx. |
+| `POST /api/stripe/checkout` | Body may include optional `promotion_code`. When present, Stripe Checkout session applies discount per Stripe Dashboard promotion settings. |
+
+### C. Referral engine
+
+| Endpoint | What to verify |
+|----------|----------------|
+| `GET /api/referral` (auth) | Returns `ReferralInfo`: `referral_code`, `referral_url`, `friends_invited`, `friends_joined`, `reward_weeks_earned`, `reward_weeks_used`. Powers `/referral` (“Give 2 Weeks, Get 2 Weeks”). |
+| `POST /api/referral/redeem` | Body `{ "referral_code": "..." }`. Used when a new user redeems a friend’s code; response `ReferralRedeemResponse` with `success`, `reward_weeks`, `message`. Test idempotency / duplicate redeem. |
+
+### D. Viral analytics (fire-and-forget)
+
+| Endpoint | What to verify |
+|----------|----------------|
+| `POST /api/analytics/viral-event` (auth) | Body: `event_type` ∈ `share_win_card` \| `share_link` \| `referral_send` \| `caregiver_invite` \| `template_share` \| `emergency_activate`, plus `metadata` object. Should return 2xx even if analytics pipeline is best-effort; must not block UX. |
+
+**Frontend call sites (smoke):** referral share (`/referral`), `ShareButton`, `WinCardRenderer`, caregiver invite flow, template create, emergency sheet — all call `api.viral.track`.
+
+### E. Share links (deep links)
+
+| Endpoint | What to verify |
+|----------|----------------|
+| `POST /api/household/{household_id}/share` | Creates share for `item_type` ∈ `grocery_list` \| `calendar_event` \| `task` \| `win_card` + `item_id`; returns `share_url`, `share_token`, `expires_at`. |
+| `GET /api/share/{token}` | Public or semi-public preview: `SharePreviewResponse` (`title`, `preview_data`, `household_name`, `sharer_name`, …). |
+
+### F. Co-Work QA priority (growth)
+
+1. **P0:** Signup with and without `promotion_code`; invalid code returns clear 4xx with message surfaced in `AuthForm`.  
+2. **P0:** `validate-promotion-code` + checkout with valid Stripe promotion — discount appears on Stripe hosted page.  
+3. **P1:** Referral fetch + share flow; redeem path credits both sides per business rules.  
+4. **P1:** `viral-event` accepts all `event_type` values without 500.  
+5. **P2:** Share create + preview token expiry and authorization.
 
 ---
 
@@ -24,7 +126,10 @@ The frontend sends a single `POST /api/chat` request and renders whatever comes 
   "household_id": "uuid",
   "agent_type": "calendar_whiz",
   "message": "What events do I have this week?",
-  "media_urls": []
+  "media_urls": [],
+  "memory_context": [
+    { "category": "family_fact", "content": "Jake is allergic to peanuts", "pinned": true }
+  ]
 }
 ```
 
@@ -34,6 +139,7 @@ The frontend sends a single `POST /api/chat` request and renders whatever comes 
 | `agent_type` | `AgentType` | ✅ | One of 8 valid values — see below |
 | `message` | string | ✅ | User's raw text input |
 | `media_urls` | string[] | ❌ | Optional image/file attachments (OCR, receipts) |
+| `memory_context` | `MemoryContextItem[]` | ❌ | On-device memory injected by PWA; see [Second Brain](#second-brain-what-co-work-must-test-now) |
 
 ### Response — `ChatResponse`
 
@@ -48,7 +154,10 @@ The frontend sends a single `POST /api/chat` request and renders whatever comes 
   "quick_actions": [
     { "label": "Add event", "action": "create_event", "payload": {} }
   ],
-  "task_id": null
+  "task_id": null,
+  "memory_hints": [
+    { "category": "important_date", "content": "School play is Friday 6pm" }
+  ]
 }
 ```
 
@@ -62,6 +171,7 @@ The frontend sends a single `POST /api/chat` request and renders whatever comes 
 | `tokens_used` | number \| null | `null` for deterministic ops |
 | `quick_actions` | `QuickAction[]` | 0–4 chips shown below the message |
 | `task_id` | string \| null | Set if a background task was created |
+| `memory_hints` | `{ category, content }[]` \| omitted | Optional; PWA persists locally. See [Second Brain](#second-brain-what-co-work-must-test-now) |
 
 ### Valid `AgentType` Values
 
@@ -777,6 +887,22 @@ Before any agent changes are considered complete, all of the following must pass
 - [ ] BUG-006 fixed: `POST /api/calendar` returns 200 (not 503) for event creation
 - [ ] Calendar Whiz's empty calendar response is LLM-generated ("No events yet — want to add one?"), not a hardcoded string
 
+### Second Brain / memory (see `mom-alpha/BACKEND-CHANGES.md`)
+- [ ] `POST /api/chat` succeeds with and without `memory_context`
+- [ ] Non-empty `memory_context` influences replies when facts are relevant (spot-check 2+ agents)
+- [ ] `memory_hints` shape matches contract when feature is enabled; omit or empty when disabled
+- [ ] No regression when `memory_context` is omitted (existing eval scenarios)
+- [ ] After inbox APIs ship: `GET/POST/PUT/DELETE` inbox routes + two-parent visibility
+- [ ] `GET /api/household/{id}/members` matches delegate-picker contract
+
+### Growth / referrals / Stripe promos
+- [ ] `POST /api/auth/signup` with optional `promotion_code` (valid / invalid / omitted)
+- [ ] `GET /api/stripe/validate-promotion-code` returns `PromotionValidateResponse` shape
+- [ ] `POST /api/stripe/checkout` applies `promotion_code` when provided
+- [ ] `GET /api/referral` + `POST /api/referral/redeem` match contract and product rules (2-week reward copy on PWA)
+- [ ] `POST /api/analytics/viral-event` for each `ViralEventType` — no 500s
+- [ ] `POST /api/household/{id}/share` + `GET /api/share/{token}` preview
+
 ---
 
 ## Related Backend Files (Cowork Repo)
@@ -784,12 +910,16 @@ Before any agent changes are considered complete, all of the following must pass
 | File | What to Change |
 |------|---------------|
 | `family_platform/ai/intent_classifier.py` | Add `agent_type` parameter; add agent-scope guard |
-| `family_platform/ai/llm_router.py` | Load prompts from files; add GPT-5.4 config |
+| `family_platform/ai/llm_router.py` | Load prompts from files; add GPT-5.4 config; **inject `memory_context` into prompt path** |
 | `family_platform/ai/prompts/` | 8 XML-structured system prompt files (new) |
 | `family_platform/ai/skills/*.py` | Progressive disclosure context loading |
-| `family_platform/chat/router.py` | Pass `agent_type` to classifier; add tier check |
+| `family_platform/chat/router.py` | Pass `agent_type` to classifier; add tier check; **parse optional `memory_context`; return optional `memory_hints`** |
 | `family_platform/agents/catalog.py` | Verify `required_tier` matches this guide |
+| **New per `BACKEND-CHANGES.md`** | Inbox router + `shared_inbox_items` migration; members response shape QA |
+| Auth / Stripe / growth routers | `promotion_code` on signup; `validate-promotion-code`; checkout promotions; `GET/POST /api/referral`; `POST /api/analytics/viral-event`; household `share` + public share preview |
 
 ---
 
 *This document is the source of truth for agent behavior. Update it when requirements change — do not let tests diverge from this spec.*
+
+**Changelog:** v1.2 — Growth, referrals, Stripe promo signup + validation + checkout, viral-event and share-link testing (2026-03-30). v1.1 — Second Brain section, `memory_context` / `memory_hints` contract updates, inbox + members testing notes, checklist rows (2026-03-30).

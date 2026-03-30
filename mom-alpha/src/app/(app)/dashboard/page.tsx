@@ -9,6 +9,11 @@ import type { AgentCard, AgentType } from "@/types/api-contracts";
 import { CardSkeleton } from "@/components/shared/Skeleton";
 import { EmptyState } from "@/components/shared/EmptyState";
 import { DailyBrief } from "@/components/dashboard/DailyBrief";
+import { WinsTeaser } from "@/components/dashboard/WinsTeaser";
+import { BalanceTeaser } from "@/components/dashboard/BalanceTeaser";
+import { ReferralBanner } from "@/components/dashboard/ReferralBanner";
+import { SeasonalBanner } from "@/components/dashboard/SeasonalBanner";
+import { EmergencyButton } from "@/components/dashboard/EmergencyButton";
 
 const CATEGORIES = ["All", "Household", "Education", "Wellness"] as const;
 
@@ -106,8 +111,23 @@ export default function DashboardPage() {
       </header>
 
       <main className="max-w-lg mx-auto px-4 pt-24 pb-24 space-y-6">
+        {/* Emergency mode alert (if active) */}
+        <EmergencyButton />
+
         {/* Daily Brief — morning ritual trigger */}
         <DailyBrief />
+
+        {/* Weekly Wins teaser */}
+        <WinsTeaser />
+
+        {/* Co-parent balance teaser */}
+        <BalanceTeaser />
+
+        {/* Referral banner */}
+        <ReferralBanner />
+
+        {/* Seasonal pack banner */}
+        <SeasonalBanner />
 
         {/* Search */}
         <div className="relative">

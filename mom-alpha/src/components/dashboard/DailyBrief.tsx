@@ -6,6 +6,7 @@ import { useAuthStore } from "@/stores/auth-store";
 import { useMemoryStore } from "@/stores/memory-store";
 import * as api from "@/lib/api-client";
 import type { CalendarEvent, TaskItem } from "@/types/api-contracts";
+import { VoiceBriefingButton } from "@/components/dashboard/VoiceBriefing";
 
 function getGreeting(): string {
   const hour = new Date().getHours();
@@ -97,6 +98,9 @@ export function DailyBrief() {
       {/* Header with gradient */}
       <div className="mom-gradient-hero px-5 py-4 relative overflow-hidden">
         <div className="absolute -top-6 -right-6 w-28 h-28 bg-white/10 rounded-full blur-2xl pointer-events-none" />
+        <div className="absolute top-4 right-4">
+          <VoiceBriefingButton />
+        </div>
         <p className="text-alphaai-3xs uppercase tracking-widest opacity-70 font-medium text-on-primary">
           Today&apos;s Brief
         </p>

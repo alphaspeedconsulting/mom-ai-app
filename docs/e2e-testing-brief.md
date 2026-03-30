@@ -2,7 +2,10 @@
 
 **Purpose:** Complete reference for Claude Cowork to perform holistic end-to-end testing of the Mom.alpha platform after deploying the agent upgrade plan.
 **Created:** 2026-03-28
+**Updated:** 2026-03-30 — Second Brain, viral growth / referrals, Stripe promo signup & checkout testing hooks
 **Related Plan:** `docs/enhancement-plans/2026-03-28-agent-upgrade-and-testing-plan.md`
+**Second Brain backend checklist:** `mom-alpha/BACKEND-CHANGES.md` (Cowork repo implementation)
+**Agent + memory + growth QA spec:** `docs/cowork-agent-testing-guide-2026-03-29.md` (v1.2+)
 
 ---
 
@@ -123,6 +126,9 @@ curl -X POST http://localhost:8000/api/auth/signup \
 
 # Response: {"access_token":"eyJ...","user":{"id":"...","household_id":"hh-...","tier":"trial"}}
 TOKEN="eyJ..."
+
+# Optional: signup with Stripe promotion code (matches PWA email signup + /signup?promo=)
+# curl ... -d '{"email":"...","password":"...","name":"...","promotion_code":"LAUNCH2026"}'
 
 # 2. Add family members
 curl -X POST http://localhost:8000/api/household \
@@ -262,7 +268,7 @@ Family Members: 4
 
 | Method | Endpoint | Auth | Household | Purpose |
 |--------|----------|------|-----------|---------|
-| POST | `/api/auth/signup` | No | No | Create account |
+| POST | `/api/auth/signup` | No | No | Create account; optional body `promotion_code` (Stripe promo / campaign) |
 | POST | `/api/auth/login` | No | No | Email/password login |
 | POST | `/api/auth/google` | No | No | Google OAuth login |
 | GET | `/api/consent/status` | Yes | No | Check consent documents |
@@ -276,6 +282,21 @@ Family Members: 4
 | POST | `/api/chat` | Yes | Yes | Send message to agent |
 | GET | `/api/agents` | Yes | Yes | List all 8 agents with status |
 | PUT | `/api/agents/toggle` | Yes | Yes | Enable/disable agent |
+
+**`POST /api/chat` contract (Second Brain):** Request may include optional `memory_context` (`category`, `content`, `pinned` per item). Response may include optional `memory_hints` (`category`, `content`). Types: `mom-alpha/src/types/api-contracts.ts`. Backend must accept omitted fields without breaking existing clients.
+
+### Memory & shared inbox (Second Brain) — spec vs implementation
+
+| Method | Endpoint | Status | Notes |
+|--------|----------|--------|--------|
+| — | `POST /api/chat` + `memory_context` / `memory_hints` | **Verify on target env** | PWA sends `memory_context` when user has local memories; Co-Work should test with/without. |
+| GET | `/api/household/{id}/inbox` | **When shipped** | Per `mom-alpha/BACKEND-CHANGES.md` |
+| POST | `/api/household/{id}/inbox` | **When shipped** | Co-parent sync |
+| PUT | `/api/household/{id}/inbox/{item_id}` | **When shipped** | Status + `agent_response` |
+| DELETE | `/api/household/{id}/inbox/{item_id}` | **When shipped** | 204 |
+| GET | `/api/household/{id}/members` | **Existing** | Confirm shape for inbox delegation UI (`operator_id`, `name`, `role`, `parent_brand`, etc.) |
+
+Until inbox routes exist, E2E can still validate **local** Brain / inbox UX on the PWA; **cross-parent inbox** requires backend from `BACKEND-CHANGES.md`.
 
 ### Calendar
 
@@ -360,8 +381,21 @@ Family Members: 4
 
 | Method | Endpoint | Auth | Household | Purpose |
 |--------|----------|------|-----------|---------|
-| POST | `/api/stripe/checkout` | Yes | Yes | Create checkout session |
+| POST | `/api/stripe/checkout` | Yes | Yes | Create checkout session; optional body `promotion_code` |
 | GET | `/api/stripe/portal` | Yes | Yes | Customer portal URL |
+| GET | `/api/stripe/validate-promotion-code?code=` | Yes | No | Validate promo for Settings UI (`PromotionValidateResponse`) |
+
+### Referrals, viral analytics & share links
+
+| Method | Endpoint | Auth | Household | Purpose |
+|--------|----------|------|-----------|---------|
+| GET | `/api/referral` | Yes | No | Referral code, URL, invite/join stats, reward weeks (`ReferralInfo`) |
+| POST | `/api/referral/redeem` | Yes | No | Redeem a friend’s `referral_code` (`ReferralRedeemResponse`) |
+| POST | `/api/analytics/viral-event` | Yes | No | Growth events: `share_win_card`, `share_link`, `referral_send`, `caregiver_invite`, `template_share`, `emergency_activate` |
+| POST | `/api/household/{id}/share` | Yes | Yes | Create deep link for grocery list, calendar event, task, or win card |
+| GET | `/api/share/{token}` | Varies | No | Preview shared item (`SharePreviewResponse`) |
+
+**PWA surfaces:** `/signup?promo=CODE` pre-fills promo; `localStorage` key `mom-alpha-promo-code`; `/referral` (Invite Friends); dashboard `ReferralBanner` → `/referral`; Settings billing section (validate + checkout with stored code). See cowork testing guide § Growth.
 
 ### Household Ops (Family Pro)
 
@@ -955,6 +989,25 @@ After deploying the agent upgrade plan, verify each phase:
 - [ ] Co-parent invite → join → shared household data visible
 - [ ] Over-budget → model downgrade → still responds (degraded)
 
+### Second Brain / memory (PWA + backend parity)
+- [ ] Chat with saved local memories → network tab shows `memory_context` on `POST /api/chat` (when memories exist for that agent)
+- [ ] Backend returns 200 and answers use pinned facts when relevant (compare call with empty `memory_context`)
+- [ ] When backend sends `memory_hints`, response JSON validates and PWA does not error (optional field)
+- [ ] `/memory` page: CRUD local memories; Daily Brief / Quick Capture surfaces on dashboard (smoke)
+- [ ] After inbox API deploy: create item as parent A → visible to parent B; PUT status; DELETE
+- [ ] `GET /api/household/{id}/members` usable for delegate picker (fields per `BACKEND-CHANGES.md`)
+
+### Viral growth & Stripe promo (signup + billing)
+- [ ] Email signup **without** `promotion_code` still succeeds
+- [ ] Email signup **with** valid `promotion_code` succeeds and backend applies intended Stripe/referral association
+- [ ] Invalid promo at signup returns clear error surfaced in UI
+- [ ] `/signup?promo=TESTCODE` pre-fills code; after consent, `mom-alpha-promo-code` appears in localStorage (devtools)
+- [ ] Settings: Apply on `validate-promotion-code` → success UI matches `percent_off` / `amount_off` / `duration`
+- [ ] Checkout from Settings passes `promotion_code` when code present; Stripe hosted page shows discount
+- [ ] `/referral`: loads `GET /api/referral`; Share triggers `POST /api/analytics/viral-event` with `referral_send`
+- [ ] Referral redeem flow: new user `POST /api/referral/redeem` updates rewards per product rules
+- [ ] Smoke: win card / share button / caregiver invite fires `viral-event` without 500
+
 ---
 
 ## 11. Documents to Feed Claude Cowork
@@ -969,6 +1022,8 @@ When initiating the E2E test session, provide Claude Cowork with:
 6. **Feature flag states** — Which flags are enabled in the target environment
 7. **Test account credentials** — Pre-created test user email + password
 8. **Render blueprint** (`render.yaml`) — Service configuration, if testing on Render
+9. **Co-Work agent testing guide** (`docs/cowork-agent-testing-guide-2026-03-29.md`) — v1.2+ includes Second Brain, viral/referral/share APIs, Stripe promo signup + checkout QA
+10. **Backend implementation spec** (`mom-alpha/BACKEND-CHANGES.md`) — what to build in `family_platform/` + `mom_alpha/` for full Second Brain parity
 
 ### Prompt Template: Local Dev Testing
 
@@ -990,7 +1045,9 @@ GOALS:
 6. Confirm safety scenarios pass (forbidden patterns absent, refusal present)
 7. Score each scenario using the quality rubric (pass threshold: 3.5/5.0)
 8. Compare scores against the pre-upgrade baseline
-9. Report any regressions, failures, or unexpected behaviors
+9. Second Brain: `POST /api/chat` accepts optional `memory_context`; responses optionally include `memory_hints`; spot-check that injected facts affect answers when relevant
+10. Growth: signup `promotion_code`, `validate-promotion-code`, checkout with promo, `GET/POST /api/referral`, `viral-event`, share endpoints
+11. Report any regressions, failures, or unexpected behaviors
 
 Feature flags: USE_GPT5=[true/false], USE_TOOLS=[true/false], USE_STRUCTURED_OUTPUT=[true/false]
 Test account: [email] / [password]
@@ -1030,7 +1087,9 @@ GOALS:
 9. Compare scores against the pre-upgrade baseline
 10. Run Section 7.7 (Render Infrastructure) and 7.8 (Cross-Service Integration)
 11. Test PWA requirements on the deployed frontend (Section 7.5)
-12. Report any regressions, failures, or unexpected behaviors
+12. Second Brain: verify production `POST /api/chat` with `memory_context` (use PWA or curl); inbox APIs if deployed per `BACKEND-CHANGES.md`
+13. Growth: production `/signup?promo=…`, referral page, Stripe validation + checkout with real test promotion in Stripe
+14. Report any regressions, failures, or unexpected behaviors
 
 RENDER-SPECIFIC WARNINGS:
 - License server is on free tier — may cold-start (30-60s)
@@ -1074,6 +1133,7 @@ UNEXPECTED DIFFERENCES (investigate as failures):
 - Different quick_actions returned
 - Different error codes for same invalid input
 - CORS blocking on Render that works on local
+- One environment rejects `memory_context` on POST /api/chat while the other accepts it
 
 Test account (local): [email] / [password]
 Test account (Render): [email] / [password]

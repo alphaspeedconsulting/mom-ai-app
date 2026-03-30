@@ -1,11 +1,12 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { useAuthStore } from "@/stores/auth-store";
 import { useSubscriptionStore } from "@/stores/subscription-store";
 import { useHouseholdStore } from "@/stores/household-store";
 import { usePushNotifications } from "@/hooks/use-push-notifications";
+import type { PromotionValidateResponse } from "@/types/api-contracts";
 import * as api from "@/lib/api-client";
 import Link from "next/link";
 
@@ -51,6 +52,9 @@ export default function SettingsPage() {
     return localStorage.getItem("mom-alpha-promo-code") ?? "";
   });
   const [isCheckingOut, setIsCheckingOut] = useState(false);
+  const [promoValidation, setPromoValidation] = useState<PromotionValidateResponse | null>(null);
+  const [promoValidating, setPromoValidating] = useState(false);
+  const [promoError, setPromoError] = useState<string | null>(null);
   const [checkoutStatus] = useState<"success" | "cancelled" | null>(() => {
     if (typeof window === "undefined") return null;
     const value = new URLSearchParams(window.location.search).get("checkout");
@@ -93,7 +97,7 @@ export default function SettingsPage() {
   const handleGcalConnect = async () => {
     setGcalLoading(true);
     try {
-      const { auth_url } = await api.googleCalendar.connect();
+      const { auth_url } = await api.googleCalendar.connect(window.location.href);
       window.location.href = auth_url;
     } catch {
       setGcalLoading(false);
@@ -135,14 +139,43 @@ export default function SettingsPage() {
     }
   };
 
+  const handleValidatePromo = useCallback(async () => {
+    const code = promoCode.trim();
+    if (!code) {
+      setPromoValidation(null);
+      setPromoError(null);
+      return;
+    }
+    setPromoValidating(true);
+    setPromoError(null);
+    try {
+      const result = await api.stripe.validatePromoCode(code);
+      setPromoValidation(result);
+      if (!result.valid) {
+        setPromoError("Invalid or expired code");
+      }
+    } catch {
+      setPromoValidation(null);
+      setPromoError("Could not validate code");
+    } finally {
+      setPromoValidating(false);
+    }
+  }, [promoCode]);
+
   const handleUpgrade = async (tier: "family" | "family_pro") => {
     setIsCheckingOut(true);
     const code = promoCode.trim() || undefined;
-    if (code) localStorage.removeItem("mom-alpha-promo-code");
     try {
+      // startCheckout redirects on success — localStorage cleanup happens after redirect
       await startCheckout(tier, billingCycle, code);
-    } catch {
+      // If we reach here, redirect is happening — safe to clear
+      if (code) localStorage.removeItem("mom-alpha-promo-code");
+    } catch (error) {
       setIsCheckingOut(false);
+      if (error instanceof api.ApiError && error.detail) {
+        setPromoError(error.detail);
+        setPromoValidation(null);
+      }
     }
   };
 
@@ -314,17 +347,48 @@ export default function SettingsPage() {
                   </button>
                 </div>
 
-                {/* Beta promo code — visible only in beta mode */}
-                {(IS_BETA || !!promoCode) && (
-                  <input
-                    type="text"
-                    value={promoCode}
-                    onChange={(e) => setPromoCode(e.target.value.trim().toUpperCase())}
-                    placeholder="Beta invite code (optional)"
-                    className="mom-input text-alphaai-xs"
-                    aria-label="Beta promotion code"
-                  />
-                )}
+                {/* Promo code */}
+                <div className="space-y-2">
+                  <div className="flex gap-2">
+                    <input
+                      type="text"
+                      value={promoCode}
+                      onChange={(e) => {
+                        setPromoCode(e.target.value.trim().toUpperCase());
+                        setPromoValidation(null);
+                        setPromoError(null);
+                      }}
+                      placeholder="Promo code (optional)"
+                      className="mom-input text-alphaai-xs flex-1"
+                      aria-label="Promotion code"
+                    />
+                    <button
+                      onClick={handleValidatePromo}
+                      disabled={!promoCode.trim() || promoValidating}
+                      className="mom-btn-outline text-alphaai-xs py-2 px-3 disabled:opacity-40"
+                    >
+                      {promoValidating ? "..." : "Apply"}
+                    </button>
+                  </div>
+                  {promoValidation?.valid && (
+                    <div className="flex items-center gap-2 p-2 bg-brand/10 rounded-lg border border-brand/20">
+                      <span className="material-symbols-outlined text-[16px] text-brand">check_circle</span>
+                      <p className="text-alphaai-3xs text-brand font-semibold">
+                        {promoValidation.percent_off
+                          ? `${promoValidation.percent_off}% off`
+                          : promoValidation.amount_off
+                            ? `$${(promoValidation.amount_off / 100).toFixed(2)} off`
+                            : "Discount applied"}
+                        {promoValidation.duration === "repeating" && " (recurring)"}
+                        {promoValidation.duration === "once" && " (first payment)"}
+                        {promoValidation.duration === "forever" && " (forever)"}
+                      </p>
+                    </div>
+                  )}
+                  {promoError && (
+                    <p className="text-alphaai-3xs text-error">{promoError}</p>
+                  )}
+                </div>
               </>
             )}
 

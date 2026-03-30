@@ -73,6 +73,25 @@ export interface AuthEmailRequest {
   password: string;
 }
 
+export interface AuthSignupRequest {
+  email: string;
+  password: string;
+  name: string;
+  promotion_code?: string;
+}
+
+// =============================================================================
+// Stripe — Promotion Code Validation
+// =============================================================================
+
+export interface PromotionValidateResponse {
+  valid: boolean;
+  percent_off: number | null;
+  amount_off: number | null;   // in cents
+  duration: string | null;     // "once" | "repeating" | "forever"
+  name: string | null;         // coupon display name
+}
+
 export interface AuthResponse {
   access_token: string;
   token_type: "bearer";
@@ -828,4 +847,330 @@ export interface SharedInboxListResponse {
   items: SharedInboxItem[];
   active_count: number;
   completed_count: number;
+}
+
+// =============================================================================
+// Weekly Wins — Shareable family accomplishment summary
+// =============================================================================
+
+export interface WeeklyWinSummary {
+  household_id: string;
+  week_start: string;
+  week_end: string;
+  meals_planned: number;
+  dollars_saved: number;
+  events_managed: number;
+  tasks_completed: number;
+  agent_interactions: number;
+  top_agent: AgentType;
+  streak_days: number;
+  personal_highlight: string;
+}
+
+// =============================================================================
+// Share Links — Deep links for sharing items externally
+// =============================================================================
+
+export type ShareableItemType = "grocery_list" | "calendar_event" | "task" | "win_card";
+
+export interface ShareLinkRequest {
+  item_type: ShareableItemType;
+  item_id: string;
+}
+
+export interface ShareLinkResponse {
+  share_url: string;
+  share_token: string;
+  expires_at: string;
+}
+
+export interface SharePreviewResponse {
+  item_type: ShareableItemType;
+  title: string;
+  preview_data: Record<string, unknown>;
+  household_name: string;
+  sharer_name: string;
+}
+
+// =============================================================================
+// Viral Analytics — Event tracking for growth metrics
+// =============================================================================
+
+export type ViralEventType =
+  | "share_win_card"
+  | "share_link"
+  | "referral_send"
+  | "caregiver_invite"
+  | "template_share"
+  | "emergency_activate";
+
+export interface ViralEvent {
+  event_type: ViralEventType;
+  metadata: Record<string, unknown>;
+}
+
+// =============================================================================
+// Co-Parent Balance — Task split tracking
+// =============================================================================
+
+export interface CoParentBalanceParent {
+  name: string;
+  operator_id: string;
+  tasks_completed: number;
+  pct: number;
+}
+
+export interface CoParentBalance {
+  household_id: string;
+  period: string;
+  parent_a: CoParentBalanceParent;
+  parent_b: CoParentBalanceParent | null;
+  by_category: Array<{ category: string; parent_a_pct: number; parent_b_pct: number }>;
+  weekly_trend: Array<{ week: string; parent_a_pct: number; parent_b_pct: number }>;
+}
+
+// =============================================================================
+// Referral Engine — Viral growth loop
+// =============================================================================
+
+export interface ReferralInfo {
+  referral_code: string;
+  referral_url: string;
+  friends_invited: number;
+  friends_joined: number;
+  reward_weeks_earned: number;
+  reward_weeks_used: number;
+}
+
+export interface ReferralRedeemRequest {
+  referral_code: string;
+}
+
+export interface ReferralRedeemResponse {
+  success: boolean;
+  reward_weeks: number;
+  message: string;
+}
+
+// =============================================================================
+// Caregiver Mode — Limited access for babysitters, grandparents, nannies
+// =============================================================================
+
+export type CaregiverRole = "babysitter" | "grandparent" | "nanny" | "other";
+
+export type CaregiverPermission =
+  | "calendar"
+  | "emergency"
+  | "allergies"
+  | "medications"
+  | "routines";
+
+export interface CaregiverAccess {
+  id: string;
+  name: string;
+  email: string;
+  role: CaregiverRole;
+  permissions: CaregiverPermission[];
+  active: boolean;
+  created_at: string;
+  last_accessed_at: string | null;
+}
+
+export interface CaregiverInviteRequest {
+  name: string;
+  email: string;
+  role: CaregiverRole;
+  permissions: CaregiverPermission[];
+}
+
+export interface CaregiverViewData {
+  household_name: string;
+  today_schedule: CalendarEvent[];
+  emergency_contacts: Array<{ name: string; phone: string; relationship: string }>;
+  allergies: string[];
+  medications: Array<{ member: string; medication: string; schedule: string }>;
+  routines: Array<{ time: string; description: string }>;
+  family_members: Array<{ name: string; age: number | null }>;
+}
+
+// =============================================================================
+// Family Templates Marketplace — User-generated content flywheel
+// =============================================================================
+
+export type TemplateCategory =
+  | "routine"
+  | "meal_plan"
+  | "chore_chart"
+  | "school_prep"
+  | "bedtime"
+  | "budget"
+  | "other";
+
+export interface TemplateItem {
+  label: string;
+  time?: string;
+  day?: string;
+  order: number;
+}
+
+export interface FamilyTemplate {
+  id: string;
+  title: string;
+  description: string;
+  category: TemplateCategory;
+  author_name: string;
+  uses_count: number;
+  rating: number;
+  items: TemplateItem[];
+  tags: string[];
+  created_at: string;
+}
+
+export interface TemplateCreateRequest {
+  title: string;
+  description: string;
+  category: TemplateCategory;
+  items: TemplateItem[];
+  tags: string[];
+}
+
+export interface TemplateListResponse {
+  templates: FamilyTemplate[];
+  total: number;
+}
+
+// =============================================================================
+// Seasonal Intelligence Packs — Timely, shareable content
+// =============================================================================
+
+export interface SeasonalChecklistItem {
+  text: string;
+  agent_type?: AgentType;
+}
+
+export interface SeasonalPack {
+  id: string;
+  title: string;
+  description: string;
+  season: string;
+  icon: string;
+  checklist_items: SeasonalChecklistItem[];
+  available_from: string;
+  available_until: string;
+}
+
+export interface SeasonalPacksResponse {
+  packs: SeasonalPack[];
+}
+
+// =============================================================================
+// Family Goals — Gamified household progress
+// =============================================================================
+
+export type GoalType = "savings" | "meals" | "exercise" | "sleep" | "tasks" | "custom";
+
+export interface FamilyGoal {
+  id: string;
+  household_id: string;
+  title: string;
+  goal_type: GoalType;
+  target_value: number;
+  current_value: number;
+  unit: string;
+  period: "weekly" | "monthly";
+  created_at: string;
+  completed_at: string | null;
+}
+
+export interface GoalCreateRequest {
+  title: string;
+  goal_type: GoalType;
+  target_value: number;
+  unit: string;
+  period: "weekly" | "monthly";
+}
+
+export interface GoalUpdateRequest {
+  current_value?: number;
+  title?: string;
+  target_value?: number;
+}
+
+// =============================================================================
+// Voice Morning Briefing
+// =============================================================================
+
+export interface VoiceBriefScript {
+  text: string;
+  generated_at: string;
+}
+
+// =============================================================================
+// Emergency Mode — "I'm Sick" delegation
+// =============================================================================
+
+export interface EmergencyActivateRequest {
+  duration_days: number;
+  message_to_coparent?: string;
+}
+
+export interface EmergencyStatus {
+  active: boolean;
+  activated_at: string | null;
+  deactivates_at: string | null;
+  delegated_tasks: number;
+  cancelled_events: number;
+  notified_coparent: boolean;
+}
+
+// =============================================================================
+// Mom's Village — Community Feed
+// =============================================================================
+
+export type VillagePostCategory =
+  | "tip"
+  | "meal_idea"
+  | "school_hack"
+  | "activity"
+  | "vent"
+  | "win"
+  | "question";
+
+export interface VillagePost {
+  id: string;
+  author_name: string;
+  author_avatar_seed: string;
+  category: VillagePostCategory;
+  content: string;
+  kids_ages?: number[];
+  location?: string;
+  reactions: {
+    heart: number;
+    helpful: number;
+    same: number;
+  };
+  user_reaction?: "heart" | "helpful" | "same" | null;
+  comment_count: number;
+  reported: boolean;
+  created_at: string;
+}
+
+export interface VillageComment {
+  id: string;
+  post_id: string;
+  author_name: string;
+  content: string;
+  created_at: string;
+}
+
+export interface VillagePostCreateRequest {
+  category: VillagePostCategory;
+  content: string;
+  kids_ages?: number[];
+}
+
+export interface VillageFeedResponse {
+  posts: VillagePost[];
+  total: number;
+  next_cursor: string | null;
 }

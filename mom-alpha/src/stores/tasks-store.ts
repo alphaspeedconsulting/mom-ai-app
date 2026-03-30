@@ -8,6 +8,7 @@ interface TasksState {
   tasks: TaskItem[];
   isLoading: boolean;
   error: string | null;
+  celebrationShown: boolean;
 
   fetchTasks: () => Promise<void>;
   getActiveTasks: () => TaskItem[];
@@ -15,12 +16,15 @@ interface TasksState {
   getActiveCount: () => number;
   getCompletedTodayCount: () => number;
   updateTaskFromWS: (task: TaskItem) => void;
+  showCelebration: () => void;
+  dismissCelebration: () => void;
 }
 
 export const useTasksStore = create<TasksState>()((set, get) => ({
   tasks: [],
   isLoading: true,
   error: null,
+  celebrationShown: false,
 
   fetchTasks: async () => {
     set({ isLoading: true, error: null });
@@ -51,4 +55,7 @@ export const useTasksStore = create<TasksState>()((set, get) => ({
     set((state) => ({
       tasks: state.tasks.map((t) => (t.id === task.id ? task : t)),
     })),
+
+  showCelebration: () => set({ celebrationShown: true }),
+  dismissCelebration: () => set({ celebrationShown: false }),
 }));

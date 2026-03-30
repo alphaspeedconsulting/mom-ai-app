@@ -8,6 +8,7 @@ import { ServiceWorkerRegistration } from "@/components/shared/ServiceWorkerRegi
 import { MemoryHydrator } from "@/components/shared/MemoryHydrator";
 import { QuickCapture } from "@/components/shared/QuickCapture";
 import { UpdateBanner } from "@/components/shared/UpdateBanner";
+import { CelebrationOverlay } from "@/components/shared/CelebrationOverlay";
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -21,6 +22,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
         {children}
       </div>
       <QuickCapture />
+      <CelebrationOverlay />
       <UpdateBanner />
       <SyncStatus />
       <BottomNav />

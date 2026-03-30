@@ -367,6 +367,69 @@
   opacity: 0.22;
 }
 
+/* ==========================================================================
+   Win Card — shareable weekly accomplishment card
+   ========================================================================== */
+
+.mom-win-card {
+  background: hsl(var(--surface));
+  border-radius: var(--radius-default);
+  box-shadow: 0 12px 32px hsl(var(--shadow-tint));
+  overflow: hidden;
+}
+
+/* ==========================================================================
+   Confetti — CSS-only celebration animation
+   ========================================================================== */
+
+.mom-confetti-piece {
+  position: absolute;
+  top: -20px;
+  border-radius: 2px;
+  animation: mom-confetti-fall linear forwards;
+  will-change: transform, opacity;
+}
+
+@keyframes mom-confetti-fall {
+  0% {
+    transform: translateY(0) translateX(0) rotate(0deg);
+    opacity: 1;
+  }
+  80% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(100vh) translateX(var(--confetti-drift, 0px)) rotate(var(--confetti-rotate, 360deg));
+    opacity: 0;
+  }
+}
+
+/* ==========================================================================
+   Celebration Toast — slide-up notification
+   ========================================================================== */
+
+.mom-celebration-toast {
+  position: fixed;
+  bottom: 6rem;
+  left: 1rem;
+  right: 1rem;
+  max-width: 28rem;
+  margin: 0 auto;
+  z-index: 9998;
+  background: hsl(var(--surface-elevated));
+  border-radius: var(--radius-default);
+  box-shadow: 0 12px 32px hsl(var(--shadow-tint));
+  padding: 1rem 1.25rem;
+  transform: translateY(120%);
+  opacity: 0;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.mom-celebration-toast--visible {
+  transform: translateY(0);
+  opacity: 1;
+}
+
 /* Secondary chip — warm amber variant */
 .mom-chip-secondary {
   background: hsl(var(--secondary-container));
