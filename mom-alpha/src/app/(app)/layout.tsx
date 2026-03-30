@@ -5,6 +5,7 @@ import { InstallBanner } from "@/components/shared/InstallBanner";
 import { SyncStatus } from "@/components/shared/SyncStatus";
 import { AmbientBackground } from "@/components/shared/AmbientBackground";
 import { ServiceWorkerRegistration } from "@/components/shared/ServiceWorkerRegistration";
+import { UpdateBanner } from "@/components/shared/UpdateBanner";
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -16,6 +17,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
       <div className="mom-page-content min-h-screen bg-background pb-24">
         {children}
       </div>
+      <UpdateBanner />
       <SyncStatus />
       <BottomNav />
     </ErrorBoundary>
