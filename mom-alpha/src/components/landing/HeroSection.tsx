@@ -41,6 +41,13 @@ export function HeroSection() {
                 Meet Your Team
               </a>
             </div>
+
+            <p className="text-alphaai-sm text-muted-foreground mt-4 text-center md:text-left">
+              Already have an account?{" "}
+              <a href="/login" className="text-brand font-medium hover:underline">
+                Log in
+              </a>
+            </p>
           </div>
 
           {/* Phone mockup */}

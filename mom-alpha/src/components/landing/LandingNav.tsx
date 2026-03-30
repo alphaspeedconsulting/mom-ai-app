@@ -31,6 +31,9 @@ export function LandingNav() {
           <a href="#faq" className="text-alphaai-sm text-muted-foreground hover:text-foreground transition-colors">
             FAQ
           </a>
+          <a href="/login" className="text-alphaai-sm font-medium text-foreground hover:text-brand transition-colors">
+            Log In
+          </a>
           <a href="/login?mode=signup" className="mom-btn-primary !py-2.5 !px-5 !text-alphaai-sm">
             Start Free Trial
           </a>
@@ -62,6 +65,9 @@ export function LandingNav() {
           </a>
           <a href="#faq" onClick={() => setMenuOpen(false)} className="text-alphaai-base text-foreground py-2">
             FAQ
+          </a>
+          <a href="/login" className="text-alphaai-base font-medium text-brand py-2">
+            Log In
           </a>
           <a href="/login?mode=signup" className="mom-btn-primary text-center">
             Start Free Trial
