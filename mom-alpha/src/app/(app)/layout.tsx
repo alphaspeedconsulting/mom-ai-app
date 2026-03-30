@@ -7,6 +7,7 @@ import { AmbientBackground } from "@/components/shared/AmbientBackground";
 import { ServiceWorkerRegistration } from "@/components/shared/ServiceWorkerRegistration";
 import { MemoryHydrator } from "@/components/shared/MemoryHydrator";
 import { QuickCapture } from "@/components/shared/QuickCapture";
+import { UpdateBanner } from "@/components/shared/UpdateBanner";
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -20,6 +21,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
         {children}
       </div>
       <QuickCapture />
+      <UpdateBanner />
       <SyncStatus />
       <BottomNav />
     </ErrorBoundary>
