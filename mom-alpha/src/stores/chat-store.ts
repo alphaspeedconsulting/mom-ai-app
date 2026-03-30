@@ -3,6 +3,11 @@
 import { create } from "zustand";
 import type { AgentType, QuickAction } from "@/types/api-contracts";
 import * as api from "@/lib/api-client";
+import {
+  saveChatMessage,
+  getChatHistory,
+  clearChatHistory as clearPersistedChat,
+} from "@/lib/memory-store";
 
 interface ChatMessage {
   id: string;
@@ -17,13 +22,36 @@ interface ChatState {
   messages: Record<string, ChatMessage[]>;
   isTyping: boolean;
 
+  /** Load persisted chat history for an agent from IndexedDB */
+  loadHistory: (agentType: AgentType) => Promise<void>;
+
   sendMessage: (agentType: AgentType, message: string, householdId: string) => Promise<void>;
   clearChat: (agentType: AgentType) => void;
 }
 
-export const useChatStore = create<ChatState>()((set) => ({
+export const useChatStore = create<ChatState>()((set, get) => ({
   messages: {},
   isTyping: false,
+
+  loadHistory: async (agentType) => {
+    // Skip if already loaded
+    if ((get().messages[agentType] ?? []).length > 0) return;
+
+    const persisted = await getChatHistory(agentType);
+    if (persisted.length === 0) return;
+
+    const msgs: ChatMessage[] = persisted.map((m) => ({
+      id: m.id,
+      role: m.role,
+      content: m.content,
+      agent_type: m.agent_type,
+      timestamp: m.timestamp,
+    }));
+
+    set((state) => ({
+      messages: { ...state.messages, [agentType]: msgs },
+    }));
+  },
 
   sendMessage: async (agentType, message, householdId) => {
     const userMsg: ChatMessage = {
@@ -41,6 +69,15 @@ export const useChatStore = create<ChatState>()((set) => ({
       },
       isTyping: true,
     }));
+
+    // Persist user message to IndexedDB
+    saveChatMessage({
+      id: userMsg.id,
+      agent_type: agentType,
+      role: "user",
+      content: userMsg.content,
+      timestamp: userMsg.timestamp,
+    });
 
     try {
       const response = await api.chat.send({
@@ -65,6 +102,15 @@ export const useChatStore = create<ChatState>()((set) => ({
         },
         isTyping: false,
       }));
+
+      // Persist agent response to IndexedDB
+      saveChatMessage({
+        id: agentMsg.id,
+        agent_type: agentType,
+        role: "agent",
+        content: agentMsg.content,
+        timestamp: agentMsg.timestamp,
+      });
     } catch (e) {
       const errorMsg: ChatMessage = {
         id: `msg_${Date.now()}_error`,
@@ -86,8 +132,11 @@ export const useChatStore = create<ChatState>()((set) => ({
     }
   },
 
-  clearChat: (agentType) =>
+  clearChat: (agentType) => {
     set((state) => ({
       messages: { ...state.messages, [agentType]: [] },
-    })),
+    }));
+    // Clear persisted history too
+    clearPersistedChat(agentType);
+  },
 }));
