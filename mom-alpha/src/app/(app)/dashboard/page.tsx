@@ -34,7 +34,7 @@ function useIsClient() {
 
 export default function DashboardPage() {
   const router = useRouter();
-  const { agents, isLoading, error, fetchAgents, toggleAgent } = useAgentsStore();
+  const { agents, isLoading, error, fetchAgents, toggleAgent, upgradeRequired, clearUpgradeRequired } = useAgentsStore();
   const user = useAuthStore((s) => s.user);
   const token = useAuthStore((s) => s.token);
   const logout = useAuthStore((s) => s.logout);
@@ -128,6 +128,24 @@ export default function DashboardPage() {
 
         {/* Seasonal pack banner */}
         <SeasonalBanner />
+
+        {/* Upgrade prompt — shown when a Pro-tier toggle is blocked */}
+        {upgradeRequired && (
+          <div className="mom-card p-4 border border-secondary-container flex items-start gap-3">
+            <span className="material-symbols-outlined text-[20px] text-secondary flex-shrink-0 mt-0.5">upgrade</span>
+            <div className="flex-1 min-w-0">
+              <p className="text-alphaai-sm font-semibold text-foreground">Upgrade to enable this agent</p>
+              <p className="text-alphaai-xs text-muted-foreground mt-0.5">This agent requires a Family or Family Pro plan.</p>
+              <a href="/settings?section=billing" className="inline-flex items-center gap-1 text-alphaai-xs font-semibold text-secondary mt-2 hover:underline">
+                View plans
+                <span className="material-symbols-outlined text-[14px]">arrow_forward</span>
+              </a>
+            </div>
+            <button onClick={clearUpgradeRequired} aria-label="Dismiss" className="text-muted-foreground hover:text-foreground">
+              <span className="material-symbols-outlined text-[18px]">close</span>
+            </button>
+          </div>
+        )}
 
         {/* Search */}
         <div className="relative">

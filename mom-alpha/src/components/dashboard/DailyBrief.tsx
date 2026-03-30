@@ -41,13 +41,10 @@ export function DailyBrief() {
 
   const [events, setEvents] = useState<CalendarEvent[]>([]);
   const [tasks, setTasks] = useState<TaskItem[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(() => !!householdId);
 
   useEffect(() => {
-    if (!householdId) {
-      setLoading(false);
-      return;
-    }
+    if (!householdId) return;
 
     const today = new Date();
     const startOfDay = new Date(today.getFullYear(), today.getMonth(), today.getDate()).toISOString();

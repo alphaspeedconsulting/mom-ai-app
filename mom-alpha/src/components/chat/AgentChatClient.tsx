@@ -149,6 +149,27 @@ export function AgentChatClient({ agentType }: { agentType: AgentType }) {
                     {msg.content}
                   </div>
                 </div>
+              ) : msg.is_tier_error ? (
+                <div key={msg.id} className="flex gap-3 items-start">
+                  <div className="mom-agent-avatar mom-agent-avatar-sm bg-secondary-container flex-shrink-0 mt-1">
+                    <span className="material-symbols-outlined text-[16px] text-secondary">upgrade</span>
+                  </div>
+                  <div className="flex-1 min-w-0 mom-card p-4 border border-secondary-container">
+                    <p className="text-alphaai-sm font-semibold text-foreground mb-1">
+                      Upgrade to unlock this feature
+                    </p>
+                    <p className="text-alphaai-xs text-muted-foreground mb-3">
+                      This agent capability requires a Family or Family Pro plan.
+                    </p>
+                    <a
+                      href="/settings?section=billing"
+                      className="inline-flex items-center gap-1.5 text-alphaai-xs font-semibold text-on-secondary bg-secondary px-3 py-1.5 rounded-full hover:opacity-90 transition-opacity"
+                    >
+                      <span className="material-symbols-outlined text-[14px]">star</span>
+                      View plans
+                    </a>
+                  </div>
+                </div>
               ) : (
                 <div key={msg.id} className="flex gap-3 items-start">
                   <div className="mom-agent-avatar mom-agent-avatar-sm bg-brand-glow/30 flex-shrink-0 mt-1">

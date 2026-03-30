@@ -18,6 +18,8 @@ interface ChatMessage {
   agent_type: AgentType;
   quick_actions?: QuickAction[];
   timestamp: string;
+  /** Set when the backend rejected the request due to tier/plan restrictions. */
+  is_tier_error?: boolean;
 }
 
 interface ChatState {
@@ -128,14 +130,18 @@ export const useChatStore = create<ChatState>()((set, get) => ({
       // Auto-extract insights from the agent response into local memory
       processAgentResponse(agentType, response.content, response.memory_hints);
     } catch (e) {
+      const isTierError = e instanceof api.ApiError && e.isUpgradeRequired;
       const errorMsg: ChatMessage = {
         id: `msg_${Date.now()}_error`,
         role: "agent",
-        content: e instanceof api.ApiError
-          ? `Sorry, something went wrong: ${e.detail}`
-          : "Sorry, I couldn't process that. Please try again.",
+        content: isTierError
+          ? "This feature requires a higher plan."
+          : e instanceof api.ApiError
+            ? `Sorry, something went wrong: ${e.detail}`
+            : "Sorry, I couldn't process that. Please try again.",
         agent_type: agentType,
         timestamp: new Date().toISOString(),
+        is_tier_error: isTierError,
       };
 
       set((state) => ({

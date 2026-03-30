@@ -8,17 +8,21 @@ interface AgentsState {
   agents: AgentCard[];
   isLoading: boolean;
   error: string | null;
+  /** Set when a toggle is blocked by tier restriction (402/403). */
+  upgradeRequired: boolean;
 
   fetchAgents: () => Promise<void>;
   toggleAgent: (agentType: AgentType) => Promise<void>;
   getAgent: (agentType: AgentType) => AgentCard | undefined;
   getActiveAgents: () => AgentCard[];
+  clearUpgradeRequired: () => void;
 }
 
 export const useAgentsStore = create<AgentsState>()((set, get) => ({
   agents: [],
   isLoading: true,
   error: null,
+  upgradeRequired: false,
 
   fetchAgents: async () => {
     set({ isLoading: true, error: null });
@@ -43,15 +47,18 @@ export const useAgentsStore = create<AgentsState>()((set, get) => ({
 
     try {
       await api.agents.toggle({ agent_type: agentType, is_active: !agent.is_active });
-    } catch {
-      // Revert on failure
+    } catch (e) {
+      // Revert optimistic update
       set((state) => ({
         agents: state.agents.map((a) =>
           a.agent_type === agentType ? { ...a, is_active: agent.is_active } : a
         ),
+        upgradeRequired: e instanceof api.ApiError && e.isUpgradeRequired,
       }));
     }
   },
+
+  clearUpgradeRequired: () => set({ upgradeRequired: false }),
 
   getAgent: (agentType) => get().agents.find((a) => a.agent_type === agentType),
 

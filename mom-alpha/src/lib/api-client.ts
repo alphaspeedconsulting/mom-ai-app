@@ -114,6 +114,11 @@ export class ApiError extends Error {
     super(detail);
     this.name = "ApiError";
   }
+
+  /** True when the backend is rejecting due to tier/plan restrictions (402 or 403). */
+  get isUpgradeRequired(): boolean {
+    return this.status === 402 || this.status === 403;
+  }
 }
 
 // ---------------------------------------------------------------------------
