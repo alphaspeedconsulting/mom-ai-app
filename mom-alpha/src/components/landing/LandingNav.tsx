@@ -6,7 +6,7 @@ export function LandingNav() {
   const [menuOpen, setMenuOpen] = useState(false);
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 border-b border-border-subtle/10 bg-background">
+    <nav className="fixed top-0 left-0 right-0 z-50 border-b border-border-subtle/10 bg-background pt-[env(safe-area-inset-top)]">
       <div className="mom-container flex items-center justify-between px-6 py-4">
         <a href="#" className="flex items-center gap-2">
           <div className="w-8 h-8 rounded-full mom-gradient-hero flex items-center justify-center">

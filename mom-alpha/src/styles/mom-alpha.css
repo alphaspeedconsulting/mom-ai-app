@@ -229,13 +229,18 @@
   transform: translateX(1.25rem);
 }
 
-/* Input field — surface-input bg, no border, rounded, focus ring */
+/* Input field — surface-input bg, no border, rounded, focus ring.
+   Uses longhand padding so Tailwind directional utilities (pl-11, pr-12)
+   can override individual sides without specificity conflicts. */
 .mom-input {
   width: 100%;
   background: hsl(var(--surface-input));
   border: none;
   border-radius: var(--radius-default);
-  padding: 0.875rem 1rem;
+  padding-top: 0.875rem;
+  padding-bottom: 0.875rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
   font-family: var(--font-body);
   font-size: 1rem;
   color: hsl(var(--foreground));

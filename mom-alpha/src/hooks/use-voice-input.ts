@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 /** Minimal Web Speech API surface (vendor-prefixed constructors vary by browser). */
 interface SpeechRecognitionLike extends EventTarget {
@@ -12,6 +12,7 @@ interface SpeechRecognitionLike extends EventTarget {
   onerror: (() => void) | null;
   start(): void;
   stop(): void;
+  abort(): void;
 }
 
 interface SpeechRecognitionResultEventLike {
@@ -40,7 +41,34 @@ export function useVoiceInput() {
   const [isSupported, setIsSupported] = useState(true);
   const recognitionRef = useRef<SpeechRecognitionLike | null>(null);
 
+  // Cleanup on unmount — prevents orphaned recognition sessions
+  useEffect(() => {
+    return () => {
+      if (recognitionRef.current) {
+        try {
+          recognitionRef.current.onresult = null;
+          recognitionRef.current.onend = null;
+          recognitionRef.current.onerror = null;
+          recognitionRef.current.abort();
+        } catch {
+          // Ignore — already stopped
+        }
+        recognitionRef.current = null;
+      }
+    };
+  }, []);
+
   const startListening = useCallback(() => {
+    // If already listening, stop first
+    if (recognitionRef.current) {
+      try {
+        recognitionRef.current.abort();
+      } catch {
+        // Ignore
+      }
+      recognitionRef.current = null;
+    }
+
     const w = window as unknown as WindowWithSpeech;
     const SpeechRecognitionCtor =
       w.SpeechRecognition ?? w.webkitSpeechRecognition;
@@ -70,10 +98,12 @@ export function useVoiceInput() {
 
     recognition.onend = () => {
       setIsListening(false);
+      recognitionRef.current = null;
     };
 
     recognition.onerror = () => {
       setIsListening(false);
+      recognitionRef.current = null;
     };
 
     recognitionRef.current = recognition;
@@ -83,7 +113,18 @@ export function useVoiceInput() {
   }, []);
 
   const stopListening = useCallback(() => {
-    recognitionRef.current?.stop();
+    if (recognitionRef.current) {
+      try {
+        // Use abort() instead of stop() — abort() immediately terminates
+        // recognition and does NOT fire a final result event, preventing
+        // the hung state that stop() causes on iOS Safari.
+        recognitionRef.current.onresult = null;
+        recognitionRef.current.abort();
+      } catch {
+        // Ignore — already stopped
+      }
+      recognitionRef.current = null;
+    }
     setIsListening(false);
   }, []);
 

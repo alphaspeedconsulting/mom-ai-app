@@ -145,6 +145,13 @@ export interface ChatRequest {
   media_urls?: string[];
   /** On-device memory context injected from local memory store */
   memory_context?: MemoryContextItem[];
+  /** Recent conversation history so the backend has multi-turn context */
+  chat_history?: ChatHistoryItem[];
+}
+
+export interface ChatHistoryItem {
+  role: "user" | "agent";
+  content: string;
 }
 
 /** Lightweight memory item sent alongside chat messages for agent context */

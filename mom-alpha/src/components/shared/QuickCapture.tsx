@@ -130,7 +130,7 @@ export function QuickCapture() {
 
       {/* Quick capture panel */}
       {open && (
-        <div className="fixed bottom-24 left-4 right-4 z-50 max-w-lg mx-auto">
+        <div className="fixed left-4 right-4 z-50 max-w-lg mx-auto" style={{ bottom: "calc(7rem + env(safe-area-inset-bottom, 0px))" }}>
           <div className="mom-card-elevated p-4 space-y-3">
             {saved ? (
               <div className="flex items-center justify-center gap-2 py-6">
@@ -333,7 +333,8 @@ export function QuickCapture() {
       {!open && (
         <button
           onClick={() => setOpen(true)}
-          className="fixed bottom-20 right-4 z-40 w-14 h-14 mom-gradient-hero rounded-full flex items-center justify-center shadow-lg hover:scale-105 active:scale-95 transition-transform"
+          className="fixed right-4 z-40 w-14 h-14 mom-gradient-hero rounded-full flex items-center justify-center shadow-lg hover:scale-105 active:scale-95 transition-transform"
+          style={{ bottom: "calc(5.5rem + env(safe-area-inset-bottom, 0px))" }}
           aria-label="Quick capture"
         >
           <span className="material-symbols-outlined text-[24px] text-on-primary">

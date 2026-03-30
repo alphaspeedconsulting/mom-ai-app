@@ -94,11 +94,20 @@ export const useChatStore = create<ChatState>()((set, get) => ({
           }))
         : undefined;
 
+      // Build recent conversation history so backend has multi-turn context
+      // (prevents agent from re-asking questions already answered)
+      const allMsgs = get().messages[agentType] || [];
+      const recentHistory = allMsgs.slice(-20).map((m) => ({
+        role: m.role as "user" | "agent",
+        content: m.content,
+      }));
+
       const response = await api.chat.send({
         household_id: householdId,
         agent_type: agentType,
         message,
         memory_context: memoryContext,
+        chat_history: recentHistory.length > 0 ? recentHistory : undefined,
       });
 
       const agentMsg: ChatMessage = {

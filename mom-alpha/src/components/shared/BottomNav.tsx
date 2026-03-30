@@ -15,21 +15,24 @@ export function BottomNav() {
   const pathname = usePathname();
   const router = useRouter();
 
+  // Hide on chat pages — they have their own input bar + back button
+  if (pathname?.startsWith("/chat")) return null;
+
   return (
-    <nav className="mom-bottom-nav fixed bottom-0 left-0 right-0 z-50">
-      <div className="flex items-center max-w-lg mx-auto px-1">
+    <nav className="mom-bottom-nav fixed bottom-0 left-0 right-0 z-50 pb-[env(safe-area-inset-bottom)]">
+      <div className="flex items-center max-w-lg mx-auto px-2">
         {/* Back */}
         <button
           onClick={() => router.back()}
           aria-label="Go back"
-          className="flex flex-col items-center gap-0.5 py-2 px-3 rounded-xl text-muted-foreground hover:text-foreground transition-all"
+          className="flex flex-col items-center gap-0.5 py-2 px-2 rounded-xl text-muted-foreground hover:text-foreground transition-all flex-shrink-0"
         >
-          <span className="material-symbols-outlined text-[22px]">arrow_back_ios</span>
+          <span className="material-symbols-outlined text-[20px]">arrow_back_ios</span>
           <span className="text-alphaai-3xs font-medium">Back</span>
         </button>
 
         {/* Main nav tabs */}
-        <div className="flex items-center justify-around flex-1">
+        <div className="flex items-center justify-around flex-1 min-w-0">
           {NAV_ITEMS.map((item) => {
             const isActive = pathname === item.href || pathname?.startsWith(item.href + "/");
             return (
@@ -37,19 +40,19 @@ export function BottomNav() {
                 key={item.href}
                 href={item.href}
                 aria-current={isActive ? "page" : undefined}
-                className={`flex flex-col items-center gap-0.5 py-2 px-3 rounded-xl transition-all ${
+                className={`flex flex-col items-center gap-0.5 py-2 px-2 rounded-xl transition-all min-w-0 ${
                   isActive
                     ? "bg-brand-glow/40 text-brand"
                     : "text-muted-foreground hover:text-foreground"
                 }`}
               >
                 <span
-                  className="material-symbols-outlined text-[24px]"
+                  className="material-symbols-outlined text-[22px]"
                   style={{ fontVariationSettings: isActive ? "'FILL' 1" : "'FILL' 0" }}
                 >
                   {item.icon}
                 </span>
-                <span className="text-alphaai-3xs font-medium">{item.label}</span>
+                <span className="text-alphaai-3xs font-medium truncate max-w-[3.5rem]">{item.label}</span>
               </Link>
             );
           })}
@@ -59,9 +62,9 @@ export function BottomNav() {
         <button
           onClick={() => router.forward()}
           aria-label="Go forward"
-          className="flex flex-col items-center gap-0.5 py-2 px-3 rounded-xl text-muted-foreground hover:text-foreground transition-all"
+          className="flex flex-col items-center gap-0.5 py-2 px-2 rounded-xl text-muted-foreground hover:text-foreground transition-all flex-shrink-0"
         >
-          <span className="material-symbols-outlined text-[22px]">arrow_forward_ios</span>
+          <span className="material-symbols-outlined text-[20px]">arrow_forward_ios</span>
           <span className="text-alphaai-3xs font-medium">Fwd</span>
         </button>
       </div>

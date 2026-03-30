@@ -202,7 +202,7 @@ export default function SettingsPage() {
 
   return (
     <div className="min-h-screen">
-      <header className="fixed top-0 left-0 right-0 z-40 rounded-none border-b border-border-subtle/10 bg-background">
+      <header className="fixed top-0 left-0 right-0 z-40 rounded-none border-b border-border-subtle/10 bg-background pt-[env(safe-area-inset-top)]">
         <div className="max-w-lg mx-auto px-4 py-3">
           <h1 className="font-headline text-alphaai-xl font-bold text-foreground">Settings</h1>
         </div>
