@@ -173,7 +173,8 @@ export default function MemoryPage() {
       </div>
 
       {/* Filter tabs */}
-      <div className="flex gap-2 overflow-x-auto pb-3 mom-no-scrollbar mb-4">
+      <div className="relative mb-4">
+      <div className="flex gap-2 overflow-x-auto pb-3 mom-no-scrollbar pr-8">
         {FILTER_TABS.map((tab) => (
           <button
             key={tab.key}
@@ -188,6 +189,8 @@ export default function MemoryPage() {
             {tab.label}
           </button>
         ))}
+      </div>
+      <div className="absolute top-0 right-0 bottom-0 w-8 bg-gradient-to-l from-background to-transparent pointer-events-none" />
       </div>
 
       {/* Quick Add button */}

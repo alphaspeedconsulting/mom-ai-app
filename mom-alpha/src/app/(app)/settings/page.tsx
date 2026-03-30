@@ -208,7 +208,7 @@ export default function SettingsPage() {
         </div>
       </header>
 
-      <main className="max-w-lg mx-auto px-4 pt-20 pb-4 space-y-6">
+      <main className="max-w-lg mx-auto px-4 pt-20 pb-28 space-y-6">
         {/* Notifications */}
         <section>
           <h3 className="font-headline text-alphaai-md font-semibold text-foreground mb-3">

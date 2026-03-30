@@ -113,15 +113,13 @@ export const useHouseholdStore = create<HouseholdState>()((set) => ({
   },
 
   fetchUsage: async (householdId) => {
-    set({ isLoading: true, error: null });
+    // Usage endpoint may not exist yet (404) — fail silently since it's
+    // non-critical data. Don't set error state as it pollutes the UI.
     try {
       const usage = await api.household.usageDashboard(householdId);
-      set({ usage, isLoading: false });
-    } catch (error) {
-      set({
-        isLoading: false,
-        error: error instanceof Error ? error.message : "Could not load usage dashboard.",
-      });
+      set({ usage });
+    } catch {
+      // Silently ignore — usage data is optional
     }
   },
 

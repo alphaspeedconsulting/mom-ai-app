@@ -59,7 +59,7 @@ export default function ReferralPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      <header className="fixed top-0 left-0 right-0 z-40 border-b border-border-subtle/10 bg-background">
+      <header className="fixed top-0 left-0 right-0 z-40 border-b border-border-subtle/10 bg-background pt-[env(safe-area-inset-top)]">
         <div className="max-w-lg mx-auto px-4 py-3 flex items-center gap-3">
           <Link
             href="/dashboard"

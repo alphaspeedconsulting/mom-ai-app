@@ -7,7 +7,7 @@ const NAV_ITEMS = [
   { href: "/dashboard", icon: "home", label: "Home" },
   { href: "/tasks", icon: "task_alt", label: "Tasks" },
   { href: "/memory", icon: "neurology", label: "Brain" },
-  { href: "/calendar", icon: "calendar_month", label: "Calendar" },
+  { href: "/calendar", icon: "calendar_month", label: "Cal" },
   { href: "/profile", icon: "person", label: "Profile" },
 ] as const;
 
@@ -15,8 +15,9 @@ export function BottomNav() {
   const pathname = usePathname();
   const router = useRouter();
 
-  // Hide on chat pages — they have their own input bar + back button
-  if (pathname?.startsWith("/chat")) return null;
+  // Hide on pages that have their own navigation or where the nav causes overlap
+  const hiddenPrefixes = ["/chat", "/login", "/signup", "/onboarding"];
+  if (hiddenPrefixes.some((p) => pathname?.startsWith(p))) return null;
 
   return (
     <nav className="mom-bottom-nav fixed bottom-0 left-0 right-0 z-50 pb-[env(safe-area-inset-bottom)]">

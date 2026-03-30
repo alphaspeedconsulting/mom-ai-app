@@ -56,7 +56,7 @@ export default function ProfilePage() {
         </div>
       </header>
 
-      <main className="max-w-lg mx-auto px-4 pt-20 pb-4 space-y-6">
+      <main className="max-w-lg mx-auto px-4 pt-20 pb-28 space-y-6">
         {/* User card */}
         <section className="mom-card p-5 flex items-center gap-4">
           <div className="w-16 h-16 mom-gradient-hero rounded-full flex items-center justify-center">

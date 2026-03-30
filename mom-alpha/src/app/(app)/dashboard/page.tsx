@@ -169,20 +169,24 @@ export default function DashboardPage() {
             <h2 className="font-headline text-alphaai-md font-semibold text-foreground mb-3">
               Suggested for You
             </h2>
-            <div className="flex gap-3 overflow-x-auto mom-no-scrollbar pb-1">
-              {isLoading
-                ? Array.from({ length: 3 }).map((_, i) => (
-                    <div key={i} className="flex-none w-[85%] max-w-[340px]">
-                      <CardSkeleton />
-                    </div>
-                  ))
-                : suggested.map((agent) => (
-                    <SuggestedCard
-                      key={agent.agent_type}
-                      agent={agent}
-                      onToggle={() => toggleAgent(agent.agent_type)}
-                    />
-                  ))}
+            <div className="relative">
+              <div className="flex gap-3 overflow-x-auto mom-no-scrollbar pb-1 pr-8">
+                {isLoading
+                  ? Array.from({ length: 3 }).map((_, i) => (
+                      <div key={i} className="flex-none w-[80%] max-w-[320px]">
+                        <CardSkeleton />
+                      </div>
+                    ))
+                  : suggested.map((agent) => (
+                      <SuggestedCard
+                        key={agent.agent_type}
+                        agent={agent}
+                        onToggle={() => toggleAgent(agent.agent_type)}
+                      />
+                    ))}
+              </div>
+              {/* Scroll hint gradient */}
+              <div className="absolute top-0 right-0 bottom-0 w-8 bg-gradient-to-l from-background to-transparent pointer-events-none" />
             </div>
           </section>
         )}
@@ -243,7 +247,7 @@ function SuggestedCard({
   onToggle: () => void;
 }) {
   return (
-    <div className="flex-none w-[85%] max-w-[340px] mom-gradient-hero rounded-2xl p-5 text-on-primary">
+    <div className="flex-none w-[80%] max-w-[320px] mom-gradient-hero rounded-2xl p-5 text-on-primary">
       <div className="flex items-start justify-between mb-3">
         <div className="w-12 h-12 bg-on-primary/20 backdrop-blur-md rounded-xl flex items-center justify-center">
           <span className="material-symbols-outlined text-[24px]">{agent.icon}</span>

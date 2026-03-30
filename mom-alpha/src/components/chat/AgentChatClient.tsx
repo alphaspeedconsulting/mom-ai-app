@@ -19,6 +19,8 @@ export function AgentChatClient({ agentType }: { agentType: AgentType }) {
   const bottomRef = useRef<HTMLDivElement>(null);
   const { isListening, isSupported, transcript, startListening, stopListening, clearTranscript } = useVoiceInput();
   const isPro = tier === "family_pro";
+  const GATED_AGENTS: AgentType[] = ["sleep_tracker", "health_hub", "tutor_finder"];
+  const isGated = tier === "trial" && GATED_AGENTS.includes(agentType);
 
   // Auto-fill input when voice transcript arrives
   useEffect(() => {
@@ -112,7 +114,38 @@ export function AgentChatClient({ agentType }: { agentType: AgentType }) {
         </div>
       </header>
 
+      {/* Tier gate overlay — shown for trial users on gated agents */}
+      {isGated && (
+        <main className="flex-1 flex items-center justify-center px-6 pt-20 max-w-lg mx-auto w-full">
+          <div className="text-center">
+            <div className="w-20 h-20 rounded-2xl bg-secondary-container flex items-center justify-center mx-auto mb-5">
+              <span className="material-symbols-outlined text-[40px] text-secondary">lock</span>
+            </div>
+            <h2 className="font-headline text-alphaai-xl font-bold text-foreground mb-2">
+              Upgrade to Unlock
+            </h2>
+            <p className="text-alphaai-sm text-muted-foreground mb-2">
+              <strong>{agent?.name ?? "This agent"}</strong> requires a Family or Family Pro plan.
+            </p>
+            <p className="text-alphaai-xs text-muted-foreground mb-6">
+              Upgrade to access all 8 AI agents, including {agent?.name}.
+            </p>
+            <a
+              href="/settings?section=billing"
+              className="mom-btn-primary inline-flex items-center gap-2 px-6 py-3 text-alphaai-sm"
+            >
+              <span className="material-symbols-outlined text-[18px]">star</span>
+              View Plans
+            </a>
+            <p className="text-alphaai-3xs text-muted-foreground mt-4">
+              Your 5 trial agents are always free to use.
+            </p>
+          </div>
+        </main>
+      )}
+
       {/* Chat timeline */}
+      {!isGated && (<>
       <main className="flex-1 overflow-y-auto px-4 pt-20 pb-32 max-w-lg mx-auto w-full">
         {chatMessages.length === 0 && !isTyping ? (
           <div className="flex flex-col items-center justify-center h-full text-center px-6">
@@ -122,7 +155,7 @@ export function AgentChatClient({ agentType }: { agentType: AgentType }) {
               </span>
             </div>
             <h2 className="font-headline text-alphaai-lg font-semibold text-foreground mb-2">
-              {agent?.name ?? "Agent"}
+              {agent?.name ?? agentTypeName(agentType)}
             </h2>
             <p className="text-alphaai-sm text-muted-foreground max-w-xs">
               {agent?.description ?? "How can I help you today?"}
@@ -227,7 +260,7 @@ export function AgentChatClient({ agentType }: { agentType: AgentType }) {
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={handleKeyDown}
-              placeholder={`Message ${agent?.name ?? "agent"}...`}
+              placeholder={`Message ${agent?.name ?? agentTypeName(agentType)}...`}
               rows={1}
               className="mom-input resize-none pr-12 min-h-[44px] max-h-32"
             />
@@ -259,6 +292,7 @@ export function AgentChatClient({ agentType }: { agentType: AgentType }) {
           </button>
         </div>
       </div>
+      </>)}
     </div>
   );
 }
@@ -364,6 +398,14 @@ function renderInline(text: string): React.ReactNode {
     }
     return part;
   });
+}
+
+/** Convert agent_type to readable name (used as fallback before agents store loads) */
+function agentTypeName(agentType: string): string {
+  return agentType
+    .split("_")
+    .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+    .join(" ");
 }
 
 function getStarterPrompts(agentType: string): string[] {
