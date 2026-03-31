@@ -1,0 +1,24 @@
+{
+  "_platform_notes": {
+    "platform": "claude-code",
+    "note": "MCP config for Claude Code sessions in the mom-ai-app workspace. Langfuse observability is already wired at the app level via LANGFUSE_PUBLIC_KEY/SECRET_KEY/HOST env vars in mom-alpha/.env."
+  },
+  "mcpServers": {
+    "firecrawl": {
+      "_note": "Firecrawl MCP — reliable web scraping returning clean markdown/JSON. Handles JS rendering and anti-bot. Used by: research during feature development, scraping activity/event data sources.",
+      "command": "npx",
+      "args": ["-y", "firecrawl-mcp"],
+      "env": {
+        "FIRECRAWL_API_KEY": "${FIRECRAWL_API_KEY}"
+      }
+    },
+    "tavily": {
+      "_note": "Tavily MCP — real-time web search optimized for AI agents. Used by: activity recommendation research, family event discovery, market research during feature planning.",
+      "command": "npx",
+      "args": ["-y", "tavily-mcp"],
+      "env": {
+        "TAVILY_API_KEY": "${TAVILY_API_KEY}"
+      }
+    }
+  }
+}
