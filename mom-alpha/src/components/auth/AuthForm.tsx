@@ -23,10 +23,38 @@ interface AuthFormProps {
   showModeToggle: boolean;
 }
 
+/** Check if the user has previously accepted consent (localStorage fallback) */
+function hasLocalConsent(): boolean {
+  if (typeof window === "undefined") return false;
+  return localStorage.getItem("mom-alpha-consent-accepted") === "true";
+}
+
+/** Record consent acceptance locally so returning users never see it again */
+function setLocalConsent() {
+  if (typeof window !== "undefined") {
+    localStorage.setItem("mom-alpha-consent-accepted", "true");
+  }
+}
+
+/** Remember email for returning users */
+function getLastEmail(): string {
+  if (typeof window === "undefined") return "";
+  return localStorage.getItem("mom-alpha-last-email") ?? "";
+}
+
+function setLastEmail(email: string) {
+  if (typeof window !== "undefined" && email) {
+    localStorage.setItem("mom-alpha-last-email", email);
+  }
+}
+
 export function AuthForm({ initialMode, initialPromo, showModeToggle }: AuthFormProps) {
+  // If we have a remembered email and mode is login, prefill it
+  const rememberedEmail = initialMode === "login" ? getLastEmail() : "";
+
   const [mode, setMode] = useState<AuthMode>(initialMode);
   const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
+  const [email, setEmail] = useState(rememberedEmail);
   const [password, setPassword] = useState("");
   const [inviteCode, setInviteCode] = useState(() => {
     if (initialPromo) return initialPromo;
@@ -52,15 +80,17 @@ export function AuthForm({ initialMode, initialPromo, showModeToggle }: AuthForm
   const consentModalRef = useRef<HTMLDivElement>(null);
   useFocusTrap(consentModalRef, showConsent);
 
-  /** After auth succeeds, either show consent dialog or go straight to dashboard */
+  /** After auth succeeds, either show consent dialog or go straight to app */
   const handleAuthSuccess = (response: AuthResponse) => {
     setAuthPending(response);
-    // Only show consent dialog if the user hasn't accepted current policy versions
-    if (!response.user.consent_current) {
-      setShowConsent(true);
-    } else {
-      // Already consented — log in immediately
+    // Remember email for next login
+    setLastEmail(response.user.email);
+
+    // Skip consent if: backend says current, OR user has accepted locally before
+    if (response.user.consent_current || hasLocalConsent()) {
       completeLogin(response);
+    } else {
+      setShowConsent(true);
     }
   };
 
@@ -70,11 +100,27 @@ export function AuthForm({ initialMode, initialPromo, showModeToggle }: AuthForm
     if (inviteCode.trim()) {
       localStorage.setItem("mom-alpha-promo-code", inviteCode.trim().toUpperCase());
     }
+
+    // Check if user needs the install page (first time, not yet installed as PWA)
+    const isStandalone =
+      typeof window !== "undefined" &&
+      (window.matchMedia("(display-mode: standalone)").matches ||
+        ("standalone" in window.navigator && (window.navigator as unknown as { standalone: boolean }).standalone));
+
     if (mode === "signup") {
       const next = response.user.household_id ? "/dashboard" : "/onboarding/household";
       window.location.href = `/install?next=${encodeURIComponent(next)}`;
       return;
     }
+
+    // For returning login users: show install page if not already installed as PWA
+    if (!isStandalone && !localStorage.getItem("mom-alpha-install-seen")) {
+      localStorage.setItem("mom-alpha-install-seen", "true");
+      const next = response.user.household_id ? "/dashboard" : "/onboarding/household";
+      window.location.href = `/install?next=${encodeURIComponent(next)}`;
+      return;
+    }
+
     if (!response.user.household_id) {
       window.location.href = "/onboarding/household";
       return;
@@ -129,8 +175,10 @@ export function AuthForm({ initialMode, initialPromo, showModeToggle }: AuthForm
   const handleConsentSubmit = async () => {
     if (!authPending) return;
 
-    // Record consent acceptance with the backend (fire-and-forget — don't block login)
-    // Temporarily set the auth token so the API call is authenticated
+    // Record consent locally so it never shows again for this browser
+    setLocalConsent();
+
+    // Record consent acceptance with the backend
     login(authPending.access_token, { ...authPending.user, consent_current: true });
 
     consentApi.accept({
@@ -146,6 +194,7 @@ export function AuthForm({ initialMode, initialPromo, showModeToggle }: AuthForm
     completeLogin({ ...authPending, user: { ...authPending.user, consent_current: true } });
   };
 
+  // ── Consent dialog ──────────────────────────────────────────────────────
   if (showConsent) {
     return (
       <div className="min-h-screen flex items-center justify-center px-4">
@@ -229,13 +278,14 @@ export function AuthForm({ initialMode, initialPromo, showModeToggle }: AuthForm
     );
   }
 
+  // ── Login / Signup form ─────────────────────────────────────────────────
   return (
     <div className="min-h-screen flex items-center justify-center px-4">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
           <div className="w-16 h-16 mom-gradient-hero rounded-2xl flex items-center justify-center mx-auto mb-4">
             <span className="material-symbols-outlined text-[32px] text-on-primary">
-              family_restroom
+              {mode === "signup" ? "family_restroom" : "waving_hand"}
             </span>
           </div>
           <h1 className="font-headline text-alphaai-3xl font-extrabold text-foreground">
@@ -244,7 +294,7 @@ export function AuthForm({ initialMode, initialPromo, showModeToggle }: AuthForm
           <p className="text-alphaai-sm text-muted-foreground mt-1">
             {mode === "signup"
               ? "Your household AI assistant starts here."
-              : "Take a breath. We\u2019ll handle the rest."}
+              : "Sign in to pick up where you left off."}
           </p>
         </div>
 
@@ -254,7 +304,7 @@ export function AuthForm({ initialMode, initialPromo, showModeToggle }: AuthForm
               onSuccess={handleGoogleSuccess}
               onError={() => setSubmitError("Google sign-in failed. Please try again.")}
               width="360"
-              text="continue_with"
+              text={mode === "login" ? "signin_with" : "continue_with"}
               shape="pill"
               theme="outline"
             />
@@ -325,8 +375,11 @@ export function AuthForm({ initialMode, initialPromo, showModeToggle }: AuthForm
               />
             )}
             <button type="submit" disabled={isSubmitting} className="mom-btn-primary w-full disabled:opacity-60">
-              {isSubmitting ? "Please wait..." : null}
-              {!isSubmitting ? (mode === "login" ? "Sign In" : "Create Account — 7-Day Free Trial") : null}
+              {isSubmitting
+                ? "Please wait..."
+                : mode === "login"
+                  ? "Sign In"
+                  : "Create Account — 7-Day Free Trial"}
             </button>
             {submitError && (
               <p className="text-alphaai-xs text-error text-center">
@@ -337,7 +390,7 @@ export function AuthForm({ initialMode, initialPromo, showModeToggle }: AuthForm
 
           {showModeToggle && (
             <p className="text-center text-alphaai-sm text-muted-foreground mt-4">
-              {mode === "login" ? "Don't have an account? " : "Already have an account? "}
+              {mode === "login" ? "Don\u2019t have an account? " : "Already have an account? "}
               <button
                 onClick={() => setMode(mode === "login" ? "signup" : "login")}
                 className="text-brand font-medium"
